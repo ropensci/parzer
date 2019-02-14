@@ -3,14 +3,8 @@ cache: packages
 sudo: required
 dist: trusty
 
-r_github_packages:
-  - jimhester/covr
-
 matrix:
   include:
-    # - os: linux
-    #   r: oldrel
-    #   before_install: mkdir -p ~/.R && echo "CXX1X = g++-6" >> ~/.R/Makevars
     - os: linux
       r: release
       before_install: mkdir -p ~/.R && echo "CXX11 = g++-6" >> ~/.R/Makevars
@@ -29,12 +23,7 @@ addons:
     - ubuntu-toolchain-r-test
     packages:
     - r-cran-roxygen2
-    - r-cran-testthat
-    - r-cran-covr
     - g++-6
-
-after_success:
-  - if [[ "${R_CODECOV}" ]]; then R -e 'covr::codecov()'; fi
 
 notifications:
   email:

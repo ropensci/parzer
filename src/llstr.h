@@ -1,5 +1,6 @@
 // Originally from: https://www.codeproject.com/Articles/15659/Longitude-Latitude-String-Parser-and-Formatter
 // Code retried from: https://github.com/batela/Gaypu-Src/blob/master/ll2utm/include/llstr.h
+// Code below has not been modified from the version at batela/Gaypu-Src
 //
 // Program: Long-Lat String
 // Purpose: To provide a utility for parsing longitudes and latitudes in their many
