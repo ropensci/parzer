@@ -9,8 +9,8 @@ Authors@R: c(
 		person("Jeffrey", "Bogan", role = "cph")
 	)
 License: MIT + file LICENSE
-URL: https://github.com/ropensci/parzer
-BugReports: https://github.com/ropensci/parzer/issues
+URL: https://github.com/ropenscilabs/parzer
+BugReports: https://github.com/ropenscilabs/parzer/issues
 Imports:
     Rcpp (>= 0.12.12)
 Suggests:
