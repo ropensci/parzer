@@ -1,27 +1,36 @@
 #include <Rcpp.h>
 #include "llstr.h"
 
+using namespace Rcpp;
+
 // [[Rcpp::export]]
-float pz_parse_lat(std::string x, std::string format) {
-  CLongLatString strLat(x, format, LL_LATITUDE);
-  float z = strLat.GetDecimalDegree();
-  // check if 0 ~ invalid according to CLongLatString checker
-  // special check because CLongLatString only checks wether in 180
-  z = (z == 0 || std::abs(z) > 90) ? NA_REAL : z;
-  return z;
+NumericVector pz_parse_lat(CharacterVector x, std::string format) {
+  const int n = x.size();
+  NumericVector y(n);
+  for (int i=0; i < n; ++i) {
+    auto w = as<std::string>(x[i]);
+    CLongLatString strLat(w, format, LL_LATITUDE);
+    float z = strLat.GetDecimalDegree();
+    // check if 0 ~ invalid according to CLongLatString checker
+    // special check because CLongLatString only checks wether in 180
+    z = (z == 0 || std::abs(z) > 90) ? NA_REAL : z;
+    y[i] = z;
+  };
+  return y;
 };
 
 // [[Rcpp::export]]
-float pz_parse_lon(std::string x, std::string format) {
-  CLongLatString strLon(x, format, LL_LONGITUDE);
-  float z = strLon.GetDecimalDegree();
-  z = z == 0 ? NA_REAL : z;
-  return z;
+NumericVector pz_parse_lon(CharacterVector x, std::string format) {
+  const int n = x.size();
+  NumericVector y(n);
+  for (int i=0; i < n; ++i) {
+    auto w = as<std::string>(x[i]);
+    CLongLatString strLon(w, format, LL_LONGITUDE);
+    float z = strLon.GetDecimalDegree();
+    // check if 0 ~ invalid according to CLongLatString checker
+    z = z == 0 ? NA_REAL : z;
+    y[i] = z;
+  };
+  return y;
 };
 
-// float pz_parse_lat_lon(std::string x, std::string format) {
-//   CLongLatString strLatLon(x, format, LL_UNKNOWN);
-//   float z = strLatLon.GetLongLat();
-//   z = z == 0 ? NA_REAL : z;
-//   return z;
-// };

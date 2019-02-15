@@ -7,9 +7,12 @@
 parse_lat(lat, format = "")
 }
 \arguments{
-\item{lat}{(character/numeric/integer) a latitude string/value}
+\item{lat}{(character/numeric/integer) one or more latitude values}
 
 \item{format}{format, deafult often works}
+}
+\value{
+numeric vector of decimal degree coordinates
 }
 \description{
 parse latitude
@@ -24,5 +27,7 @@ parse_lat("N45 04.25764")
 # bad values -> NaN
 parse_lat("191.89")
 # multiple
-# parse_lat(c("40.123°", "40.123N74.123W"))
+x <- c("40.123°", "40.123N74.123W", "191.89", 12, "N45 04.25764")
+parse_lat(x)
+system.time(parse_lat(rep(x, 10^4)))
 }

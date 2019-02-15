@@ -7,9 +7,12 @@
 parse_lon(lon, format = "")
 }
 \arguments{
-\item{lon}{(character/numeric/integer) a longitude string/value}
+\item{lon}{(character/numeric/integer) one or more longitude values}
 
 \item{format}{format, deafult often works}
+}
+\value{
+numeric vector of decimal degree coordinates
 }
 \description{
 parse longitude
@@ -23,4 +26,8 @@ parse_lon("40.123N74.123W")
 parse_lon("N45 04.25764")
 # bad values
 parse_lon("181")
+# many
+x <- c("45W54.2356", "181", 45, 45.234234, "-45.98739874")
+parse_lon(x)
+system.time(parse_lon(rep(x, 10^4)))
 }

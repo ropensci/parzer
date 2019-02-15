@@ -11,6 +11,4 @@ lint_inputs <- function(lat = NULL, lon = NULL, format) {
   assert(lat, c("character", "numeric", "integer"))
   assert(lon, c("character", "numeric", "integer"))
   assert(format, "character")
-  if (!is.null(lat)) stopifnot(length(lat) == 1)
-  if (!is.null(lon)) stopifnot(length(lon) == 1)
 }
