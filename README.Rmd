@@ -10,11 +10,13 @@ knitr::opts_chunk$set(
 )
 ```
 
+[![Project Status: WIP – Initial development is in progress, but there has not yet been a stable, usable release suitable for the public.](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip)
+
 `parzer` parses coordinates
 
 Code originally from: https://www.codeproject.com/Articles/15659/Longitude-Latitude-String-Parser-and-Formatter
 
-Code retrieved from: https://github.com/batela/Gaypu-Src/blob/master/ll2utm/src/llstr.cpp
+Code retrieved from: https://github.com/batela/Gaypu-Src/tree/master/ll2utm
 
 
 ## Installation
