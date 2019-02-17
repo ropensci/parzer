@@ -42,7 +42,7 @@ parse_lat <- function(lat, format = "") {
 #' parse_lon(x)
 #' system.time(parse_lon(rep(x, 10^4)))
 parse_lon <- function(lon, format = "") {
-  lint_inputs(lon, format = format)
+  lint_inputs(NULL, lon, format = format)
   pz_parse_lon(as.character(lon), format)
 }
 
