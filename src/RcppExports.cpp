@@ -5,6 +5,17 @@
 
 using namespace Rcpp;
 
+// pz_extract
+std::string pz_extract(std::string x);
+RcppExport SEXP _parzer_pz_extract(SEXP xSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::string >::type x(xSEXP);
+    rcpp_result_gen = Rcpp::wrap(pz_extract(x));
+    return rcpp_result_gen;
+END_RCPP
+}
 // pz_parse_lat
 NumericVector pz_parse_lat(CharacterVector x, std::string format);
 RcppExport SEXP _parzer_pz_parse_lat(SEXP xSEXP, SEXP formatSEXP) {
@@ -29,10 +40,36 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// pz_parse_parts
+DataFrame pz_parse_parts(CharacterVector x, std::string format);
+RcppExport SEXP _parzer_pz_parse_parts(SEXP xSEXP, SEXP formatSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< CharacterVector >::type x(xSEXP);
+    Rcpp::traits::input_parameter< std::string >::type format(formatSEXP);
+    rcpp_result_gen = Rcpp::wrap(pz_parse_parts(x, format));
+    return rcpp_result_gen;
+END_RCPP
+}
+// pz_split
+std::vector<std::string> pz_split(std::string x);
+RcppExport SEXP _parzer_pz_split(SEXP xSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::string >::type x(xSEXP);
+    rcpp_result_gen = Rcpp::wrap(pz_split(x));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_parzer_pz_extract", (DL_FUNC) &_parzer_pz_extract, 1},
     {"_parzer_pz_parse_lat", (DL_FUNC) &_parzer_pz_parse_lat, 2},
     {"_parzer_pz_parse_lon", (DL_FUNC) &_parzer_pz_parse_lon, 2},
+    {"_parzer_pz_parse_parts", (DL_FUNC) &_parzer_pz_parse_parts, 2},
+    {"_parzer_pz_split", (DL_FUNC) &_parzer_pz_split, 1},
     {NULL, NULL, 0}
 };
 

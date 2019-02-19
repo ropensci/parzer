@@ -2,7 +2,7 @@ Package: parzer
 Type: Package
 Title: Parse Coordinates
 Description: Parse Coordinates.
-Version: 0.0.2.9100
+Version: 0.0.2.9810
 Authors@R: c(
 		person("Scott", "Chamberlain", role = c("aut", "cre"),
             email = "myrmecocystus+r@gmail.com"),
