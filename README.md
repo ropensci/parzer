@@ -90,3 +90,28 @@ parse_lat_lon(lats, lons)
 #> 4 12.00000  45.23423
 #> 5 45.07096 -45.98740
 ```
+
+parse into degree, min, sec parts
+
+
+```r
+parse_parts("45N54.2356")
+#>   decimal_degree decimal_min decimal_sec
+#> 1             45     54.2356      14.136
+parse_parts("40.4183318")
+#>   decimal_degree decimal_min decimal_sec
+#> 1             40    25.09991    5.994481
+parse_parts("-74.6411133")
+#>   decimal_degree decimal_min decimal_sec
+#> 1             74     38.4668    28.00788
+# many inputs
+x <- c("40.123°", "40.123N74.123W", "191.89", 12, "N45 04.25764")
+parse_parts(x)
+#>   decimal_degree decimal_min  decimal_sec
+#> 1             40   7.3800006 2.280000e+01
+#> 2             NA         NaN          NaN
+#> 3             NA         NaN          NaN
+#> 4             12   0.0000006 6.000005e-07
+#> 5             45   4.2576404 1.545840e+01
+```
+

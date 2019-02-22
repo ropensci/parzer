@@ -14,7 +14,6 @@
 #' NA given upon error
 #'
 #' @examples
-#' # not working
 #' parse_parts("45N54.2356")
 #' parse_parts("40.4183318")
 #' parse_parts("-74.6411133")
@@ -22,7 +21,7 @@
 #' parse_parts("40.123N")
 #' parse_parts("40.123°")
 #'
-#' # working
+#' # not working
 #' parse_parts("N455698735")
 #'
 #' # multiple

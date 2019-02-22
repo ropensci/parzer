@@ -70,3 +70,15 @@ lats <- c("40.123°", "40.123N74.123W", "191.89", 12, "N45 04.25764")
 lons <- c("45W54.2356", "181", 45, 45.234234, "-45.98739874")
 parse_lat_lon(lats, lons)
 ```
+
+parse into degree, min, sec parts
+
+```{r}
+parse_parts("45N54.2356")
+parse_parts("40.4183318")
+parse_parts("-74.6411133")
+# many inputs
+x <- c("40.123°", "40.123N74.123W", "191.89", 12, "N45 04.25764")
+parse_parts(x)
+```
+
