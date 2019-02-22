@@ -18,6 +18,12 @@ Code originally from: https://www.codeproject.com/Articles/15659/Longitude-Latit
 
 Code retrieved from: https://github.com/batela/Gaypu-Src/tree/master/ll2utm
 
+`parzer` API:
+
+```{r echo=FALSE, comment=NA, results='asis'}
+cat(paste(" -", paste(sprintf("`%s`", sort(getNamespaceExports("parzer"))), collapse = "\n - ")))
+```
+
 
 ## Installation
 

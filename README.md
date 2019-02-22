@@ -11,6 +11,14 @@ Code originally from: https://www.codeproject.com/Articles/15659/Longitude-Latit
 
 Code retrieved from: https://github.com/batela/Gaypu-Src/tree/master/ll2utm
 
+`parzer` API:
+
+ - `extract_coords`
+ - `parse_lat`
+ - `parse_lat_lon`
+ - `parse_lon`
+ - `parse_parts`
+
 
 ## Installation
 
