@@ -22,7 +22,7 @@ parse_lon("45W54.2356")
 parse_lon("-45.98739874")
 parse_lon("N455698735", "HDDMMmmmmm")
 parse_lon("40.123°")
-parse_lon("40.123N74.123W")
+parse_lon("74.123W")
 parse_lon("N45 04.25764")
 # bad values
 parse_lon("181")

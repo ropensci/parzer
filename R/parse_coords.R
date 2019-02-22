@@ -9,7 +9,7 @@
 #' parse_lat("-45.98739874")
 #' parse_lat("N455698735", "HDDMMmmmmm")
 #' parse_lat("40.123°")
-#' parse_lat("40.123N74.123W")
+#' parse_lat("40.123N")
 #' parse_lat("N45 04.25764")
 #' # bad values -> NaN
 #' parse_lat("191.89")
@@ -33,7 +33,7 @@ parse_lat <- function(lat, format = "") {
 #' parse_lon("-45.98739874")
 #' parse_lon("N455698735", "HDDMMmmmmm")
 #' parse_lon("40.123°")
-#' parse_lon("40.123N74.123W")
+#' parse_lon("74.123W")
 #' parse_lon("N45 04.25764")
 #' # bad values
 #' parse_lon("181")

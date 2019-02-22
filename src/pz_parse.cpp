@@ -13,7 +13,8 @@ NumericVector pz_parse_lat(CharacterVector x, std::string format) {
     float z = strLat.GetDecimalDegree();
     // check if 0 ~ invalid according to CLongLatString checker
     // special check because CLongLatString only checks wether in 180
-    z = (z == 0 || std::abs(z) > 90) ? NA_REAL : z;
+    // give NA if an error occurred in CLongLatString
+    z = (z == 0 || std::abs(z) > 90 || strLat.IsError()) ? NA_REAL : z;
     y[i] = z;
   };
   return y;
@@ -28,7 +29,8 @@ NumericVector pz_parse_lon(CharacterVector x, std::string format) {
     CLongLatString strLon(w, format, LL_LONGITUDE);
     float z = strLon.GetDecimalDegree();
     // check if 0 ~ invalid according to CLongLatString checker
-    z = z == 0 ? NA_REAL : z;
+    // give NA if an error occurred in CLongLatString
+    z = (z == 0 || strLon.IsError()) ? NA_REAL : z;
     y[i] = z;
   };
   return y;

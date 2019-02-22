@@ -22,7 +22,7 @@ parse_lat("45N54.2356")
 parse_lat("-45.98739874")
 parse_lat("N455698735", "HDDMMmmmmm")
 parse_lat("40.123°")
-parse_lat("40.123N74.123W")
+parse_lat("40.123N")
 parse_lat("N45 04.25764")
 # bad values -> NaN
 parse_lat("191.89")
