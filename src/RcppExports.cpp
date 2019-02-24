@@ -16,6 +16,19 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// pz_hemisphere
+CharacterVector pz_hemisphere(CharacterVector lat, CharacterVector lon, std::string format);
+RcppExport SEXP _parzer_pz_hemisphere(SEXP latSEXP, SEXP lonSEXP, SEXP formatSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< CharacterVector >::type lat(latSEXP);
+    Rcpp::traits::input_parameter< CharacterVector >::type lon(lonSEXP);
+    Rcpp::traits::input_parameter< std::string >::type format(formatSEXP);
+    rcpp_result_gen = Rcpp::wrap(pz_hemisphere(lat, lon, format));
+    return rcpp_result_gen;
+END_RCPP
+}
 // pz_parse_lat
 NumericVector pz_parse_lat(CharacterVector x, std::string format);
 RcppExport SEXP _parzer_pz_parse_lat(SEXP xSEXP, SEXP formatSEXP) {
@@ -66,6 +79,7 @@ END_RCPP
 
 static const R_CallMethodDef CallEntries[] = {
     {"_parzer_pz_extract", (DL_FUNC) &_parzer_pz_extract, 1},
+    {"_parzer_pz_hemisphere", (DL_FUNC) &_parzer_pz_hemisphere, 3},
     {"_parzer_pz_parse_lat", (DL_FUNC) &_parzer_pz_parse_lat, 2},
     {"_parzer_pz_parse_lon", (DL_FUNC) &_parzer_pz_parse_lon, 2},
     {"_parzer_pz_parse_parts", (DL_FUNC) &_parzer_pz_parse_parts, 2},

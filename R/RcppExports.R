@@ -5,6 +5,10 @@ pz_extract <- function(x) {
     .Call('_parzer_pz_extract', PACKAGE = 'parzer', x)
 }
 
+pz_hemisphere <- function(lat, lon, format) {
+    .Call('_parzer_pz_hemisphere', PACKAGE = 'parzer', lat, lon, format)
+}
+
 pz_parse_lat <- function(x, format) {
     .Call('_parzer_pz_parse_lat', PACKAGE = 'parzer', x, format)
 }

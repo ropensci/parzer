@@ -15,7 +15,8 @@ Imports:
     Rcpp (>= 0.12.12)
 Suggests:
     roxygen2 (>= 6.0.1),
-    testthat
+    testthat,
+    randgeo
 LinkingTo: Rcpp
 SystemRequirements: C++11
 Roxygen: list(markdown = TRUE)
