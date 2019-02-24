@@ -86,3 +86,15 @@ x <- c("40.123°", "40.123N74.123W", "191.89", 12, "N45 04.25764")
 parse_parts(x)
 ```
 
+get hemisphere from lat/lon coords
+
+```{r}
+# NE
+parse_hemisphere("45N54.2356", "74.123E")
+# NW
+parse_hemisphere("40.4183318", "-120")
+# SW
+parse_hemisphere("-40.4183318", "-120")
+# SE
+parse_hemisphere("-40.4183318", "120")
+```

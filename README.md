@@ -12,6 +12,7 @@ basis of parzer ([src/CLongLatString.cpp](src/CLongLatString.cpp) and [src/llstr
 `parzer` API:
 
  - `extract_coords`
+ - `parse_hemisphere`
  - `parse_lat`
  - `parse_lat_lon`
  - `parse_lon`
@@ -121,3 +122,20 @@ parse_parts(x)
 #> 5             45   4.2576404 1.545840e+01
 ```
 
+get hemisphere from lat/lon coords
+
+
+```r
+# NE
+parse_hemisphere("45N54.2356", "74.123E")
+#> [1] "NE"
+# NW
+parse_hemisphere("40.4183318", "-120")
+#> [1] "NW"
+# SW
+parse_hemisphere("-40.4183318", "-120")
+#> [1] "SW"
+# SE
+parse_hemisphere("-40.4183318", "120")
+#> [1] "SE"
+```
