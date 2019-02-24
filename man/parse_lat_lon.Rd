@@ -20,7 +20,7 @@ data.frame, with columns lat, lon
 parse latitude and longitude
 }
 \details{
-length of \code{lat} and \code{lon} must be equal
+length(lat) == length(lon)
 }
 \examples{
 parse_lat_lon(49.12, -120.43)

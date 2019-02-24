@@ -52,7 +52,7 @@ parse_lon <- function(lon, format = "") {
 #' @param lat (character/numeric/integer) one or more latitude values
 #' @param lon (character/numeric/integer) one or more longitude values
 #' @param format format, deafult often works
-#' @details length of `lat` and `lon` must be equal
+#' @details length(lat) == length(lon)
 #' @return data.frame, with columns lat, lon
 #' @examples
 #' parse_lat_lon(49.12, -120.43)

@@ -2,7 +2,7 @@
 % Please edit documentation in R/parse_hemisphere.R
 \name{parse_hemisphere}
 \alias{parse_hemisphere}
-\title{parse coordinates into degrees, minutes and seconds}
+\title{get hemisphere from lat/long coordinates}
 \usage{
 parse_hemisphere(lat, lon, format = "")
 }
@@ -19,15 +19,22 @@ character vector of quadrants, one of: NE, NW, SE, SW
 \description{
 BEWARE: EXPERIMENTAL
 }
+\details{
+length(lat) == length(lon)
+}
 \examples{
 # NE
-parse_hemisphere("45N54.2356", "40.123N74.123W")
+parse_hemisphere("45N54.2356", "74.123E")
 # NW
 parse_hemisphere("40.4183318", "-120")
 # SW
 parse_hemisphere("-40.4183318", "-120")
 # SE
 parse_hemisphere("-40.4183318", "120")
+
+# bad inputs
+parse_hemisphere("-40.4183318", "181")
+parse_hemisphere("-192.4183318", "-120")
 
 # many inputs
 library(randgeo)

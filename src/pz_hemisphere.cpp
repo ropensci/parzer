@@ -11,11 +11,13 @@ CharacterVector pz_hemisphere(CharacterVector lat, CharacterVector lon, std::str
     CLongLatString strLat(w_lat, format, LL_LATITUDE);
     char hem_lat = strLat.GetHemisphere();
     std::string ss_lat(1, hem_lat);
+    ss_lat = strLat.IsError() ? "" : ss_lat;
 
     auto w_lon = as<std::string>(lon[i]);
     CLongLatString strLon(w_lon, format, LL_LONGITUDE);
     char hem_lon = strLon.GetHemisphere();
     std::string ss_lon(1, hem_lon);
+    ss_lon = strLon.IsError() ? "" : ss_lon;
 
     std::string ss = ss_lat + ss_lon;
     out.push_back(ss);
