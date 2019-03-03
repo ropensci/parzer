@@ -14,8 +14,6 @@ knitr::opts_chunk$set(
 
 `parzer` parses coordinates
 
-basis of parzer ([src/CLongLatString.cpp](src/CLongLatString.cpp) and [src/llstr.h](src/llstr.h)) originally from: https://www.codeproject.com/Articles/15659/Longitude-Latitude-String-Parser-and-Formatter; retrieved from: https://github.com/batela/Gaypu-Src/tree/master/ll2utm
-
 `parzer` API:
 
 ```{r echo=FALSE, comment=NA, results='asis'}
@@ -53,7 +51,7 @@ parse_lat(x)
 
 longitudes
 
-```{r}
+```{r eval=FALSE}
 parse_lon("45W54.2356")
 parse_lon("-45.98739874")
 parse_lon("N455698735", "HDDMMmmmmm")
@@ -69,7 +67,7 @@ parse_lon(x)
 
 both lat and lon together
 
-```{r}
+```{r eval=FALSE}
 lats <- c("40.123°", "40.123N74.123W", "191.89", 12, "N45 04.25764")
 lons <- c("45W54.2356", "181", 45, 45.234234, "-45.98739874")
 parse_lat_lon(lats, lons)
@@ -77,7 +75,7 @@ parse_lat_lon(lats, lons)
 
 parse into degree, min, sec parts
 
-```{r}
+```{r eval=FALSE}
 parse_parts("45N54.2356")
 parse_parts("40.4183318")
 parse_parts("-74.6411133")
@@ -88,7 +86,7 @@ parse_parts(x)
 
 get hemisphere from lat/lon coords
 
-```{r}
+```{r eval=FALSE}
 # NE
 parse_hemisphere("45N54.2356", "74.123E")
 # NW

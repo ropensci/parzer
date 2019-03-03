@@ -5,8 +5,7 @@ Description: Parse Coordinates.
 Version: 0.0.2.9911
 Authors@R: c(
 		person("Scott", "Chamberlain", role = c("aut", "cre"),
-            email = "myrmecocystus+r@gmail.com"),
-		person("Jeffrey", "Bogan", role = "cph")
+            email = "myrmecocystus+r@gmail.com")
 	)
 License: MIT + file LICENSE
 URL: https://github.com/ropenscilabs/parzer
