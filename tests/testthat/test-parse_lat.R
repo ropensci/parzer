@@ -31,7 +31,9 @@ test_lats <- c(
   "40°25’6\"",
   "40d 25’ 6\" N",
   "40.4183318N",
-  "40° 25.0999"
+  "40° 25.0999",
+  "40-25-5.994N",
+  "40_25_5.994N"
 )
 
 test_that("parse_lat works: run through test_lats", {

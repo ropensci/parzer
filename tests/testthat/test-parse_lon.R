@@ -30,7 +30,9 @@ test_lons <- c(
   "-74°38’28\"",
   "74d 38’ 28\" W",
   "74.6411133W",
-  "-74° 38.4668"
+  "-74° 38.4668",
+  "74-38-28W",
+  "74_38_28W"
 )
 
 test_that("parse_lon works: run through test_lons", {
