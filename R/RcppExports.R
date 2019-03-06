@@ -9,3 +9,7 @@ pz_parse_lon <- function(x) {
     .Call('_parzer_pz_parse_lon', PACKAGE = 'parzer', x)
 }
 
+pz_hemisphere <- function(lat, lon) {
+    .Call('_parzer_pz_hemisphere', PACKAGE = 'parzer', lat, lon)
+}
+

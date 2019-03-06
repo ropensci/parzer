@@ -9,6 +9,7 @@ parzer
 
 `parzer` API:
 
+ - `parse_hemisphere`
  - `parse_lat`
  - `parse_lat_lon`
  - `parse_lon`
@@ -109,16 +110,16 @@ parse into degree, min, sec parts - NOT AVAILABLE RIGHT NOW
 # parse_parts(x)
 ```
 
-get hemisphere from lat/lon coords - NOT AVAILABLE RIGHT NOW
+get hemisphere from lat/lon coords
 
 
 ```r
-# NE
-# parse_hemisphere("45N54.2356", "74.123E")
-# # NW
-# parse_hemisphere("40.4183318", "-120")
-# # SW
-# parse_hemisphere("-40.4183318", "-120")
-# # SE
-# parse_hemisphere("-40.4183318", "120")
+parse_hemisphere("45N54.2356", "74.123E")
+#> [1] "NE"
+parse_hemisphere("40.4183318", "-120")
+#> [1] "NW"
+parse_hemisphere("-40.4183318", "-120")
+#> [1] "SW"
+parse_hemisphere("-40.4183318", "120")
+#> [1] "SE"
 ```

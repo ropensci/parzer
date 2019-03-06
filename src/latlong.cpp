@@ -1,7 +1,6 @@
 #include <Rcpp.h>
 using namespace Rcpp;
 // [[Rcpp::plugins(cpp11)]]
-// #include "latlong.h"
 
 #include <regex>
 #include <iostream>
