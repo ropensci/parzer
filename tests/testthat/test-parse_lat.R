@@ -38,12 +38,12 @@ test_that("parse_lat works: run through test_lats", {
   out <- data.frame(input = test_lats, res = NA_real_,
     stringsAsFactors = FALSE)
   for (i in seq_along(test_lats)) {
-    # cat(test_lats[i], sep = "\n")
-    out[i, "res"] <- parse_lat(test_lats[i])
-    # expect_is(out[i, "res"], "numeric")
     expect_equal(round(parse_lat(test_lats[i]), 5), 40.41833)
+    # cat(test_lats[i], sep = "\n")
+    # out[i, "res"] <- parse_lat(test_lats[i])
+    # expect_is(out[i, "res"], "numeric")
   }
-  out
+  # out
 })
 
 test_that("parse_lat - fails well", {
@@ -64,7 +64,11 @@ invalid_formats <- c(
   "1 2 3 4 5",
   "1 2 3 4",
   "40.1° SS",
-  "60.1° NN"
+  "60.1° NN",
+  "60.1° W",
+  "60.1° E",
+  "W60.1",
+  "E60.1"
   # "-40.4183318, 12.345, 74.6411133"
 )
 

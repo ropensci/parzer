@@ -4,10 +4,12 @@
 \alias{parse_lat}
 \title{Parse latitude values}
 \usage{
-parse_lat(lat)
+parse_lat(lat, format = NULL)
 }
 \arguments{
 \item{lat}{(numeric/integer/character) one or more latitude values}
+
+\item{format}{(character) format, default often works}
 }
 \value{
 numeric vector
@@ -66,4 +68,8 @@ parse_lat("40° 25´ 5.994\\" N") # => 40.41833
 parse_lat("40:25:6N")
 parse_lat("40:25:5.994N")
 parse_lat("40d 25’ 6\\" N")
+
+# user specfied format
+# \%C, \%c, \%H \%h \%D, \%d, \%M, \%m, \%S, and \%s
+# parse_lat("40.255994", "")
 }

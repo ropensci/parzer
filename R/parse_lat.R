@@ -2,6 +2,7 @@
 #'
 #' @export
 #' @param lat (numeric/integer/character) one or more latitude values
+#' @param format (character) format, default often works
 #' @return numeric vector
 #' @section Errors:
 #' Throws warnings on parsing errors, and returns `NaN` in each case
@@ -51,10 +52,15 @@
 #' parse_lat("40:25:6N")
 #' parse_lat("40:25:5.994N")
 #' parse_lat("40d 25’ 6\" N")
-parse_lat <- function(lat) {
+#'
+#' # user specfied format
+#' # %C, %c, %H %h %D, %d, %M, %m, %S, and %s
+#' # parse_lat("40.255994", "")
+parse_lat <- function(lat, format = NULL) {
   assert(lat, c("numeric", "integer", "character"))
+  assert(format, "character")
   # FIXME: stopgap for now until figure out how to replace these on on src side
   ## -> smart quote and degree symbol
   lat <- gsub("\u2019|\u00b0", "'", lat)
-  pz_parse_lat(lat)
+  if (is.null(format)) pz_parse_lat(lat) else stop("format handling not ready yet")
 }
