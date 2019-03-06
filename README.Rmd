@@ -38,7 +38,7 @@ latitudes
 ```{r}
 parse_lat("45N54.2356")
 parse_lat("-45.98739874")
-parse_lat("N455698735", "HDDMMmmmmm")
+# parse_lat("N455698735", "HDDMMmmmmm") # custom formats not ready yet
 parse_lat("40.123°")
 parse_lat("40.123N74.123W")
 parse_lat("N45 04.25764")
@@ -51,10 +51,10 @@ parse_lat(x)
 
 longitudes
 
-```{r eval=FALSE}
+```{r}
 parse_lon("45W54.2356")
 parse_lon("-45.98739874")
-parse_lon("N455698735", "HDDMMmmmmm")
+# parse_lon("N455698735", "HDDMMmmmmm") # custom formats not ready yet
 parse_lon("40.123°")
 parse_lon("40.123N74.123W")
 parse_lon("N45 04.25764")
@@ -67,32 +67,32 @@ parse_lon(x)
 
 both lat and lon together
 
-```{r eval=FALSE}
+```{r}
 lats <- c("40.123°", "40.123N74.123W", "191.89", 12, "N45 04.25764")
 lons <- c("45W54.2356", "181", 45, 45.234234, "-45.98739874")
 parse_lat_lon(lats, lons)
 ```
 
-parse into degree, min, sec parts
+parse into degree, min, sec parts - NOT AVAILABLE RIGHT NOW
 
 ```{r eval=FALSE}
-parse_parts("45N54.2356")
-parse_parts("40.4183318")
-parse_parts("-74.6411133")
-# many inputs
-x <- c("40.123°", "40.123N74.123W", "191.89", 12, "N45 04.25764")
-parse_parts(x)
+# parse_parts("45N54.2356")
+# parse_parts("40.4183318")
+# parse_parts("-74.6411133")
+# # many inputs
+# x <- c("40.123°", "40.123N74.123W", "191.89", 12, "N45 04.25764")
+# parse_parts(x)
 ```
 
-get hemisphere from lat/lon coords
+get hemisphere from lat/lon coords - NOT AVAILABLE RIGHT NOW
 
 ```{r eval=FALSE}
 # NE
-parse_hemisphere("45N54.2356", "74.123E")
-# NW
-parse_hemisphere("40.4183318", "-120")
-# SW
-parse_hemisphere("-40.4183318", "-120")
-# SE
-parse_hemisphere("-40.4183318", "120")
+# parse_hemisphere("45N54.2356", "74.123E")
+# # NW
+# parse_hemisphere("40.4183318", "-120")
+# # SW
+# parse_hemisphere("-40.4183318", "-120")
+# # SE
+# parse_hemisphere("-40.4183318", "120")
 ```
