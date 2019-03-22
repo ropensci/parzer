@@ -3,7 +3,6 @@ using namespace Rcpp;
 
 #include "latlong.h"
 
-// [[Rcpp::export]]
 List split_decimal_degree(float x, std::string fmt = "dms") {
   float sixty = 60;
   float thirtysixh = 3600;
