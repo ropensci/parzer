@@ -13,6 +13,8 @@ parzer
  - `parse_lat`
  - `parse_lat_lon`
  - `parse_lon`
+ - `parse_parts_lat`
+ - `parse_parts_lon`
 
 
 ## Installation
@@ -98,16 +100,25 @@ parse_lat_lon(lats, lons)
 #> 5 45.07096 -45.98740
 ```
 
-parse into degree, min, sec parts - NOT AVAILABLE RIGHT NOW
+parse into degree, min, sec parts
 
 
 ```r
-# parse_parts("45N54.2356")
-# parse_parts("40.4183318")
-# parse_parts("-74.6411133")
-# # many inputs
-# x <- c("40.123°", "40.123N74.123W", "191.89", 12, "N45 04.25764")
-# parse_parts(x)
+parse_parts_lat("45N54.2356")
+#>   deg min      sec
+#> 1  45  54 14.13674
+parse_parts_lon("-74.6411133")
+#>   deg min      sec
+#> 1 -74  38 28.00784
+# many inputs
+x <- c("40.123°", "40.123N74.123W", "191.89", 12, "N45 04.25764")
+parse_parts_lon(x)
+#>   deg min      sec
+#> 1  40   7 22.80395
+#> 2  NA  NA      NaN
+#> 3 191  53 23.99783
+#> 4  12   0  0.00000
+#> 5  NA  NA      NaN
 ```
 
 get hemisphere from lat/lon coords

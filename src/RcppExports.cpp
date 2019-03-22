@@ -39,11 +39,48 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// split_decimal_degree
+List split_decimal_degree(float x, std::string fmt);
+RcppExport SEXP _parzer_split_decimal_degree(SEXP xSEXP, SEXP fmtSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< float >::type x(xSEXP);
+    Rcpp::traits::input_parameter< std::string >::type fmt(fmtSEXP);
+    rcpp_result_gen = Rcpp::wrap(split_decimal_degree(x, fmt));
+    return rcpp_result_gen;
+END_RCPP
+}
+// pz_parse_parts_lat
+DataFrame pz_parse_parts_lat(CharacterVector x);
+RcppExport SEXP _parzer_pz_parse_parts_lat(SEXP xSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< CharacterVector >::type x(xSEXP);
+    rcpp_result_gen = Rcpp::wrap(pz_parse_parts_lat(x));
+    return rcpp_result_gen;
+END_RCPP
+}
+// pz_parse_parts_lon
+DataFrame pz_parse_parts_lon(CharacterVector x);
+RcppExport SEXP _parzer_pz_parse_parts_lon(SEXP xSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< CharacterVector >::type x(xSEXP);
+    rcpp_result_gen = Rcpp::wrap(pz_parse_parts_lon(x));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_parzer_pz_parse_lat", (DL_FUNC) &_parzer_pz_parse_lat, 1},
     {"_parzer_pz_parse_lon", (DL_FUNC) &_parzer_pz_parse_lon, 1},
     {"_parzer_pz_hemisphere", (DL_FUNC) &_parzer_pz_hemisphere, 2},
+    {"_parzer_split_decimal_degree", (DL_FUNC) &_parzer_split_decimal_degree, 2},
+    {"_parzer_pz_parse_parts_lat", (DL_FUNC) &_parzer_pz_parse_parts_lat, 1},
+    {"_parzer_pz_parse_parts_lon", (DL_FUNC) &_parzer_pz_parse_parts_lon, 1},
     {NULL, NULL, 0}
 };
 

@@ -13,3 +13,15 @@ pz_hemisphere <- function(lat, lon) {
     .Call('_parzer_pz_hemisphere', PACKAGE = 'parzer', lat, lon)
 }
 
+split_decimal_degree <- function(x, fmt = "dms") {
+    .Call('_parzer_split_decimal_degree', PACKAGE = 'parzer', x, fmt)
+}
+
+pz_parse_parts_lat <- function(x) {
+    .Call('_parzer_pz_parse_parts_lat', PACKAGE = 'parzer', x)
+}
+
+pz_parse_parts_lon <- function(x) {
+    .Call('_parzer_pz_parse_parts_lon', PACKAGE = 'parzer', x)
+}
+

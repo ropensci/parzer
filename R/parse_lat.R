@@ -28,7 +28,6 @@
 #' # out of range with std::stod?
 #' parse_lat("-45.23232e24")
 #' parse_lat("-45.23232e2")
-#' parse_lat("-45.23232")
 #'
 #' # numeric input
 #' parse_lat(1:10)
