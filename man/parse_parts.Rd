@@ -32,6 +32,7 @@ parse_parts_lat("40.4183318")
 parse_parts_lat("-74.6411133")
 parse_parts_lat("-45.98739874")
 parse_parts_lat("40.123N")
+parse_parts_lat("N40°25’5.994")
 
 parse_parts_lon("45E54.2356")
 parse_parts_lon("140.4183318")

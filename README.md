@@ -15,6 +15,9 @@ parzer
  - `parse_lon`
  - `parse_parts_lat`
  - `parse_parts_lon`
+ - `pz_degree`
+ - `pz_minute`
+ - `pz_second`
 
 
 ## Installation
@@ -133,4 +136,25 @@ parse_hemisphere("-40.4183318", "-120")
 #> [1] "SW"
 parse_hemisphere("-40.4183318", "120")
 #> [1] "SE"
+```
+
+get degree, minutes, or seconds separately
+
+
+```r
+coords <- c(45.23323, "40:25:6N", "40° 25´ 5.994\" N")
+pz_degree(coords)
+#> [1] 45 40 40
+pz_minute(coords)
+#> [1] 13 25 25
+pz_second(coords)
+#> [1] 59.630119  6.005895  5.992162
+
+coords <- c(15.23323, "40:25:6E", "192° 25´ 5.994\" E")
+pz_degree(lon = coords)
+#> [1]  15  40 192
+pz_minute(lon = coords)
+#> [1] 13 25 25
+pz_second(lon = coords)
+#> [1] 59.626686  6.005895  6.005895
 ```

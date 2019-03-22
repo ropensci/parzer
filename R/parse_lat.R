@@ -58,8 +58,6 @@
 parse_lat <- function(lat, format = NULL) {
   assert(lat, c("numeric", "integer", "character"))
   assert(format, "character")
-  # FIXME: stopgap for now until figure out how to replace these on on src side
-  ## -> smart quote and degree symbol
-  lat <- gsub("\u2019|\u00b0", "'", lat)
+  lat <- scrub(lat)
   if (is.null(format)) pz_parse_lat(lat) else stop("format handling not ready yet")
 }

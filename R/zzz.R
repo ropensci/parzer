@@ -12,3 +12,7 @@ lint_inputs <- function(lat = NULL, lon = NULL, format) {
   assert(lon, c("character", "numeric", "integer"))
   assert(format, "character")
 }
+
+# FIXME: stopgap for now until figure out how to replace these on on src side
+# -> smart quote and degree symbol
+scrub <- function(x) gsub("\u2019|\u00b0", "'", x)

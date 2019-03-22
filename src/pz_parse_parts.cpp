@@ -1,8 +1,9 @@
 #include <Rcpp.h>
-using namespace Rcpp;
-
 #include "latlong.h"
 
+using namespace Rcpp;
+
+// [[Rcpp::export]]
 List split_decimal_degree(float x, std::string fmt = "dms") {
   float sixty = 60;
   float thirtysixh = 3600;
@@ -18,24 +19,24 @@ List split_decimal_degree(float x, std::string fmt = "dms") {
   int m = static_cast<int>((x - d) * sixty);
   double s = ((x - d) - (m/sixty)) * thirtysixh;
   d = static_cast<int>(d * dir_val);
-  return List::create(d, m, s, x);
+  return List::create(d, m, s);
 };
 
 // [[Rcpp::export]]
 DataFrame pz_parse_parts_lat(CharacterVector x) {
   const int n = x.size();
-  IntegerVector dec;
+  IntegerVector deg;
   IntegerVector min;
   NumericVector sec;
   for (int i=0; i < n; ++i) {
     auto w = as<std::string>(x[i]);
     float out = convert_lat(w);
     List parts = split_decimal_degree(out);
-    dec.push_back(parts[0]);
+    deg.push_back(parts[0]);
     min.push_back(parts[1]);
     sec.push_back(parts[2]);
   };
-  return DataFrame::create(_["deg"] = dec,
+  return DataFrame::create(_["deg"] = deg,
                            _["min"] = min,
                            _["sec"] = sec,
                            _["stringsAsFactors"] = false);
@@ -44,18 +45,18 @@ DataFrame pz_parse_parts_lat(CharacterVector x) {
 // [[Rcpp::export]]
 DataFrame pz_parse_parts_lon(CharacterVector x) {
   const int n = x.size();
-  IntegerVector dec;
+  IntegerVector deg;
   IntegerVector min;
   NumericVector sec;
   for (int i=0; i < n; ++i) {
     auto w = as<std::string>(x[i]);
     float out = convert_lon(w);
     List parts = split_decimal_degree(out);
-    dec.push_back(parts[0]);
+    deg.push_back(parts[0]);
     min.push_back(parts[1]);
     sec.push_back(parts[2]);
   };
-  return DataFrame::create(_["deg"] = dec,
+  return DataFrame::create(_["deg"] = deg,
                            _["min"] = min,
                            _["sec"] = sec,
                            _["stringsAsFactors"] = false);
