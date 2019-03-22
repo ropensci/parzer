@@ -4,3 +4,4 @@
 src/*.o
 src/*.so
 src/*.a
+inst/ignore/
