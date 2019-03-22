@@ -2,10 +2,10 @@ Package: parzer
 Type: Package
 Title: Parse Coordinates
 Description: Parse Coordinates.
-Version: 0.0.2.9911
+Version: 0.0.3.9110
 Authors@R: c(
 		person("Scott", "Chamberlain", role = c("aut", "cre"),
-            email = "myrmecocystus+r@gmail.com")
+            email = "sckott@protonmail.com")
 	)
 License: MIT + file LICENSE
 URL: https://github.com/ropenscilabs/parzer
