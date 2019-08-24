@@ -3,9 +3,6 @@
 \name{dms}
 \alias{dms}
 \alias{pz_degree}
-\alias{degrees}
-\alias{minutes}
-\alias{seconds}
 \alias{pz_minute}
 \alias{pz_second}
 \alias{print.pz}
@@ -47,4 +44,28 @@ lat or lon accepted}
 }
 \description{
 extract degree, minutes, and seconds
+}
+\examples{
+# extract parts of a coordinate value
+pz_degree(45.23323)
+pz_minute(45.23323)
+pz_second(45.23323)
+
+pz_degree(lon = 178.23423)
+pz_minute(lon = 178.23423)
+pz_second(lon = 178.23423)
+
+pz_degree(lat = c(45.23323, "40:25:6N", "40° 25´ 5.994 N"))
+pz_minute(lat = c(45.23323, "40:25:6N", "40° 25´ 5.994 N"))
+pz_second(lat = c(45.23323, "40:25:6N", "40° 25´ 5.994 N"))
+
+# invalid
+pz_degree(445.23323)
+
+# add together
+d(31)
+d(31) + m(44)
+d(31) + m(44) + s(59)
+d(-121) + m(1) + s(33)
+unclass(d(31) + m(44) + s(59))
 }
