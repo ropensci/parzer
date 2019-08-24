@@ -5,10 +5,16 @@ parzer
 
 [![Project Status: WIP – Initial development is in progress, but there has not yet been a stable, usable release suitable for the public.](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip)
 
-`parzer` parses coordinates
+`parzer` parses messy coordinates
+
+You may get data from a published study or a colleague, and the coordinates
+may be in some messy format that you'd like to clean up to e.g., have 
+all decimal degree numeric data.
 
 `parzer` API:
 
+ - `d`
+ - `m`
  - `parse_hemisphere`
  - `parse_lat`
  - `parse_lat_lon`
@@ -18,6 +24,7 @@ parzer
  - `pz_degree`
  - `pz_minute`
  - `pz_second`
+ - `s`
 
 
 ## Installation
@@ -157,4 +164,18 @@ pz_minute(lon = coords)
 #> [1] 13 25 25
 pz_second(lon = coords)
 #> [1] 59.626686  6.005895  6.005895
+```
+
+add degrees, minutes, or seconds
+
+
+```r
+d(31)
+#> 31
+d(31) + m(44)
+#> 31.73333
+d(31) + m(44) + s(59)
+#> 31.74972
+d(-121) + m(1) + s(33)
+#> -120.9742
 ```

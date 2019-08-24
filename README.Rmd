@@ -12,7 +12,11 @@ knitr::opts_chunk$set(
 
 [![Project Status: WIP – Initial development is in progress, but there has not yet been a stable, usable release suitable for the public.](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip)
 
-`parzer` parses coordinates
+`parzer` parses messy coordinates
+
+You may get data from a published study or a colleague, and the coordinates
+may be in some messy format that you'd like to clean up to e.g., have 
+all decimal degree numeric data.
 
 `parzer` API:
 
@@ -110,4 +114,13 @@ coords <- c(15.23323, "40:25:6E", "192° 25´ 5.994\" E")
 pz_degree(lon = coords)
 pz_minute(lon = coords)
 pz_second(lon = coords)
+```
+
+add degrees, minutes, or seconds
+
+```{r}
+d(31)
+d(31) + m(44)
+d(31) + m(44) + s(59)
+d(-121) + m(1) + s(33)
 ```
