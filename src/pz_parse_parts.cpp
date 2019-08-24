@@ -13,7 +13,7 @@ List split_decimal_degree(float x, std::string fmt = "dms") {
   if (is_negative(x_str)) {
     dir_val = -1.0;
   };
-  x = abs(x);
+  x = fabs(x);
 
   int d = static_cast<int>(x);
   int m = static_cast<int>((x - d) * sixty);

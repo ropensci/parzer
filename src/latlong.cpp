@@ -195,13 +195,13 @@ float convert_lat(std::string str) {
       ret = NA_REAL;
     };
     if (nums.size() == 1) {
-      ret = abs(nums[0]);
+      ret = fabs(nums[0]);
     };
     if (nums.size() == 2) {
-      ret = abs(nums[0]) + decimal_minute(nums[1]);
+      ret = fabs(nums[0]) + decimal_minute(nums[1]);
     };
     if (nums.size() == 3) {
-      ret = abs(nums[0]) + decimal_minute(nums[1]) + decimal_second(nums[2]);
+      ret = fabs(nums[0]) + decimal_minute(nums[1]) + decimal_second(nums[2]);
     };
     if (nums.size() > 3) {
       Rcpp::warning("invalid format, more than 3 numeric slots, got: " + str);
@@ -253,13 +253,13 @@ float convert_lon(std::string str) {
       ret = NA_REAL;
     };
     if (nums.size() == 1) {
-      ret = abs(nums[0]);
+      ret = fabs(nums[0]);
     };
     if (nums.size() == 2) {
-      ret = abs(nums[0]) + decimal_minute(nums[1]);
+      ret = fabs(nums[0]) + decimal_minute(nums[1]);
     };
     if (nums.size() == 3) {
-      ret = abs(nums[0]) + decimal_minute(nums[1]) + decimal_second(nums[2]);
+      ret = fabs(nums[0]) + decimal_minute(nums[1]) + decimal_second(nums[2]);
     };
     if (nums.size() > 3) {
       Rcpp::warning("invalid format, more than 3 numeric slots, got: " + str);
