@@ -25,3 +25,7 @@ pz_parse_parts_lon <- function(x) {
     .Call('_parzer_pz_parse_parts_lon', PACKAGE = 'parzer', x)
 }
 
+foo_bar <- function(x) {
+    .Call('_parzer_foo_bar', PACKAGE = 'parzer', x)
+}
+

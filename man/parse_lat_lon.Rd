@@ -2,7 +2,7 @@
 % Please edit documentation in R/parse_lat_lon.R
 \name{parse_lat_lon}
 \alias{parse_lat_lon}
-\title{parse latitude and longitude}
+\title{parse latitude and longitude as separate inputs}
 \usage{
 parse_lat_lon(lat, lon)
 }
@@ -15,7 +15,7 @@ parse_lat_lon(lat, lon)
 data.frame, with columns lat, lon
 }
 \description{
-parse latitude and longitude
+parse latitude and longitude as separate inputs
 }
 \details{
 length(lat) == length(lon)

@@ -3,6 +3,7 @@
 export(parse_hemisphere)
 export(parse_lat)
 export(parse_lat_lon)
+export(parse_llstr)
 export(parse_lon)
 export(parse_parts_lat)
 export(parse_parts_lon)

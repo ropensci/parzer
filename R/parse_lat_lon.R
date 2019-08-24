@@ -1,4 +1,4 @@
-#' parse latitude and longitude
+#' parse latitude and longitude as separate inputs
 #'
 #' @export
 #' @param lat (character/numeric/integer) one or more latitude values
