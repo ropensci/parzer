@@ -8,6 +8,11 @@
 \alias{seconds}
 \alias{pz_minute}
 \alias{pz_second}
+\alias{print.pz}
+\alias{d}
+\alias{m}
+\alias{s}
+\alias{+.pz}
 \title{extract degree, minutes, and seconds}
 \usage{
 pz_degree(lat = NULL, lon = NULL)
@@ -15,11 +20,27 @@ pz_degree(lat = NULL, lon = NULL)
 pz_minute(lat = NULL, lon = NULL)
 
 pz_second(lat = NULL, lon = NULL)
+
+\method{print}{pz}(x, ...)
+
+d(x)
+
+m(x)
+
+s(x)
+
+\method{+}{pz}(e1, e2)
 }
 \arguments{
 \item{lat, lon}{(numeric/integer/character) one or more latitude or
 longitude values. values are internally validated. only one of
-lat or lon accepted.}
+lat or lon accepted}
+
+\item{x}{(integer) an integer representing a degree, minute or second}
+
+\item{...}{print dots}
+
+\item{e1, e2}{objects of class pz, from using \code{d()}, \code{m()}, or \code{s()}}
 }
 \value{
 \code{pz_degree}: integer, \code{pz_minute}: integer, \code{pz_second}: numeric

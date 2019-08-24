@@ -13,9 +13,13 @@ dms_helper <- function(lat = NULL, lon = NULL) {
 #' @aliases degrees minutes seconds
 #' @param lat,lon (numeric/integer/character) one or more latitude or
 #' longitude values. values are internally validated. only one of
-#' lat or lon accepted.
+#' lat or lon accepted
+#' @param x (integer) an integer representing a degree, minute or second
+#' @param e1,e2 objects of class pz, from using `d()`, `m()`, or `s()`
+#' @param ... print dots
 #' @return `pz_degree`: integer, `pz_minute`: integer, `pz_second`: numeric
 #' @examples
+#' # extract parts of a coordinate value
 #' pz_degree(45.23323)
 #' pz_minute(45.23323)
 #' pz_second(45.23323)
@@ -30,6 +34,13 @@ dms_helper <- function(lat = NULL, lon = NULL) {
 #'
 #' # invalid
 #' pz_degree(445.23323)
+#'
+#' # add together
+#' d(31)
+#' d(31) + m(44)
+#' d(31) + m(44) + s(59)
+#' d(-121) + m(1) + s(33)
+#' unclass(d(31) + m(44) + s(59))
 pz_degree <- function(lat = NULL, lon = NULL) {
   dms_helper(lat, lon)$deg
 }
@@ -46,14 +57,29 @@ pz_second <- function(lat = NULL, lon = NULL) {
   dms_helper(lat, lon)$sec
 }
 
-# print.pz <- function(x, ...) {
-#   cat(x, sep = "\n")
-# }
-# deg <- function(x) structure(x, class = "pz", type = "deg")
-# min2 <- function(x) structure(x, class = "pz", type = "min")
-# sec <- function(x) structure(x, class = "pz", type = "sec")
-# `+.pz` <- function(x, y) {
-#   x <- switch(attr(x, "type"), deg = x, min  = x/60, sec = x/3600)
-#   y <- switch(attr(x, "type"), deg = x, min  = x/60, sec = x/3600)
-#   x + y
-# }
+# adders
+unclass_strip_atts <- function(x) {
+  attributes(x) <- NULL
+  return(x)
+}
+#' @export
+#' @rdname dms
+print.pz <- function(x, ...) cat(x, sep = "\n")
+#' @export
+#' @rdname dms
+d <- function(x) structure(x, class = "pz", type = "deg")
+#' @export
+#' @rdname dms
+m <- function(x) structure(x, class = "pz", type = "min")
+#' @export
+#' @rdname dms
+s <- function(x) structure(x, class = "pz", type = "sec")
+#' @export
+#' @rdname dms
+`+.pz` <- function(e1, e2) {
+  e1u <- unclass_strip_atts(e1)
+  e2u <- unclass_strip_atts(e2)
+  e1 <- switch(attr(e1, "type"), deg = e1u, min  = e1u/60, sec = e1u/3600)
+  e2 <- switch(attr(e2, "type"), deg = e2u, min  = e2u/60, sec = e2u/3600)
+  structure(e1 + e2, class = "pz", type = "deg")
+}
