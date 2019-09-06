@@ -11,9 +11,9 @@ License: MIT + file LICENSE
 URL: https://github.com/ropenscilabs/parzer
 BugReports: https://github.com/ropenscilabs/parzer/issues
 Imports:
-    Rcpp (>= 0.12.12)
+    Rcpp (>= 1.0.2)
 Suggests:
-    roxygen2 (>= 6.0.1),
+    roxygen2 (>= 6.1.1),
     testthat,
     randgeo
 LinkingTo: Rcpp
