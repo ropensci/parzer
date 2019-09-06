@@ -25,6 +25,12 @@ addons:
     - r-cran-roxygen2
     - g++-6
 
+r_github_packages:
+  - jimhester/covr
+
+after_success:
+  - if [[ "${R_CODECOV}" ]]; then R -e 'covr::codecov()'; fi
+
 notifications:
   email:
     on_success: change
