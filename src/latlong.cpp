@@ -2,11 +2,12 @@
 using namespace Rcpp;
 // [[Rcpp::plugins(cpp11)]]
 
+#include <string>
 #include <regex>
+#include <iterator>
 #include <iostream>
 #include <sstream>
 #include <cstdlib>
-#include <string>
 #include <cstdio>
 #include <cmath>
 #include <functional>
