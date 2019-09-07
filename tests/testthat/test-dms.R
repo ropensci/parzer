@@ -94,11 +94,61 @@ test_that("dms fxns fail as expected", {
   out <- data.frame(input = invalid_formats, res = NA_real_,
                     stringsAsFactors = FALSE)
   for (i in seq_along(invalid_formats)) {
-    # out[i, "res"] <- suppressWarnings(degree(invalid_formats[i]))
     expect_warning(pz_degree(invalid_formats[i]))
     expect_warning(pz_minute(invalid_formats[i]))
     expect_warning(pz_second(invalid_formats[i]))
-    # expect_is(aa, "numeric")
-    # expect_equal(aa, NaN)
   }
+
+  expect_error(d('a'), "x must be of class")
+  expect_error(m('a'), "x must be of class")
+  expect_error(s('a'), "x must be of class")
+
+  expect_error(d(1) / m(3), "division doesn't make sense here")
+  expect_error(d(1) * m(3), "multiplication doesn't make sense here")
+})
+
+test_that("dms adder fxns", {
+  # basic usage, one at a time
+  deg1 <- d(31)
+  min1 <- m(44)
+  sec1 <- s(17)
+
+  expect_is(deg1, "pz")
+  expect_is(min1, "pz")
+  expect_is(sec1, "pz")
+
+  expect_equal(deg1[1], 31)
+  expect_equal(min1[1], 44)
+  expect_equal(sec1[1], 17)
+
+  # addition
+  add1 <- d(31) + m(44)
+  add2 <- d(31) + m(44) + s(59)
+
+  expect_is(add1, "pz")
+  expect_is(add2, "pz")
+
+  expect_equal(round(add1[1], 2), 31.73)
+  expect_equal(round(add2[1], 2), 31.75)
+
+  # subtraction
+  sub1 <- d(5) - m(49)
+  sub2 <- d(-34) - m(56) - s(3)
+
+  expect_is(sub1, "pz")
+  expect_is(sub2, "pz")
+
+  expect_equal(round(sub1[1], 2), 4.18)
+  expect_equal(round(sub2[1], 2), -34.93)
+})
+
+test_that("dms fxns: utilities", {
+  # unclass_strip_atts
+  z <- structure("a", foo = "bar")
+  zz <- unclass_strip_atts(z)
+  expect_is(attributes(z), "list")
+  expect_null(attributes(zz))
+
+  # print.pz
+  expect_output(print(d(31)), "31")
 })

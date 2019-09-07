@@ -15,7 +15,13 @@ dms_helper <- function(lat = NULL, lon = NULL) {
 #' @param x (integer) an integer representing a degree, minute or second
 #' @param e1,e2 objects of class pz, from using `d()`, `m()`, or `s()`
 #' @param ... print dots
-#' @return `pz_degree`: integer, `pz_minute`: integer, `pz_second`: numeric
+#' @return `pz_degree`: integer, `pz_minute`: integer, `pz_second`: numeric,
+#' `d`: numeric, `m`: numeric, `s`: numeric (adding/subtracting these also
+#' gives numeric)
+#' @details Mathematics operators are exported for `+`, `-`, `/`, and `*`,
+#' but `/` and `*` are only exported with a stop message to say it's not
+#' supported; otherwise you'd be allow to divide degrees by minutes, leading
+#' to nonsense.
 #' @examples
 #' # extract parts of a coordinate value
 #' pz_degree(45.23323)
@@ -33,10 +39,14 @@ dms_helper <- function(lat = NULL, lon = NULL) {
 #' # invalid
 #' pz_degree(445.23323)
 #'
-#' # add together
+#' # add or subtract
 #' d(31)
+#' m(44)
+#' s(3)
 #' d(31) + m(44)
+#' d(31) - m(44)
 #' d(31) + m(44) + s(59)
+#' d(31) - m(44) + s(59)
 #' d(-121) + m(1) + s(33)
 #' unclass(d(31) + m(44) + s(59))
 NULL
@@ -69,13 +79,22 @@ unclass_strip_atts <- function(x) {
 print.pz <- function(x, ...) cat(x, sep = "\n")
 #' @export
 #' @rdname dms
-d <- function(x) structure(x, class = "pz", type = "deg")
+d <- function(x) {
+  assert(x, c('integer', 'numeric'))
+  structure(x, class = "pz", type = "deg")
+}
 #' @export
 #' @rdname dms
-m <- function(x) structure(x, class = "pz", type = "min")
+m <- function(x) {
+  assert(x, c('integer', 'numeric'))
+  structure(x, class = "pz", type = "min")
+}
 #' @export
 #' @rdname dms
-s <- function(x) structure(x, class = "pz", type = "sec")
+s <- function(x) {
+  assert(x, c('integer', 'numeric'))
+  structure(x, class = "pz", type = "sec")
+}
 #' @export
 #' @rdname dms
 `+.pz` <- function(e1, e2) {
@@ -84,4 +103,23 @@ s <- function(x) structure(x, class = "pz", type = "sec")
   e1 <- switch(attr(e1, "type"), deg = e1u, min  = e1u/60, sec = e1u/3600)
   e2 <- switch(attr(e2, "type"), deg = e2u, min  = e2u/60, sec = e2u/3600)
   structure(e1 + e2, class = "pz", type = "deg")
+}
+#' @export
+#' @rdname dms
+`-.pz` <- function(e1, e2) {
+  e1u <- unclass_strip_atts(e1)
+  e2u <- unclass_strip_atts(e2)
+  e1 <- switch(attr(e1, "type"), deg = e1u, min  = e1u/60, sec = e1u/3600)
+  e2 <- switch(attr(e2, "type"), deg = e2u, min  = e2u/60, sec = e2u/3600)
+  structure(e1 - e2, class = "pz", type = "deg")
+}
+#' @export
+#' @rdname dms
+`/.pz` <- function(e1, e2) {
+  stop("division doesn't make sense here :)", call. = FALSE)
+}
+#' @export
+#' @rdname dms
+`*.pz` <- function(e1, e2) {
+  stop("multiplication doesn't make sense here :)", call. = FALSE)
 }

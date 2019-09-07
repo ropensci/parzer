@@ -10,6 +10,9 @@
 \alias{m}
 \alias{s}
 \alias{+.pz}
+\alias{-.pz}
+\alias{/.pz}
+\alias{*.pz}
 \title{extract degree, minutes, and seconds}
 \usage{
 pz_degree(lat = NULL, lon = NULL)
@@ -27,6 +30,12 @@ m(x)
 s(x)
 
 \method{+}{pz}(e1, e2)
+
+\method{-}{pz}(e1, e2)
+
+\method{/}{pz}(e1, e2)
+
+\method{*}{pz}(e1, e2)
 }
 \arguments{
 \item{lat, lon}{(numeric/integer/character) one or more latitude or
@@ -40,10 +49,18 @@ lat or lon accepted}
 \item{e1, e2}{objects of class pz, from using \code{d()}, \code{m()}, or \code{s()}}
 }
 \value{
-\code{pz_degree}: integer, \code{pz_minute}: integer, \code{pz_second}: numeric
+\code{pz_degree}: integer, \code{pz_minute}: integer, \code{pz_second}: numeric,
+\code{d}: numeric, \code{m}: numeric, \code{s}: numeric (adding/subtracting these also
+gives numeric)
 }
 \description{
 extract degree, minutes, and seconds
+}
+\details{
+Mathematics operators are exported for \code{+}, \code{-}, \code{/}, and \code{*},
+but \code{/} and \code{*} are only exported with a stop message to say it's not
+supported; otherwise you'd be allow to divide degrees by minutes, leading
+to nonsense.
 }
 \examples{
 # extract parts of a coordinate value
@@ -62,10 +79,14 @@ pz_second(lat = c(45.23323, "40:25:6N", "40° 25´ 5.994 N"))
 # invalid
 pz_degree(445.23323)
 
-# add together
+# add or subtract
 d(31)
+m(44)
+s(3)
 d(31) + m(44)
+d(31) - m(44)
 d(31) + m(44) + s(59)
+d(31) - m(44) + s(59)
 d(-121) + m(1) + s(33)
 unclass(d(31) + m(44) + s(59))
 }
