@@ -11,6 +11,8 @@ knitr::opts_chunk$set(
 ```
 
 [![Project Status: WIP – Initial development is in progress, but there has not yet been a stable, usable release suitable for the public.](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip)
+[![Build Status](https://travis-ci.com/ropenscilabs/parzer.svg?branch=master)](https://travis-ci.com/ropenscilabs/parzer)
+[![codecov.io](https://codecov.io/github/ropenscilabs/parzer/coverage.svg?branch=master)](https://codecov.io/github/ropenscilabs/parzer?branch=master)
 
 `parzer` parses messy coordinates
 
@@ -28,7 +30,7 @@ cat(paste(" -", paste(sprintf("`%s`", sort(getNamespaceExports("parzer"))), coll
 ## Installation
 
 ```{r eval=FALSE}
-devtools::install_github("ropenscilabs/parzer")
+remotes::install_github("ropenscilabs/parzer")
 ```
 
 ```{r}
@@ -39,7 +41,7 @@ library("parzer")
 
 latitudes
 
-```{r}
+```{r warning=TRUE}
 parse_lat("45N54.2356")
 parse_lat("-45.98739874")
 parse_lat("40.123°")
@@ -58,7 +60,7 @@ parse_lat(x)
 
 longitudes
 
-```{r}
+```{r warning=TRUE}
 parse_lon("45W54.2356")
 parse_lon("-45.98739874")
 parse_lon("40.123°")
@@ -116,11 +118,22 @@ pz_minute(lon = coords)
 pz_second(lon = coords)
 ```
 
-add degrees, minutes, or seconds
+add or subtract degrees, minutes, or seconds
 
 ```{r}
 d(31)
 d(31) + m(44)
+d(31) - m(44)
 d(31) + m(44) + s(59)
 d(-121) + m(1) + s(33)
 ```
+
+## Meta
+
+* Please [report any issues or bugs](https://github.com/ropenscilabs/parzer/issues).
+* License: MIT
+* Get citation information for `parzer` in R doing `citation(package = 'parzer')`
+* Please note that this project is released with a [Contributor Code of Conduct][coc]
+By participating in this project you agree to abide by its terms.
+
+[coc]: https://github.com/ropenscilabs/parzer/blob/master/CODE_OF_CONDUCT.md

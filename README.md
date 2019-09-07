@@ -4,11 +4,13 @@ parzer
 
 
 [![Project Status: WIP – Initial development is in progress, but there has not yet been a stable, usable release suitable for the public.](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip)
+[![Build Status](https://travis-ci.com/ropenscilabs/parzer.svg?branch=master)](https://travis-ci.com/ropenscilabs/parzer)
+[![codecov.io](https://codecov.io/github/ropenscilabs/parzer/coverage.svg?branch=master)](https://codecov.io/github/ropenscilabs/parzer?branch=master)
 
 `parzer` parses messy coordinates
 
 You may get data from a published study or a colleague, and the coordinates
-may be in some messy format that you'd like to clean up to e.g., have 
+may be in some messy format that you'd like to clean up to e.g., have
 all decimal degree numeric data.
 
 `parzer` API:
@@ -31,7 +33,7 @@ all decimal degree numeric data.
 
 
 ```r
-devtools::install_github("ropenscilabs/parzer")
+remotes::install_github("ropenscilabs/parzer")
 ```
 
 
@@ -58,11 +60,15 @@ parse_lat("N45 04.25764")
 
 # bad values -> NaN
 parse_lat("191.89")
+#> Warning in pz_parse_lat(lat): not within -90/90 range, got: 191.89
 #> [1] NaN
 
 # many inputs
 x <- c("40.123°", "40.123N74.123W", "191.89", 12, "N45 04.25764")
 parse_lat(x)
+#> Warning in pz_parse_lat(lat): invalid characters, got: 40.123n74.123w
+
+#> Warning in pz_parse_lat(lat): not within -90/90 range, got: 191.89
 #> [1] 40.12300      NaN      NaN 12.00000 45.07096
 
 # parse_lat("N455698735", "HDDMMmmmmm") # custom formats not ready yet
@@ -166,7 +172,7 @@ pz_second(lon = coords)
 #> [1] 59.626686  6.005895  6.005895
 ```
 
-add degrees, minutes, or seconds
+add or subtract degrees, minutes, or seconds
 
 
 ```r
@@ -174,8 +180,20 @@ d(31)
 #> 31
 d(31) + m(44)
 #> 31.73333
+d(31) - m(44)
+#> 30.26667
 d(31) + m(44) + s(59)
 #> 31.74972
 d(-121) + m(1) + s(33)
 #> -120.9742
 ```
+
+## Meta
+
+* Please [report any issues or bugs](https://github.com/ropenscilabs/parzer/issues).
+* License: MIT
+* Get citation information for `parzer` in R doing `citation(package = 'parzer')`
+* Please note that this project is released with a [Contributor Code of Conduct][coc]
+By participating in this project you agree to abide by its terms.
+
+[coc]: https://github.com/ropenscilabs/parzer/blob/master/CODE_OF_CONDUCT.md
