@@ -16,9 +16,11 @@ Suggests:
     roxygen2 (>= 6.1.1),
     testthat,
     randgeo,
+    knitr,
     rmarkdown
 LinkingTo: Rcpp
 SystemRequirements: C++11
+VignetteBuilder: knitr
 Roxygen: list(markdown = TRUE)
 Encoding: UTF-8
 RoxygenNote: 6.1.1
