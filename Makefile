@@ -36,5 +36,9 @@ README.md: README.Rmd
 	sed -i.bak 's/[[:space:]]*$$//' README.md
 	rm -f $@.bak
 
+pkgdocs:
+	${RSCRIPT} -e "pkgdown::build_site()"
+
+
 # No real targets!
 .PHONY: all test doc install
