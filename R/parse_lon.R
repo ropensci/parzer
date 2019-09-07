@@ -64,5 +64,5 @@ parse_lon <- function(lon, format = NULL) {
   # FIXME: stopgap for now until figure out how to replace these on on src side
   ## -> smart quote and degree symbol
   lon <- gsub("\u2019|\u00b0", "'", lon)
-  if (is.null(format)) pz_parse_lon(lon) else stop("format handling not ready yet")
+  if (is.null(format)) pz_parse_lon(lon) else stop_form()
 }

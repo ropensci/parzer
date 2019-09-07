@@ -16,3 +16,5 @@ lint_inputs <- function(lat = NULL, lon = NULL, format) {
 # FIXME: stopgap for now until figure out how to replace these on on src side
 # -> smart quote and degree symbol
 scrub <- function(x) gsub("\u2019|\u00b0", "'", x)
+
+stop_form <- function() stop("format handling not ready yet")

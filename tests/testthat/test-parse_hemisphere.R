@@ -29,5 +29,4 @@ test_that("parse_hemisphere - fails well", {
   expect_error(parse_hemisphere(""), "argument \"lon\" is missing")
   expect_error(parse_hemisphere(mtcars), "lat must be of class")
   expect_error(parse_hemisphere("", mtcars), "lon must be of class")
-  # expect_error(parse_hemisphere("", "", 5), "format must be of class character")
 })
