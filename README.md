@@ -188,6 +188,16 @@ d(-121) + m(1) + s(33)
 #> -120.9742
 ```
 
+## Similar art
+
+- `sp::char2dms`: is most similar to `parzer::parse_lat` and `parzer::parse_lon`. However,
+with `sp::char2dms` you have to specify the termination character for each of degree,
+minutes and seconds. `parzer` does this for the user.
+- `biogeo::dms2dd`: very unlike functions in this package. You must pass separate degrees,
+minutes, seconds and direction to `dms2dd`. No exact analog is found in `parzer`, whos
+main focus is parsing messy geographic coordinates in strings to a more machine readable
+version
+
 ## Meta
 
 * Please [report any issues or bugs](https://github.com/ropenscilabs/parzer/issues).
