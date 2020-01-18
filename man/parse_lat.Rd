@@ -63,10 +63,10 @@ parse_lat("N 39 21.440") # => 39.35733
 parse_lat("S 56 1.389") # => -56.02315
 
 parse_lat("N40°25’5.994") # => 40.41833
-parse_lat("40° 25´ 5.994\\" N") # => 40.41833
+parse_lat("40° 25´ 5.994\" N") # => 40.41833
 parse_lat("40:25:6N")
 parse_lat("40:25:5.994N")
-parse_lat("40d 25’ 6\\" N")
+parse_lat("40d 25’ 6\" N")
 
 # user specfied format
 # \%C, \%c, \%H \%h \%D, \%d, \%M, \%m, \%S, and \%s
