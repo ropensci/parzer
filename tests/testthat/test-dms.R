@@ -56,9 +56,9 @@ test_that("degree works with varied formats", {
   # out <- data.frame(input = test_lats, res = NA_real_,
   #                   stringsAsFactors = FALSE)
   for (i in seq_along(test_lats)) {
-    expect_equal(pz_degree(test_lats[i]), 40)
-    expect_equal(pz_minute(test_lats[i]), 25)
-    expect_equal(round(pz_second(test_lats[i])), 6)
+    expect_equal(pz_degree(lat = test_lats[i]), 40)
+    expect_equal(pz_minute(lat = test_lats[i]), 25)
+    expect_equal(round(pz_second(lat = test_lats[i])), 6)
     # out[i, "res"] <- degree(test_lats[i])
   }
 })
@@ -66,7 +66,7 @@ test_that("degree works with varied formats", {
 test_that("pz_degree - fails well", {
   expect_error(pz_degree(), "is not TRUE")
   expect_error(pz_degree(4, 5), "is not TRUE")
-  expect_error(pz_degree(mtcars), "lat must be of class")
+  expect_error(pz_degree(mtcars), "lon must be of class")
 })
 
 # invalid formats
@@ -94,9 +94,9 @@ test_that("dms fxns fail as expected", {
   out <- data.frame(input = invalid_formats, res = NA_real_,
                     stringsAsFactors = FALSE)
   for (i in seq_along(invalid_formats)) {
-    expect_warning(pz_degree(invalid_formats[i]))
-    expect_warning(pz_minute(invalid_formats[i]))
-    expect_warning(pz_second(invalid_formats[i]))
+    expect_warning(pz_degree(lat = invalid_formats[i]))
+    expect_warning(pz_minute(lat = invalid_formats[i]))
+    expect_warning(pz_second(lat = invalid_formats[i]))
   }
 
   expect_error(d('a'), "x must be of class")

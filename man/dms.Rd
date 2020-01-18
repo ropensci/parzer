@@ -15,11 +15,11 @@
 \alias{*.pz}
 \title{extract degree, minutes, and seconds}
 \usage{
-pz_degree(lat = NULL, lon = NULL)
+pz_degree(lon = NULL, lat = NULL)
 
-pz_minute(lat = NULL, lon = NULL)
+pz_minute(lon = NULL, lat = NULL)
 
-pz_second(lat = NULL, lon = NULL)
+pz_second(lon = NULL, lat = NULL)
 
 \method{print}{pz}(x, ...)
 
@@ -38,9 +38,9 @@ s(x)
 \method{*}{pz}(e1, e2)
 }
 \arguments{
-\item{lat, lon}{(numeric/integer/character) one or more latitude or
-longitude values. values are internally validated. only one of
-lat or lon accepted}
+\item{lon, lat}{(numeric/integer/character) one or more longitude or
+latitude values. values are internally validated. only one of
+lon or lat accepted}
 
 \item{x}{(integer) an integer representing a degree, minute or second}
 

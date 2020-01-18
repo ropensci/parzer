@@ -1,17 +1,17 @@
-dms_helper <- function(lat = NULL, lon = NULL) {
-  stopifnot(xor(is.null(lat), is.null(lon)))
-  assert(lat, c("numeric", "integer", "character"))
+dms_helper <- function(lon = NULL, lat = NULL) {
+  stopifnot(xor(is.null(lon), is.null(lat)))
   assert(lon, c("numeric", "integer", "character"))
-  if (!is.null(lat)) return(pz_parse_parts_lat(scrub(lat)))
+  assert(lat, c("numeric", "integer", "character"))
   if (!is.null(lon)) return(pz_parse_parts_lon(scrub(lon)))
+  if (!is.null(lat)) return(pz_parse_parts_lat(scrub(lat)))
 }
 
 #' extract degree, minutes, and seconds
 #'
 #' @name dms
-#' @param lat,lon (numeric/integer/character) one or more latitude or
-#' longitude values. values are internally validated. only one of
-#' lat or lon accepted
+#' @param lon,lat (numeric/integer/character) one or more longitude or
+#' latitude values. values are internally validated. only one of
+#' lon or lat accepted
 #' @param x (integer) an integer representing a degree, minute or second
 #' @param e1,e2 objects of class pz, from using `d()`, `m()`, or `s()`
 #' @param ... print dots
@@ -53,20 +53,20 @@ NULL
 
 #' @export
 #' @rdname dms
-pz_degree <- function(lat = NULL, lon = NULL) {
-  dms_helper(lat, lon)$deg
+pz_degree <- function(lon = NULL, lat = NULL) {
+  dms_helper(lon, lat)$deg
 }
 
 #' @export
 #' @rdname dms
-pz_minute <- function(lat = NULL, lon = NULL) {
-  dms_helper(lat, lon)$min
+pz_minute <- function(lon = NULL, lat = NULL) {
+  dms_helper(lon, lat)$min
 }
 
 #' @export
 #' @rdname dms
-pz_second <- function(lat = NULL, lon = NULL) {
-  dms_helper(lat, lon)$sec
+pz_second <- function(lon = NULL, lat = NULL) {
+  dms_helper(lon, lat)$sec
 }
 
 # adders

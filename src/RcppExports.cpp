@@ -28,14 +28,14 @@ BEGIN_RCPP
 END_RCPP
 }
 // pz_hemisphere
-CharacterVector pz_hemisphere(CharacterVector lat, CharacterVector lon);
-RcppExport SEXP _parzer_pz_hemisphere(SEXP latSEXP, SEXP lonSEXP) {
+CharacterVector pz_hemisphere(CharacterVector lon, CharacterVector lat);
+RcppExport SEXP _parzer_pz_hemisphere(SEXP lonSEXP, SEXP latSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< CharacterVector >::type lat(latSEXP);
     Rcpp::traits::input_parameter< CharacterVector >::type lon(lonSEXP);
-    rcpp_result_gen = Rcpp::wrap(pz_hemisphere(lat, lon));
+    Rcpp::traits::input_parameter< CharacterVector >::type lat(latSEXP);
+    rcpp_result_gen = Rcpp::wrap(pz_hemisphere(lon, lat));
     return rcpp_result_gen;
 END_RCPP
 }

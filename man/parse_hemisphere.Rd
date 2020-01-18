@@ -4,12 +4,12 @@
 \alias{parse_hemisphere}
 \title{get hemisphere from lat/long coordinates}
 \usage{
-parse_hemisphere(lat, lon)
+parse_hemisphere(lon, lat)
 }
 \arguments{
-\item{lat}{(character/numeric/integer) one or more latitude values}
-
 \item{lon}{(character/numeric/integer) one or more longitude values}
+
+\item{lat}{(character/numeric/integer) one or more latitude values}
 }
 \value{
 character vector of quadrants, one of: NE, NW, SE, SW.
@@ -21,26 +21,26 @@ zero length string.
 BEWARE: EXPERIMENTAL
 }
 \details{
-length(lat) == length(lon)
+length(lon) == length(lat)
 }
 \examples{
 # NE
-parse_hemisphere("45N54.2356", "74.123E")
+parse_hemisphere("74.123E", "45N54.2356")
 # NW
-parse_hemisphere("40.4183318", "-120")
+parse_hemisphere("-120", "40.4183318")
 # SW
-parse_hemisphere("-40.4183318", "-120")
+parse_hemisphere("-120", "-40.4183318")
 # SE
-parse_hemisphere("-40.4183318", "120")
+parse_hemisphere("120", "-40.4183318")
 
 # bad inputs, get one of the two strings
-parse_hemisphere("-40.4183318", "-181")
-parse_hemisphere("-192.4183318", "-120")
+parse_hemisphere("-181", "-40.4183318")
+parse_hemisphere("-120", "-192.4183318")
 
 # many inputs
 library(randgeo)
 pts <- rg_position(count = 1000)
-lats <- as.character(vapply(pts, "[[", 1, 2))
 lons <- as.character(vapply(pts, "[[", 1, 1))
-parse_hemisphere(lats, lons)
+lats <- as.character(vapply(pts, "[[", 1, 2))
+parse_hemisphere(lons, lats)
 }

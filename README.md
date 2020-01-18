@@ -90,42 +90,44 @@ parse_lon("W45 04.25764")
 #> [1] -45.07096
 
 # bad values
-parse_lon("181")
-#> [1] 181
+parse_lon("361")
+#> Warning in pz_parse_lon(lon): not within -90/90 range, got: 361
+#> [1] NaN
 
 # many inputs
-x <- c("45W54.2356", "181", 45, 45.234234, "-45.98739874")
+x <- c("45W54.2356", "361", 45, 45.234234, "-45.98739874")
 parse_lon(x)
-#> [1] -45.90393 181.00000  45.00000  45.23423 -45.98740
+#> Warning in pz_parse_lon(lon): not within -90/90 range, got: 361
+#> [1] -45.90393       NaN  45.00000  45.23423 -45.98740
 
 # parse_lon("N455698735", "HDDMMmmmmm") # custom formats not ready yet
 ```
 
-both lat and lon together
+both lon and lat together
 
 
 ```r
-lats <- c("40.123°", "40.123N", "191.89", 12, "N45 04.25764")
 lons <- c("45W54.2356", "181", 45, 45.234234, "-45.98739874")
-parse_lat_lon(lats, lons)
-#>        lat       lon
-#> 1 40.12300 -45.90393
-#> 2 40.12300 181.00000
-#> 3      NaN  45.00000
-#> 4 12.00000  45.23423
-#> 5 45.07096 -45.98740
+lats <- c("40.123°", "40.123N", "191.89", 12, "N45 04.25764")
+parse_lat_lon(lons, lats)
+#>         lon      lat
+#> 1 -45.90393 40.12300
+#> 2 181.00000 40.12300
+#> 3  45.00000      NaN
+#> 4  45.23423 12.00000
+#> 5 -45.98740 45.07096
 ```
 
 parse into degree, min, sec parts
 
 
 ```r
-parse_parts_lat("45N54.2356")
-#>   deg min      sec
-#> 1  45  54 14.13674
 parse_parts_lon("-74.6411133")
 #>   deg min      sec
 #> 1 -74  38 28.00784
+parse_parts_lat("45N54.2356")
+#>   deg min      sec
+#> 1  45  54 14.13674
 # many inputs
 x <- c("40.123°", "40.123N74.123W", "191.89", 12, "N45 04.25764")
 parse_parts_lon(x)
@@ -141,13 +143,13 @@ get hemisphere from lat/lon coords
 
 
 ```r
-parse_hemisphere("45N54.2356", "74.123E")
+parse_hemisphere("74.123E", "45N54.2356")
 #> [1] "NE"
-parse_hemisphere("40.4183318", "-120")
+parse_hemisphere("-120", "40.4183318")
 #> [1] "NW"
-parse_hemisphere("-40.4183318", "-120")
+parse_hemisphere("-120", "-40.4183318")
 #> [1] "SW"
-parse_hemisphere("-40.4183318", "120")
+parse_hemisphere("120", "-40.4183318")
 #> [1] "SE"
 ```
 
@@ -156,11 +158,11 @@ get degree, minutes, or seconds separately
 
 ```r
 coords <- c(45.23323, "40:25:6N", "40° 25´ 5.994\" N")
-pz_degree(coords)
+pz_degree(lat = coords)
 #> [1] 45 40 40
-pz_minute(coords)
+pz_minute(lat = coords)
 #> [1] 13 25 25
-pz_second(coords)
+pz_second(lat = coords)
 #> [1] 59.630119  6.005895  5.992162
 
 coords <- c(15.23323, "40:25:6E", "192° 25´ 5.994\" E")
