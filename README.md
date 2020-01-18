@@ -15,18 +15,18 @@ all decimal degree numeric data.
 
 `parzer` API:
 
- - `d`
- - `m`
  - `parse_hemisphere`
  - `parse_lat`
  - `parse_lat_lon`
  - `parse_lon`
  - `parse_parts_lat`
  - `parse_parts_lon`
+ - `pz_d`
  - `pz_degree`
+ - `pz_m`
  - `pz_minute`
+ - `pz_s`
  - `pz_second`
- - `s`
 
 
 ## Installation
@@ -178,15 +178,15 @@ add or subtract degrees, minutes, or seconds
 
 
 ```r
-d(31)
+pz_d(31)
 #> 31
-d(31) + m(44)
+pz_d(31) + pz_m(44)
 #> 31.73333
-d(31) - m(44)
+pz_d(31) - pz_m(44)
 #> 30.26667
-d(31) + m(44) + s(59)
+pz_d(31) + pz_m(44) + pz_s(59)
 #> 31.74972
-d(-121) + m(1) + s(33)
+pz_d(-121) + pz_m(1) + pz_s(33)
 #> -120.9742
 ```
 

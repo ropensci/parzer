@@ -132,9 +132,9 @@ pz_second(lon = coords)
 ### add or subtract degrees, minutes, or seconds
 
 ```{r}
-d(31)
-d(31) + m(44)
-d(31) - m(44)
-d(31) + m(44) + s(59)
-d(-121) + m(1) + s(33)
+pz_d(31)
+pz_d(31) + pz_m(44)
+pz_d(31) - pz_m(44)
+pz_d(31) + pz_m(44) + pz_s(59)
+pz_d(-121) + pz_m(1) + pz_s(33)
 ```

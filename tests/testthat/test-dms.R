@@ -99,19 +99,19 @@ test_that("dms fxns fail as expected", {
     expect_warning(pz_second(lat = invalid_formats[i]))
   }
 
-  expect_error(d('a'), "x must be of class")
-  expect_error(m('a'), "x must be of class")
-  expect_error(s('a'), "x must be of class")
+  expect_error(pz_d('a'), "x must be of class")
+  expect_error(pz_m('a'), "x must be of class")
+  expect_error(pz_s('a'), "x must be of class")
 
-  expect_error(d(1) / m(3), "division doesn't make sense here")
-  expect_error(d(1) * m(3), "multiplication doesn't make sense here")
+  expect_error(pz_d(1) / pz_m(3), "division doesn't make sense here")
+  expect_error(pz_d(1) * pz_m(3), "multiplication doesn't make sense here")
 })
 
 test_that("dms adder fxns", {
   # basic usage, one at a time
-  deg1 <- d(31)
-  min1 <- m(44)
-  sec1 <- s(17)
+  deg1 <- pz_d(31)
+  min1 <- pz_m(44)
+  sec1 <- pz_s(17)
 
   expect_is(deg1, "pz")
   expect_is(min1, "pz")
@@ -122,8 +122,8 @@ test_that("dms adder fxns", {
   expect_equal(sec1[1], 17)
 
   # addition
-  add1 <- d(31) + m(44)
-  add2 <- d(31) + m(44) + s(59)
+  add1 <- pz_d(31) + pz_m(44)
+  add2 <- pz_d(31) + pz_m(44) + pz_s(59)
 
   expect_is(add1, "pz")
   expect_is(add2, "pz")
@@ -132,8 +132,8 @@ test_that("dms adder fxns", {
   expect_equal(round(add2[1], 2), 31.75)
 
   # subtraction
-  sub1 <- d(5) - m(49)
-  sub2 <- d(-34) - m(56) - s(3)
+  sub1 <- pz_d(5) - pz_m(49)
+  sub2 <- pz_d(-34) - pz_m(56) - pz_s(3)
 
   expect_is(sub1, "pz")
   expect_is(sub2, "pz")
@@ -150,5 +150,5 @@ test_that("dms fxns: utilities", {
   expect_null(attributes(zz))
 
   # print.pz
-  expect_output(print(d(31)), "31")
+  expect_output(print(pz_d(31)), "31")
 })

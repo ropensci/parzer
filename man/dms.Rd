@@ -6,9 +6,9 @@
 \alias{pz_minute}
 \alias{pz_second}
 \alias{print.pz}
-\alias{d}
-\alias{m}
-\alias{s}
+\alias{pz_d}
+\alias{pz_m}
+\alias{pz_s}
 \alias{+.pz}
 \alias{-.pz}
 \alias{/.pz}
@@ -23,11 +23,11 @@ pz_second(lon = NULL, lat = NULL)
 
 \method{print}{pz}(x, ...)
 
-d(x)
+pz_d(x)
 
-m(x)
+pz_m(x)
 
-s(x)
+pz_s(x)
 
 \method{+}{pz}(e1, e2)
 
@@ -46,12 +46,12 @@ lon or lat accepted}
 
 \item{...}{print dots}
 
-\item{e1, e2}{objects of class pz, from using \code{d()}, \code{m()}, or \code{s()}}
+\item{e1, e2}{objects of class pz, from using \code{pz_d()}, \code{pz_m()}, or \code{pz_s()}}
 }
 \value{
 \code{pz_degree}: integer, \code{pz_minute}: integer, \code{pz_second}: numeric,
-\code{d}: numeric, \code{m}: numeric, \code{s}: numeric (adding/subtracting these also
-gives numeric)
+\code{pz_d}: numeric, \code{pz_m}: numeric, \code{pz_s}: numeric (adding/subtracting
+these also gives numeric)
 }
 \description{
 extract degree, minutes, and seconds
@@ -80,13 +80,13 @@ pz_second(lat = c(45.23323, "40:25:6N", "40° 25´ 5.994 N"))
 pz_degree(445.23323)
 
 # add or subtract
-d(31)
-m(44)
-s(3)
-d(31) + m(44)
-d(31) - m(44)
-d(31) + m(44) + s(59)
-d(31) - m(44) + s(59)
-d(-121) + m(1) + s(33)
-unclass(d(31) + m(44) + s(59))
+pz_d(31)
+pz_m(44)
+pz_s(3)
+pz_d(31) + pz_m(44)
+pz_d(31) - pz_m(44)
+pz_d(31) + pz_m(44) + pz_s(59)
+pz_d(31) - pz_m(44) + pz_s(59)
+pz_d(-121) + pz_m(1) + pz_s(33)
+unclass(pz_d(31) + pz_m(44) + pz_s(59))
 }

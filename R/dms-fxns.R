@@ -13,11 +13,11 @@ dms_helper <- function(lon = NULL, lat = NULL) {
 #' latitude values. values are internally validated. only one of
 #' lon or lat accepted
 #' @param x (integer) an integer representing a degree, minute or second
-#' @param e1,e2 objects of class pz, from using `d()`, `m()`, or `s()`
+#' @param e1,e2 objects of class pz, from using `pz_d()`, `pz_m()`, or `pz_s()`
 #' @param ... print dots
 #' @return `pz_degree`: integer, `pz_minute`: integer, `pz_second`: numeric,
-#' `d`: numeric, `m`: numeric, `s`: numeric (adding/subtracting these also
-#' gives numeric)
+#' `pz_d`: numeric, `pz_m`: numeric, `pz_s`: numeric (adding/subtracting
+#' these also gives numeric)
 #' @details Mathematics operators are exported for `+`, `-`, `/`, and `*`,
 #' but `/` and `*` are only exported with a stop message to say it's not
 #' supported; otherwise you'd be allow to divide degrees by minutes, leading
@@ -40,15 +40,15 @@ dms_helper <- function(lon = NULL, lat = NULL) {
 #' pz_degree(445.23323)
 #'
 #' # add or subtract
-#' d(31)
-#' m(44)
-#' s(3)
-#' d(31) + m(44)
-#' d(31) - m(44)
-#' d(31) + m(44) + s(59)
-#' d(31) - m(44) + s(59)
-#' d(-121) + m(1) + s(33)
-#' unclass(d(31) + m(44) + s(59))
+#' pz_d(31)
+#' pz_m(44)
+#' pz_s(3)
+#' pz_d(31) + pz_m(44)
+#' pz_d(31) - pz_m(44)
+#' pz_d(31) + pz_m(44) + pz_s(59)
+#' pz_d(31) - pz_m(44) + pz_s(59)
+#' pz_d(-121) + pz_m(1) + pz_s(33)
+#' unclass(pz_d(31) + pz_m(44) + pz_s(59))
 NULL
 
 #' @export
@@ -79,19 +79,19 @@ unclass_strip_atts <- function(x) {
 print.pz <- function(x, ...) cat(x, sep = "\n")
 #' @export
 #' @rdname dms
-d <- function(x) {
+pz_d <- function(x) {
   assert(x, c('integer', 'numeric'))
   structure(x, class = "pz", type = "deg")
 }
 #' @export
 #' @rdname dms
-m <- function(x) {
+pz_m <- function(x) {
   assert(x, c('integer', 'numeric'))
   structure(x, class = "pz", type = "min")
 }
 #' @export
 #' @rdname dms
-s <- function(x) {
+pz_s <- function(x) {
   assert(x, c('integer', 'numeric'))
   structure(x, class = "pz", type = "sec")
 }
