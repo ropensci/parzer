@@ -86,7 +86,7 @@ both lon and lat together
 ```{r}
 lons <- c("45W54.2356", "181", 45, 45.234234, "-45.98739874")
 lats <- c("40.123°", "40.123N", "191.89", 12, "N45 04.25764")
-parse_lat_lon(lons, lats)
+parse_lon_lat(lons, lats)
 ```
 
 parse into degree, min, sec parts

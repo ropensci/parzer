@@ -17,8 +17,8 @@ all decimal degree numeric data.
 
  - `parse_hemisphere`
  - `parse_lat`
- - `parse_lat_lon`
  - `parse_lon`
+ - `parse_lon_lat`
  - `parse_parts_lat`
  - `parse_parts_lon`
  - `pz_d`
@@ -117,7 +117,7 @@ both lon and lat together
 ```r
 lons <- c("45W54.2356", "181", 45, 45.234234, "-45.98739874")
 lats <- c("40.123°", "40.123N", "191.89", 12, "N45 04.25764")
-parse_lat_lon(lons, lats)
+parse_lon_lat(lons, lats)
 #>         lon      lat
 #> 1 -45.90393 40.12300
 #> 2 181.00000 40.12300

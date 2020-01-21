@@ -88,12 +88,12 @@ parse_lon(x)
 # parse_lon("N455698735", "HDDMMmmmmm") # custom formats not ready yet
 ```
 
-### both lat and lon together
+### both lon and lat together
 
 ```{r}
-lats <- c("40.123°", "40.123N", "191.89", 12, "N45 04.25764")
 lons <- c("45W54.2356", "181", 45, 45.234234, "-45.98739874")
-parse_lat_lon(lons, lats)
+lats <- c("40.123°", "40.123N", "191.89", 12, "N45 04.25764")
+parse_lon_lat(lons, lats)
 ```
 
 ### parse into degree, min, sec parts
