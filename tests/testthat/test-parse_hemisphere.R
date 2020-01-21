@@ -29,4 +29,7 @@ test_that("parse_hemisphere - fails well", {
   expect_error(parse_hemisphere(""), "argument \"lat\" is missing")
   expect_error(parse_hemisphere(mtcars), "lon must be of class")
   expect_error(parse_hemisphere("", mtcars), "lat must be of class")
+
+  expect_warning(parse_hemisphere(45, 190), "not within -90")
+  expect_warning(parse_hemisphere(45, 190), "check that you did not invert")
 })

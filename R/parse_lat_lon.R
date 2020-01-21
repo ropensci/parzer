@@ -4,7 +4,8 @@
 #' @param lon (character/numeric/integer) one or more longitude values
 #' @param lat (character/numeric/integer) one or more latitude values
 #' @details length(lon) == length(lat)
-#' @return data.frame, with columns lon, lat
+#' @return data.frame, with columns lon, lat. on an invalid values, an `NA`
+#' is returned. In addition, warnings are thrown on invalid values
 #' @examples
 #' parse_lon_lat(-120.43, 49.12)
 #' parse_lon_lat(-120.43, 93)

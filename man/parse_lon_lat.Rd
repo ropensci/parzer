@@ -12,7 +12,8 @@ parse_lon_lat(lon, lat)
 \item{lat}{(character/numeric/integer) one or more latitude values}
 }
 \value{
-data.frame, with columns lon, lat
+data.frame, with columns lon, lat. on an invalid values, an \code{NA}
+is returned. In addition, warnings are thrown on invalid values
 }
 \description{
 parse longitude and latitude

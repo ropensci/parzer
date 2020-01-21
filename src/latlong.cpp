@@ -218,7 +218,8 @@ float convert_lat(std::string str) {
     if (!NumericVector::is_na(ret)) {
       if (!check_lat(ret)) {
         ret = NA_REAL;
-        Rcpp::warning("not within -90/90 range, got: " + str);
+        Rcpp::warning("not within -90/90 range, got: " + str +
+          "\n  check that you did not invert lon and lat");
       };
     };
   };
