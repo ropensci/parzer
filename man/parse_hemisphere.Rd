@@ -2,7 +2,7 @@
 % Please edit documentation in R/parse_hemisphere.R
 \name{parse_hemisphere}
 \alias{parse_hemisphere}
-\title{get hemisphere from lat/long coordinates}
+\title{get hemisphere from long/lat coordinates}
 \usage{
 parse_hemisphere(lon, lat)
 }

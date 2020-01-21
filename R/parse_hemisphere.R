@@ -1,4 +1,4 @@
-#' get hemisphere from lat/long coordinates
+#' get hemisphere from long/lat coordinates
 #'
 #' BEWARE: EXPERIMENTAL
 #'
