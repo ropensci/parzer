@@ -26,6 +26,7 @@ knitr::opts_chunk$set(
 
 ```{r}
 library("parzer")
+if (!requireNamespace("sf")) install.packages("sf")
 library("sf")
 ```
 
@@ -91,6 +92,7 @@ center_lat <- mean(dat$latitude)
 Plot data using the `leaflet` package
 
 ```{r out.with="100%"}
+if (!requireNamespace("leaflet")) install.packages("leaflet")
 library("leaflet")
 leaflet() %>%
   addTiles() %>%
