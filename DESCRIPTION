@@ -3,8 +3,8 @@ Type: Package
 Title: Parse Messy Geographic Coordinates
 Description: Parse geographic coordinates from various formats
     to decimal degree numeric values. Parse coordinates into
-    their parts (degree, minutes, seconds); get hemisphere
-    from lat/lon coordinates; pull out individually degrees,
+    their parts (degree, minutes, seconds); calculate hemisphere
+    from coordinates; pull out individually degrees,
     minutes, or seconds; add and subtract degrees, minutes,
     and seconds.
 Version: 0.0.9.99
