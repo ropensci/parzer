@@ -29,6 +29,14 @@ cat(paste(" -", paste(sprintf("`%s`", sort(getNamespaceExports("parzer"))), coll
 
 ## Installation
 
+Stable version
+
+```{r eval=FALSE}
+install.packages("parzer")
+```
+
+Development version
+
 ```{r eval=FALSE}
 remotes::install_github("ropenscilabs/parzer")
 ```

@@ -1,14 +1,20 @@
 Package: parzer
 Type: Package
-Title: Parse Geographic Coordinates
-Description: Parse geographic coordinates.
-Version: 0.0.5.92
+Title: Parse Messy Geographic Coordinates
+Description: Parse geographic coordinates from various formats
+    to decimal degree numeric values. Parse coordinates into
+    their parts (degree, minutes, seconds); get hemisphere
+    from lat/lon coordinates; pull out individually degrees,
+    minutes, or seconds; add and subtract degrees, minutes,
+    and seconds.
+Version: 0.0.9.99
 Authors@R: c(
 		person("Scott", "Chamberlain", role = c("aut", "cre"),
             email = "sckott@protonmail.com")
 	)
 License: MIT + file LICENSE
-URL: https://github.com/ropenscilabs/parzer
+URL: https://github.com/ropenscilabs/parzer (devel)
+  https://docs.ropensci.org/parzer/ (docs)
 BugReports: https://github.com/ropenscilabs/parzer/issues
 Imports:
     Rcpp (>= 1.0.2)
@@ -23,3 +29,6 @@ VignetteBuilder: knitr
 Roxygen: list(markdown = TRUE)
 Encoding: UTF-8
 RoxygenNote: 7.0.2
+X-schema.org-applicationCategory: Geospatial
+X-schema.org-keywords: geospatial, data, latitude, longitude, parser, coordinates
+X-schema.org-isPartOf: https://ropensci.org

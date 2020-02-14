@@ -1,0 +1,117 @@
+{
+  "@context": [
+    "https://doi.org/10.5063/schema/codemeta-2.0",
+    "http://schema.org"
+  ],
+  "@type": "SoftwareSourceCode",
+  "identifier": "parzer",
+  "description": "Parse geographic coordinates from various formats\n    to decimal degree numeric values. Parse coordinates into\n    their parts (degree, minutes, seconds); get hemisphere\n    from lat/lon coordinates; pull out individually degrees,\n    minutes, or seconds; add and subtract degrees, minutes,\n    and seconds.",
+  "name": "parzer: Parse Messy Geographic Coordinates",
+  "codeRepository": "https://github.com/ropenscilabs/parzer",
+  "relatedLink": "https://docs.ropensci.org/parzer/",
+  "issueTracker": "https://github.com/ropenscilabs/parzer/issues",
+  "license": "https://spdx.org/licenses/MIT",
+  "version": "0.0.9.99",
+  "programmingLanguage": {
+    "@type": "ComputerLanguage",
+    "name": "R",
+    "version": "3.6.2",
+    "url": "https://r-project.org"
+  },
+  "runtimePlatform": "R version 3.6.2 Patched (2020-02-04 r77774)",
+  "author": [
+    {
+      "@type": "Person",
+      "givenName": "Scott",
+      "familyName": "Chamberlain",
+      "email": "sckott@protonmail.com"
+    }
+  ],
+  "contributor": {},
+  "copyrightHolder": {},
+  "funder": {},
+  "maintainer": [
+    {
+      "@type": "Person",
+      "givenName": "Scott",
+      "familyName": "Chamberlain",
+      "email": "sckott@protonmail.com"
+    }
+  ],
+  "softwareSuggestions": [
+    {
+      "@type": "SoftwareApplication",
+      "identifier": "testthat",
+      "name": "testthat",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=testthat"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "identifier": "randgeo",
+      "name": "randgeo",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=randgeo"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "identifier": "knitr",
+      "name": "knitr",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=knitr"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "identifier": "rmarkdown",
+      "name": "rmarkdown",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=rmarkdown"
+    }
+  ],
+  "softwareRequirements": [
+    {
+      "@type": "SoftwareApplication",
+      "identifier": "Rcpp",
+      "name": "Rcpp",
+      "version": ">= 1.0.2",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=Rcpp"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "identifier": "https://sysreqs.r-hub.io/get/cxx11"
+    }
+  ],
+  "applicationCategory": "Geospatial",
+  "isPartOf": "https://ropensci.org",
+  "keywords": ["geospatial", "data", "latitude", "longitude", "parser", "coordinates", "r", "rstats", "geo"],
+  "readme": "https://github.com/ropenscilabs/parzer/blob/master/README.md",
+  "fileSize": "14.78KB",
+  "contIntegration": ["https://travis-ci.com/ropenscilabs/parzer", "https://codecov.io/github/ropenscilabs/parzer?branch=master"],
+  "developmentStatus": "https://www.repostatus.org/#wip"
+}

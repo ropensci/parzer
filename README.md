@@ -31,6 +31,15 @@ all decimal degree numeric data.
 
 ## Installation
 
+Stable version
+
+
+```r
+install.packages("parzer")
+```
+
+Development version
+
 
 ```r
 remotes::install_github("ropenscilabs/parzer")
