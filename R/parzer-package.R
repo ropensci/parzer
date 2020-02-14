@@ -1,4 +1,4 @@
-#' parzer
+#' parzer - parse geographic coordinates
 #'
 #' @useDynLib parzer
 #' @importFrom Rcpp sourceCpp

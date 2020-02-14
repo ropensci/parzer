@@ -7,10 +7,10 @@ parzer
 [![Build Status](https://travis-ci.com/ropenscilabs/parzer.svg?branch=master)](https://travis-ci.com/ropenscilabs/parzer)
 [![codecov.io](https://codecov.io/github/ropenscilabs/parzer/coverage.svg?branch=master)](https://codecov.io/github/ropenscilabs/parzer?branch=master)
 
-`parzer` parses messy coordinates
+`parzer` parses messy geographic coordinates
 
 You may get data from a published study or a colleague, and the coordinates
-may be in some messy format that you'd like to clean up to e.g., have
+may be in some messy format that you'd like to clean up to e.g., have 
 all decimal degree numeric data.
 
 `parzer` API:
@@ -65,6 +65,7 @@ parse_lat("S45 04.25764")
 # bad values -> NaN
 parse_lat("191.89")
 #> Warning in pz_parse_lat(lat): not within -90/90 range, got: 191.89
+#>   check that you did not invert lon and lat
 #> [1] NaN
 
 # many inputs
@@ -73,6 +74,7 @@ parse_lat(x)
 #> Warning in pz_parse_lat(lat): invalid characters, got: 40.123n74.123w
 
 #> Warning in pz_parse_lat(lat): not within -90/90 range, got: 191.89
+#>   check that you did not invert lon and lat
 #> [1] 40.12300      NaN      NaN 12.00000 45.07096
 
 # parse_lat("N455698735", "HDDMMmmmmm") # custom formats not ready yet

@@ -1,7 +1,7 @@
 Package: parzer
 Type: Package
-Title: Parse Coordinates
-Description: Parse Coordinates.
+Title: Parse Geographic Coordinates
+Description: Parse geographic coordinates.
 Version: 0.0.5.92
 Authors@R: c(
 		person("Scott", "Chamberlain", role = c("aut", "cre"),
