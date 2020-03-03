@@ -5,20 +5,20 @@
   ],
   "@type": "SoftwareSourceCode",
   "identifier": "parzer",
-  "description": "Parse geographic coordinates from various formats\n    to decimal degree numeric values. Parse coordinates into\n    their parts (degree, minutes, seconds); get hemisphere\n    from lat/lon coordinates; pull out individually degrees,\n    minutes, or seconds; add and subtract degrees, minutes,\n    and seconds.",
+  "description": "Parse geographic coordinates from various formats\n    to decimal degree numeric values. Parse coordinates into\n    their parts (degree, minutes, seconds); calculate hemisphere\n    from coordinates; pull out individually degrees,\n    minutes, or seconds; add and subtract degrees, minutes,\n    and seconds. This package has been peer-reviewed by rOpenSci.",
   "name": "parzer: Parse Messy Geographic Coordinates",
-  "codeRepository": "https://github.com/ropenscilabs/parzer",
+  "codeRepository": "https://github.com/ropensci/parzer",
   "relatedLink": "https://docs.ropensci.org/parzer/",
-  "issueTracker": "https://github.com/ropenscilabs/parzer/issues",
+  "issueTracker": "https://github.com/ropensci/parzer/issues",
   "license": "https://spdx.org/licenses/MIT",
   "version": "0.0.9.99",
   "programmingLanguage": {
     "@type": "ComputerLanguage",
     "name": "R",
-    "version": "3.6.2",
+    "version": "3.6.3",
     "url": "https://r-project.org"
   },
-  "runtimePlatform": "R version 3.6.2 Patched (2020-02-04 r77774)",
+  "runtimePlatform": "R version 3.6.3 RC (2020-02-21 r77868)",
   "author": [
     {
       "@type": "Person",
@@ -110,8 +110,13 @@
   "applicationCategory": "Geospatial",
   "isPartOf": "https://ropensci.org",
   "keywords": ["geospatial", "data", "latitude", "longitude", "parser", "coordinates", "r", "rstats", "geo"],
-  "readme": "https://github.com/ropenscilabs/parzer/blob/master/README.md",
-  "fileSize": "14.78KB",
-  "contIntegration": ["https://travis-ci.com/ropenscilabs/parzer", "https://codecov.io/github/ropenscilabs/parzer?branch=master"],
-  "developmentStatus": "https://www.repostatus.org/#wip"
+  "readme": "https://github.com/ropensci/parzer/blob/master/README.md",
+  "fileSize": "14.886KB",
+  "contIntegration": ["https://travis-ci.com/ropensci/parzer", "https://codecov.io/github/ropensci/parzer?branch=master"],
+  "developmentStatus": "https://www.repostatus.org/#wip",
+  "review": {
+    "@type": "Review",
+    "url": "https://github.com/ropensci/software-review/issues/341",
+    "provider": "https://ropensci.org"
+  }
 }

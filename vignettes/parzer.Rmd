@@ -41,7 +41,7 @@ cat(paste(" -", paste(sprintf("`%s`", sort(getNamespaceExports("parzer"))), coll
 Development version
 
 ```{r eval=FALSE}
-devtools::install_github("ropenscilabs/parzer")
+remotes::install_github("ropensci/parzer")
 ```
 
 ```{r}

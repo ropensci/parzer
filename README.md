@@ -4,8 +4,10 @@ parzer
 
 
 [![Project Status: WIP – Initial development is in progress, but there has not yet been a stable, usable release suitable for the public.](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip)
-[![Build Status](https://travis-ci.com/ropenscilabs/parzer.svg?branch=master)](https://travis-ci.com/ropenscilabs/parzer)
-[![codecov.io](https://codecov.io/github/ropenscilabs/parzer/coverage.svg?branch=master)](https://codecov.io/github/ropenscilabs/parzer?branch=master)
+[![Build Status](https://travis-ci.com/ropensci/parzer.svg?branch=master)](https://travis-ci.com/ropensci/parzer)
+[![codecov.io](https://codecov.io/github/ropensci/parzer/coverage.svg?branch=master)](https://codecov.io/github/ropensci/parzer?branch=master)
+[![](https://badges.ropensci.org/341_status.svg)](https://github.com/ropensci/onboarding/issues/341)
+
 
 `parzer` parses messy geographic coordinates
 
@@ -42,7 +44,7 @@ Development version
 
 
 ```r
-remotes::install_github("ropenscilabs/parzer")
+remotes::install_github("ropensci/parzer")
 ```
 
 
@@ -221,10 +223,12 @@ version
 
 ## Meta
 
-* Please [report any issues or bugs](https://github.com/ropenscilabs/parzer/issues).
+* Please [report any issues or bugs](https://github.com/ropensci/parzer/issues).
 * License: MIT
 * Get citation information for `parzer` in R doing `citation(package = 'parzer')`
 * Please note that this project is released with a [Contributor Code of Conduct][coc]
 By participating in this project you agree to abide by its terms.
 
-[coc]: https://github.com/ropenscilabs/parzer/blob/master/CODE_OF_CONDUCT.md
+[coc]: https://github.com/ropensci/parzer/blob/master/CODE_OF_CONDUCT.md
+
+[![ropensci_footer](https://ropensci.org/public_images/ropensci_footer.png)](https://ropensci.org)

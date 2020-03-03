@@ -6,16 +6,16 @@ Description: Parse geographic coordinates from various formats
     their parts (degree, minutes, seconds); calculate hemisphere
     from coordinates; pull out individually degrees,
     minutes, or seconds; add and subtract degrees, minutes,
-    and seconds.
+    and seconds. This package has been peer-reviewed by rOpenSci.
 Version: 0.0.9.99
 Authors@R: c(
 		person("Scott", "Chamberlain", role = c("aut", "cre"),
             email = "sckott@protonmail.com")
 	)
 License: MIT + file LICENSE
-URL: https://github.com/ropenscilabs/parzer (devel)
+URL: https://github.com/ropensci/parzer (devel)
   https://docs.ropensci.org/parzer/ (docs)
-BugReports: https://github.com/ropenscilabs/parzer/issues
+BugReports: https://github.com/ropensci/parzer/issues
 Imports:
     Rcpp (>= 1.0.2)
 Suggests:
