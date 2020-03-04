@@ -118,7 +118,7 @@
   "isPartOf": "https://ropensci.org",
   "keywords": ["geospatial", "data", "latitude", "longitude", "parser", "coordinates", "r", "rstats", "geo"],
   "readme": "https://github.com/ropensci/parzer/blob/master/README.md",
-  "fileSize": "15.13KB",
+  "fileSize": "15.18KB",
   "contIntegration": ["https://travis-ci.com/ropensci/parzer", "https://ci.appveyor.com/project/sckott/parzer", "https://codecov.io/github/ropensci/parzer?branch=master"],
   "developmentStatus": "https://www.repostatus.org/#wip",
   "review": {
