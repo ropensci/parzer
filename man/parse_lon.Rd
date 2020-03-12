@@ -70,8 +70,4 @@ parse_lon("40° 25´ 5.994\" N") # => 40.41833
 parse_lon("40:25:6N")
 parse_lon("40:25:5.994N")
 parse_lon("40d 25’ 6\" N")
-
-# user specfied format
-# \%C, \%c, \%H \%h \%D, \%d, \%M, \%m, \%S, and \%s
-# parse_lon("40.255994", "")
 }

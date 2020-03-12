@@ -13,7 +13,7 @@
 #' see <https://en.cppreference.com/w/cpp/error/invalid_argument>
 #' - out of range: numbers of out acceptable range, see
 #' <https://en.cppreference.com/w/cpp/error/out_of_range>
-#' - out of longitude range: not within -90/90 range
+#' - out of longitude range: not within -180/360 range
 #'
 #' @examples
 #' parse_lon("")
@@ -54,10 +54,6 @@
 #' parse_lon("40:25:6N")
 #' parse_lon("40:25:5.994N")
 #' parse_lon("40d 25’ 6\" N")
-#'
-#' # user specfied format
-#' # %C, %c, %H %h %D, %d, %M, %m, %S, and %s
-#' # parse_lon("40.255994", "")
 parse_lon <- function(lon, format = NULL) {
   assert(lon, c("numeric", "integer", "character"))
   assert(format, "character")

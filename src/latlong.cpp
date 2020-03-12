@@ -277,7 +277,7 @@ float convert_lon(std::string str) {
     if (!NumericVector::is_na(ret)) {
       if (!check_lon(ret)) {
         ret = NA_REAL;
-        Rcpp::warning("not within -90/90 range, got: " + str);
+        Rcpp::warning("not within -180/360 range, got: " + str);
       };
     };
   };

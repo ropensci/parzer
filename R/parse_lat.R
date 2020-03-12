@@ -51,10 +51,6 @@
 #' parse_lat("40:25:6N")
 #' parse_lat("40:25:5.994N")
 #' parse_lat("40d 25’ 6\" N")
-#'
-#' # user specfied format
-#' # %C, %c, %H %h %D, %d, %M, %m, %S, and %s
-#' # parse_lat("40.255994", "")
 parse_lat <- function(lat, format = NULL) {
   assert(lat, c("numeric", "integer", "character"))
   assert(format, "character")
