@@ -6,7 +6,9 @@ Description: Parse geographic coordinates from various formats
     their parts (degree, minutes, seconds); calculate hemisphere
     from coordinates; pull out individually degrees,
     minutes, or seconds; add and subtract degrees, minutes,
-    and seconds.
+    and seconds. Code here originally inspired from code written by
+    Jeffrey D. Bogan (<http://bit.ly/CLongLatString>), but then
+    completely re-written.
 Version: 0.1.0
 Authors@R: c(
 	person("Scott", "Chamberlain", role = c("aut", "cre"),
@@ -38,7 +40,7 @@ VignetteBuilder: knitr
 Roxygen: list(markdown = TRUE)
 Encoding: UTF-8
 Language: en-US
-RoxygenNote: 7.0.2
+RoxygenNote: 7.1.0
 X-schema.org-applicationCategory: Geospatial
 X-schema.org-keywords: geospatial, data, latitude, longitude, parser, coordinates
 X-schema.org-isPartOf: https://ropensci.org
