@@ -6,14 +6,17 @@ Description: Parse geographic coordinates from various formats
     their parts (degree, minutes, seconds); calculate hemisphere
     from coordinates; pull out individually degrees,
     minutes, or seconds; add and subtract degrees, minutes,
-    and seconds. Code here originally inspired from code written by
-    Jeffrey D. Bogan (<http://bit.ly/CLongLatString>), but then
-    completely re-written.
+    and seconds. C++ code herein originally inspired from code
+    written by Jeffrey D. Bogan (<http://bit.ly/CLongLatString>),
+    but then completely re-written.
 Version: 0.1.0
 Authors@R: c(
 	person("Scott", "Chamberlain", role = c("aut", "cre"),
         email = "sckott@protonmail.com",
         comment = c(ORCID = "0000-0003-1444-9135")),
+    person("Jeffrey", "Bogan", role = "ctb",
+        comment = "C++ code originally from Jeffrey Bogan,
+        but completely re-written"),
     person("Julien", "Brun", role = "rev",
         comment = "Julien Brun reviewed the package,
         see https://github.com/ropensci/onboarding/issues/341"),
