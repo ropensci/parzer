@@ -135,6 +135,18 @@ bool has_non_direction_letters(std::string s, std::string reggex) {
   return z;
 };
 
+bool has_e_with_trailing_numbers(std::string s) {
+  bool res = false;
+  s = str_tolower(s);
+  std::regex reg("[0-9]+e[0-9]+");
+  std::smatch match;
+  if (std::regex_search(s, match, reg)) {
+    res = true;
+    Rcpp::warning("invalid characters, got: " + s);
+  };
+  return res;
+};
+
 bool invalid_degree_letter(std::string s, std::string reggex) {
   bool res = false;
 
@@ -231,7 +243,8 @@ float convert_lon(std::string str) {
   if (
       str.size() == 0 ||
       !any_digits(str) ||
-      has_non_direction_letters(str, "abcfghijklmnopqrstuvxyz")
+      has_non_direction_letters(str, "abcfghijklmnopqrstuvxyz") ||
+      has_e_with_trailing_numbers(str)
   ) {
     ret = NA_REAL;
   } else if (count_direction_matches(str, "[EWew]") > 1) {
