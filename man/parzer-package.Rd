@@ -4,7 +4,10 @@
 \name{parzer-package}
 \alias{parzer-package}
 \alias{parzer}
-\title{parzer - parse geographic coordinates}
+\title{parzer}
+\description{
+parse geographic coordinates
+}
 \author{
 Scott Chamberlain \email{myrmecocystus@gmail.com}
 }
