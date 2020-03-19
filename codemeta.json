@@ -8,10 +8,13 @@
   "description": "Parse geographic coordinates from various formats\n    to decimal degree numeric values. Parse coordinates into\n    their parts (degree, minutes, seconds); calculate hemisphere\n    from coordinates; pull out individually degrees,\n    minutes, or seconds; add and subtract degrees, minutes,\n    and seconds. C++ code herein originally inspired from code\n    written by Jeffrey D. Bogan (<http://bit.ly/CLongLatString>),\n    but then completely re-written.",
   "name": "parzer: Parse Messy Geographic Coordinates",
   "codeRepository": "https://github.com/ropensci/parzer",
-  "relatedLink": ["https://docs.ropensci.org/parzer/", "https://docs.ropensci.org/parzer"],
+  "relatedLink": [
+    "https://docs.ropensci.org/parzer/",
+    "https://docs.ropensci.org/parzer"
+  ],
   "issueTracker": "https://github.com/ropensci/parzer/issues",
   "license": "https://spdx.org/licenses/MIT",
-  "version": "0.1.0",
+  "version": "0.1.0.91",
   "programmingLanguage": {
     "@type": "ComputerLanguage",
     "name": "R",
@@ -124,7 +127,7 @@
   "isPartOf": "https://ropensci.org",
   "keywords": ["geospatial", "data", "latitude", "longitude", "parser", "coordinates", "r", "rstats", "geo"],
   "readme": "https://github.com/ropensci/parzer/blob/master/README.md",
-  "fileSize": "15.288KB",
+  "fileSize": "15.384KB",
   "contIntegration": ["https://travis-ci.com/ropensci/parzer", "https://ci.appveyor.com/project/sckott/parzer", "https://codecov.io/github/ropensci/parzer?branch=master"],
   "developmentStatus": "https://www.repostatus.org/#wip",
   "review": {
@@ -132,5 +135,11 @@
     "url": "https://github.com/ropensci/software-review/issues/341",
     "provider": "https://ropensci.org"
   },
-  "releaseNotes": "https://github.com/ropensci/parzer/blob/master/NEWS.md"
+  "releaseNotes": "https://github.com/ropensci/parzer/blob/master/NEWS.md",
+  "provider": {
+    "@id": "https://cran.r-project.org",
+    "@type": "Organization",
+    "name": "Comprehensive R Archive Network (CRAN)",
+    "url": "https://cran.r-project.org"
+  }
 }
