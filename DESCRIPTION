@@ -9,7 +9,7 @@ Description: Parse geographic coordinates from various formats
     and seconds. C++ code herein originally inspired from code
     written by Jeffrey D. Bogan (<http://bit.ly/CLongLatString>),
     but then completely re-written.
-Version: 0.1.0
+Version: 0.1.0.91
 Authors@R: c(
 	person("Scott", "Chamberlain", role = c("aut", "cre"),
         email = "sckott@protonmail.com",
