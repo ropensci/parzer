@@ -8,7 +8,8 @@ parzer
 [![Build status](https://ci.appveyor.com/api/projects/status/m1aackjdyp2f2x3f?svg=true)](https://ci.appveyor.com/project/sckott/parzer)
 [![codecov.io](https://codecov.io/github/ropensci/parzer/coverage.svg?branch=master)](https://codecov.io/github/ropensci/parzer?branch=master)
 [![](https://badges.ropensci.org/341_status.svg)](https://github.com/ropensci/onboarding/issues/341)
-
+[![rstudio mirror downloads](http://cranlogs.r-pkg.org/badges/parzer?color=C9A115)](https://github.com/metacran/cranlogs.app)
+[![cran version](https://www.r-pkg.org/badges/version/parzer)](https://cran.r-project.org/package=parzer)
 
 `parzer` parses messy geographic coordinates
 
@@ -99,7 +100,8 @@ longitudes
 parse_lon("45W54.2356")
 #> [1] -45.90393
 parse_lon("45E54.2356")
-#> [1] 45.90393
+#> Warning in pz_parse_lon(lon): invalid characters, got: 45e54.2356
+#> [1] NaN
 parse_lon("-45.98739874")
 #> [1] -45.9874
 parse_lon("40.123°")
@@ -113,13 +115,13 @@ parse_lon("W45 04.25764")
 
 # bad values
 parse_lon("361")
-#> Warning in pz_parse_lon(lon): not within -90/90 range, got: 361
+#> Warning in pz_parse_lon(lon): not within -180/360 range, got: 361
 #> [1] NaN
 
 # many inputs
 x <- c("45W54.2356", "361", 45, 45.234234, "-45.98739874")
 parse_lon(x)
-#> Warning in pz_parse_lon(lon): not within -90/90 range, got: 361
+#> Warning in pz_parse_lon(lon): not within -180/360 range, got: 361
 #> [1] -45.90393       NaN  45.00000  45.23423 -45.98740
 
 # parse_lon("N455698735", "HDDMMmmmmm") # custom formats not ready yet

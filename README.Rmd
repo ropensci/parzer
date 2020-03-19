@@ -15,7 +15,8 @@ knitr::opts_chunk$set(
 [![Build status](https://ci.appveyor.com/api/projects/status/m1aackjdyp2f2x3f?svg=true)](https://ci.appveyor.com/project/sckott/parzer)
 [![codecov.io](https://codecov.io/github/ropensci/parzer/coverage.svg?branch=master)](https://codecov.io/github/ropensci/parzer?branch=master)
 [![](https://badges.ropensci.org/341_status.svg)](https://github.com/ropensci/onboarding/issues/341)
-
+[![rstudio mirror downloads](http://cranlogs.r-pkg.org/badges/parzer?color=C9A115)](https://github.com/metacran/cranlogs.app)
+[![cran version](https://www.r-pkg.org/badges/version/parzer)](https://cran.r-project.org/package=parzer)
 
 `parzer` parses messy geographic coordinates
 
