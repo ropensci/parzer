@@ -35,7 +35,7 @@ attributes:
 	${RSCRIPT} -e 'library(methods); Rcpp::compileAttributes()'
 
 readme: README.Rmd
-	${RSCRIPT} -e "knitr::knit('README.Rmd')"
+	${RSCRIPT} -e "Sys.setenv(NOT_CRAN='true'); knitr::knit('README.Rmd')"
 
 vign_intro:
 		cd vignettes;\
