@@ -37,5 +37,10 @@ attributes:
 readme: README.Rmd
 	${RSCRIPT} -e "knitr::knit('README.Rmd')"
 
+vign_intro:
+		cd vignettes;\
+		${RSCRIPT} -e "Sys.setenv(NOT_CRAN='true'); knitr::knit('parzer.Rmd.og', output = 'parzer.Rmd')";\
+		cd ..
+
 # No real targets!
 .PHONY: all test doc install
