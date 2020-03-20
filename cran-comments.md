@@ -10,11 +10,7 @@
 
 ---
 
-This is a new release. I have read and agree to the the
-CRAN policies at https://cran.r-project.org/web/packages/policies.html
-
-This is a re-submission of the first version of this package, removing 
-commented out examples (all examples runs now), and fixing authors in DESCRIPTION file.
+This version fixes an issue with degree like symbols not being parsed.
 
 Thanks!
 Scott Chamberlain
