@@ -1,6 +1,7 @@
 context("parse_hemisphere")
 
 test_that("parse_hemisphere works", {
+  skip_on_cran()
   # NE
   ne <- parse_hemisphere("74.123E", "45N54.2356")
   # NW
@@ -25,6 +26,7 @@ test_that("parse_hemisphere works", {
 })
 
 test_that("parse_hemisphere - fails well", {
+  skip_on_cran()
   expect_error(parse_hemisphere(), "argument \"lon\" is missing")
   expect_error(parse_hemisphere(""), "argument \"lat\" is missing")
   expect_error(parse_hemisphere(mtcars), "lon must be of class")

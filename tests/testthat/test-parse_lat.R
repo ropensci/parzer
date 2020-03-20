@@ -1,6 +1,7 @@
 context("parse_lat")
 
 test_that("parse_lat works", {
+  skip_on_cran()
   aa <- parse_lat("45N54.2356")
 
   expect_is(aa, "numeric")
@@ -37,6 +38,7 @@ test_lats <- c(
 )
 
 test_that("parse_lat works: run through test_lats", {
+  skip_on_cran()
   out <- data.frame(input = test_lats, res = NA_real_,
     stringsAsFactors = FALSE)
   for (i in seq_along(test_lats)) {
@@ -49,6 +51,7 @@ test_that("parse_lat works: run through test_lats", {
 })
 
 test_that("parse_lat - fails well", {
+  skip_on_cran()
   expect_error(parse_lat(), "argument \"lat\" is missing")
   expect_error(parse_lat(mtcars), "lat must be of class")
 })
@@ -77,6 +80,7 @@ invalid_formats <- c(
 
 # res column should all give NaN
 test_that("parse_lat works: invalid formats fail as expected", {
+  skip_on_cran()
   out <- data.frame(input = invalid_formats, res = NA_real_,
                     stringsAsFactors = FALSE)
   for (i in seq_along(invalid_formats)) {

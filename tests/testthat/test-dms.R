@@ -1,6 +1,7 @@
 context("degree-minute-second fxns")
 
 test_that("pz_degree works", {
+  skip_on_cran()
   aa <- pz_degree(45.23323)
 
   expect_is(aa, "integer")
@@ -9,6 +10,7 @@ test_that("pz_degree works", {
 })
 
 test_that("pz_minute works", {
+  skip_on_cran()
   aa <- pz_minute(45.23323)
 
   expect_is(aa, "integer")
@@ -17,6 +19,7 @@ test_that("pz_minute works", {
 })
 
 test_that("pz_second works", {
+  skip_on_cran()
   aa <- pz_second(45.23323)
 
   expect_is(aa, "numeric")
@@ -53,6 +56,7 @@ test_lats <- c(
 )
 
 test_that("degree works with varied formats", {
+  skip_on_cran()
   # out <- data.frame(input = test_lats, res = NA_real_,
   #                   stringsAsFactors = FALSE)
   for (i in seq_along(test_lats)) {
@@ -64,6 +68,7 @@ test_that("degree works with varied formats", {
 })
 
 test_that("pz_degree - fails well", {
+  skip_on_cran()
   expect_error(pz_degree(), "is not TRUE")
   expect_error(pz_degree(4, 5), "is not TRUE")
   expect_error(pz_degree(mtcars), "lon must be of class")
@@ -91,6 +96,7 @@ invalid_formats <- c(
 )
 
 test_that("dms fxns fail as expected", {
+  skip_on_cran()
   out <- data.frame(input = invalid_formats, res = NA_real_,
                     stringsAsFactors = FALSE)
   for (i in seq_along(invalid_formats)) {
@@ -108,6 +114,7 @@ test_that("dms fxns fail as expected", {
 })
 
 test_that("dms adder fxns", {
+  skip_on_cran()
   # basic usage, one at a time
   deg1 <- pz_d(31)
   min1 <- pz_m(44)
@@ -143,6 +150,7 @@ test_that("dms adder fxns", {
 })
 
 test_that("dms fxns: utilities", {
+  skip_on_cran()
   # unclass_strip_atts
   z <- structure("a", foo = "bar")
   zz <- unclass_strip_atts(z)
