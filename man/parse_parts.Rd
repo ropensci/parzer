@@ -27,6 +27,7 @@ NA/NaN given upon error
 parse coordinates into degrees, minutes and seconds
 }
 \examples{
+\dontrun{
 parse_parts_lon("45E54.2356")
 parse_parts_lon("140.4183318")
 parse_parts_lon("174.6411133")
@@ -47,4 +48,5 @@ parse_parts_lat("N455698735")
 x <- c("40.123°", "40.123N74.123W", "191.89", 12, "N45 04.25764")
 parse_parts_lat(x)
 system.time(parse_parts_lat(rep(x, 10^2)))
+}
 }

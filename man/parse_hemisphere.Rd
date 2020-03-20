@@ -26,6 +26,7 @@ BEWARE: EXPERIMENTAL
 length(lon) == length(lat)
 }
 \examples{
+\dontrun{
 # NE
 parse_hemisphere("74.123E", "45N54.2356")
 # NW
@@ -45,4 +46,5 @@ pts <- rg_position(count = 1000)
 lons <- as.character(vapply(pts, "[[", 1, 1))
 lats <- as.character(vapply(pts, "[[", 1, 2))
 parse_hemisphere(lons, lats)
+}
 }

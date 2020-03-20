@@ -12,7 +12,7 @@
 #' a zero length string.
 #' 
 #' Warnings are thrown on invalid values
-#' @examples
+#' @examples \dontrun{
 #' # NE
 #' parse_hemisphere("74.123E", "45N54.2356")
 #' # NW
@@ -32,6 +32,7 @@
 #' lons <- as.character(vapply(pts, "[[", 1, 1))
 #' lats <- as.character(vapply(pts, "[[", 1, 2))
 #' parse_hemisphere(lons, lats)
+#' }
 parse_hemisphere <- function(lon, lat) {
   lint_inputs(lon, lat, "")
   stopifnot(length(lon) == length(lat))

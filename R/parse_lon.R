@@ -15,7 +15,7 @@
 #' <https://en.cppreference.com/w/cpp/error/out_of_range>
 #' - out of longitude range: not within -180/360 range
 #'
-#' @examples
+#' @examples \dontrun{
 #' parse_lon("")
 #' parse_lon("-181")
 #' parse_lon("-361")
@@ -54,6 +54,7 @@
 #' parse_lon("40:25:6E")
 #' parse_lon("40:25:5.994E")
 #' parse_lon("40d 25’ 6\" E")
+#' }
 parse_lon <- function(lon, format = NULL) {
   assert(lon, c("numeric", "integer", "character"))
   assert(format, "character")

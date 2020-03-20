@@ -32,6 +32,7 @@ see \url{https://en.cppreference.com/w/cpp/error/invalid_argument}
 }
 
 \examples{
+\dontrun{
 parse_lat("")
 parse_lat("-91")
 parse_lat("95")
@@ -67,4 +68,5 @@ parse_lat("40° 25´ 5.994\" N") # => 40.41833
 parse_lat("40:25:6N")
 parse_lat("40:25:5.994N")
 parse_lat("40d 25’ 6\" N")
+}
 }

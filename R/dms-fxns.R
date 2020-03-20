@@ -22,7 +22,7 @@ dms_helper <- function(lon = NULL, lat = NULL) {
 #' but `/` and `*` are only exported with a stop message to say it's not
 #' supported; otherwise you'd be allow to divide degrees by minutes, leading
 #' to nonsense.
-#' @examples
+#' @examples \dontrun{
 #' # extract parts of a coordinate value
 #' pz_degree(-45.23323)
 #' pz_minute(-45.23323)
@@ -49,6 +49,7 @@ dms_helper <- function(lon = NULL, lat = NULL) {
 #' pz_d(31) - pz_m(44) + pz_s(59)
 #' pz_d(-121) + pz_m(1) + pz_s(33)
 #' unclass(pz_d(31) + pz_m(44) + pz_s(59))
+#' }
 NULL
 
 #' @export

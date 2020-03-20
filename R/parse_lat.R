@@ -15,7 +15,7 @@
 #' <https://en.cppreference.com/w/cpp/error/out_of_range>
 #' - out of latitude range: not within -90/90 range
 #'
-#' @examples
+#' @examples \dontrun{
 #' parse_lat("")
 #' parse_lat("-91")
 #' parse_lat("95")
@@ -51,6 +51,7 @@
 #' parse_lat("40:25:6N")
 #' parse_lat("40:25:5.994N")
 #' parse_lat("40d 25’ 6\" N")
+#' }
 parse_lat <- function(lat, format = NULL) {
   assert(lat, c("numeric", "integer", "character"))
   assert(format, "character")
