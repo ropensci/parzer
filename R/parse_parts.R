@@ -12,9 +12,8 @@
 #' NA/NaN given upon error
 #'
 #' @examples
-#' parse_parts_lon("45E54.2356")
-#' \dontrun{
 #' parse_parts_lon("140.4183318")
+#' \dontrun{
 #' parse_parts_lon("174.6411133")
 #' parse_parts_lon("-45.98739874")
 #' parse_parts_lon("40.123W")
