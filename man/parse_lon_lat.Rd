@@ -22,8 +22,8 @@ parse longitude and latitude
 length(lon) == length(lat)
 }
 \examples{
-\dontrun{
 parse_lon_lat(-120.43, 49.12)
+\dontrun{
 parse_lon_lat(-120.43, 93)
 parse_lon_lat(-190, 49.12)
 parse_lon_lat(240, 49.12)

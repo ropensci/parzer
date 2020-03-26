@@ -63,7 +63,6 @@ supported; otherwise you'd be allow to divide degrees by minutes, leading
 to nonsense.
 }
 \examples{
-\dontrun{
 # extract parts of a coordinate value
 pz_degree(-45.23323)
 pz_minute(-45.23323)
@@ -73,6 +72,7 @@ pz_degree(lon = 178.23423)
 pz_minute(lon = 178.23423)
 pz_second(lon = 178.23423)
 
+\dontrun{
 pz_degree(lat = c(45.23323, "40:25:6N", "40° 25´ 5.994 S"))
 pz_minute(lat = c(45.23323, "40:25:6N", "40° 25´ 5.994 S"))
 pz_second(lat = c(45.23323, "40:25:6N", "40° 25´ 5.994 S"))

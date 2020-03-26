@@ -32,8 +32,8 @@ see \url{https://en.cppreference.com/w/cpp/error/invalid_argument}
 }
 
 \examples{
-\dontrun{
 parse_lon("")
+\dontrun{
 parse_lon("-181")
 parse_lon("-361")
 parse_lon("95")

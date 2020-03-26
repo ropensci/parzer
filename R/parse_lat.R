@@ -15,8 +15,9 @@
 #' <https://en.cppreference.com/w/cpp/error/out_of_range>
 #' - out of latitude range: not within -90/90 range
 #'
-#' @examples \dontrun{
+#' @examples
 #' parse_lat("")
+#' \dontrun{
 #' parse_lat("-91")
 #' parse_lat("95")
 #' parse_lat("asdfaf")

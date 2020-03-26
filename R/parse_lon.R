@@ -15,8 +15,9 @@
 #' <https://en.cppreference.com/w/cpp/error/out_of_range>
 #' - out of longitude range: not within -180/360 range
 #'
-#' @examples \dontrun{
+#' @examples
 #' parse_lon("")
+#' \dontrun{
 #' parse_lon("-181")
 #' parse_lon("-361")
 #' parse_lon("95")

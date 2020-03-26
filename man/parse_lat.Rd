@@ -32,8 +32,8 @@ see \url{https://en.cppreference.com/w/cpp/error/invalid_argument}
 }
 
 \examples{
-\dontrun{
 parse_lat("")
+\dontrun{
 parse_lat("-91")
 parse_lat("95")
 parse_lat("asdfaf")

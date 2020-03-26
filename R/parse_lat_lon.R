@@ -6,8 +6,9 @@
 #' @details length(lon) == length(lat)
 #' @return data.frame, with columns lon, lat. on an invalid values, an `NA`
 #' is returned. In addition, warnings are thrown on invalid values
-#' @examples \dontrun{
+#' @examples
 #' parse_lon_lat(-120.43, 49.12)
+#' \dontrun{
 #' parse_lon_lat(-120.43, 93)
 #' parse_lon_lat(-190, 49.12)
 #' parse_lon_lat(240, 49.12)
