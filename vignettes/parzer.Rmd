@@ -1,7 +1,7 @@
 ---
 title: "Introduction to the parzer package"
 author: "Scott Chamberlain"
-date: "2020-03-20"
+date: "2020-03-26"
 output:
   html_document:
     toc: true
