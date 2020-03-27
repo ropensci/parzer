@@ -10,7 +10,7 @@
 
 ---
 
-This version fixes an issue with degree like symbols not being parsed; and fixes a failing check on the Additional issues "clang-UBSAN" check.
+This version fixes an issue with degree like symbols not being parsed; and fixes failing checks on R-devel debian clang, and the Additional issues "clang-UBSAN" check.
 
 Thanks!
 Scott Chamberlain
