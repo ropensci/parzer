@@ -1,9 +1,8 @@
 language: r
 cache: packages
-sudo: required
-dist: trusty
+os: linux
 
-matrix:
+jobs:
   include:
     - os: linux
       r: release
@@ -11,7 +10,7 @@ matrix:
       env: R_CODECOV=true
     - os: linux
       r: devel
-      before_install: mkdir -p ~/.R && echo "CXX1X = g++-6" >> ~/.R/Makevars
+      before_install: mkdir -p ~/.R && echo "CXX11 = g++-6" >> ~/.R/Makevars
     - os: osx
       r: oldrel
       osx_image: xcode8.3
@@ -24,6 +23,14 @@ addons:
     packages:
     - r-cran-roxygen2
     - g++-6
+
+r_github_packages:
+  - jimhester/covr
+
+r_check_args: "--as-cran --run-dontrun"
+
+after_success:
+  - if [[ "${R_CODECOV}" ]]; then R -e 'covr::codecov()'; fi
 
 notifications:
   email:

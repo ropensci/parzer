@@ -22,16 +22,25 @@ check: build
 	@rm -f `ls -1tr ${PACKAGE}*gz | tail -n1`
 	@rm -rf ${PACKAGE}.Rcheck
 
+check_windows:
+	${RSCRIPT} -e "devtools::check_win_devel(); devtools::check_win_release()"
+
+eg:
+	${RSCRIPT} -e "devtools::run_examples()"
+
 clean:
 	rm -f src/*.o src/*.so
 
 attributes:
 	${RSCRIPT} -e 'library(methods); Rcpp::compileAttributes()'
 
-README.md: README.Rmd
-	${RSCRIPT} -e "library(methods); knitr::knit('$<')"
-	sed -i.bak 's/[[:space:]]*$$//' README.md
-	rm -f $@.bak
+readme: README.Rmd
+	${RSCRIPT} -e "Sys.setenv(NOT_CRAN='true'); knitr::knit('README.Rmd')"
+
+vign_intro:
+		cd vignettes;\
+		${RSCRIPT} -e "Sys.setenv(NOT_CRAN='true'); knitr::knit('parzer.Rmd.og', output = 'parzer.Rmd')";\
+		cd ..
 
 # No real targets!
 .PHONY: all test doc install

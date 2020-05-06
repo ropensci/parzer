@@ -1,0 +1,137 @@
+---
+title: "parzer use cases"
+author: "Scott Chamberlain"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    theme: readable
+vignette: >
+  %\VignetteIndexEntry{parzer use cases}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r echo=FALSE}
+NOT_CRAN <- identical(tolower(Sys.getenv("NOT_CRAN")), "true")
+knitr::opts_chunk$set(
+  comment = "#>",
+  collapse = TRUE,
+  warning = FALSE,
+  message = FALSE,
+  purl = NOT_CRAN,
+  eval = NOT_CRAN
+)
+```
+
+## Use case: working with spatial R packages
+
+```{r}
+library("parzer")
+if (!requireNamespace("sf")) install.packages("sf")
+library("sf")
+```
+
+One may find themselves having to clean up messy coordinates as part of
+their project/work/etc. How does this look when fit into a workflow going 
+all the way to visualization?
+
+Let's say you have the following messy coordinates that you've compiled
+from different places, leading to a variety of messy formats:
+
+```{r}
+lats <- c(
+  "46.4183",
+  "46.4383° N",
+  "46.5683° N",
+  "46° 27´ 5.4\" N",
+  "46° 25.56’",
+  "N46°24’4.333"
+)
+lons <- c(
+  "25.7391",
+  "E25°34’6.4533",
+  "25.3391° E",
+  "25.8391° E",
+  "25° 35.56’",
+  "E25°34’4.333"
+)
+```
+
+Parse messy coordinates
+
+
+```{r}
+dat <- tibble::tibble(
+  longitude = parse_lon(lons),
+  latitude = parse_lat(lats))
+dat
+```
+
+Combine coordinates with other data
+
+
+```{r}
+dat$shape <- c("round", "square", "triangle", "round", "square", "square")
+dat$color <- c("blue", "yellow", "green", "red", "green", "yellow")
+dat
+```
+
+Coerce to an sf object
+
+```{r}
+datsf <- sf::st_as_sf(dat, coords = c('longitude', 'latitude'))
+datsf
+```
+
+Calculate the center of the plot view
+
+```{r}
+center_lon <- mean(dat$longitude)
+center_lat <- mean(dat$latitude)
+```
+
+Plot data using the `leaflet` package
+
+```{r out.with="100%"}
+if (!requireNamespace("leaflet")) install.packages("leaflet")
+library("leaflet")
+leaflet() %>%
+  addTiles() %>%
+  addMarkers(data = datsf) %>%
+  setView(center_lon, center_lat, zoom = 10)
+```
+
+We'd like to have data only for a certain area, e.g., a political boundary or
+a park boundary. We can clip the data to a bounding box using `sf::st_crop()`.
+
+First, define the bounding box, and visualize
+
+
+```{r}
+bbox <- c(
+  xmin = 25.42813, ymin = 46.39455,
+  xmax = 25.68769, ymax = 46.60346
+)
+leaflet() %>%
+  addTiles() %>%
+  addRectangles(bbox[['xmin']], bbox[['ymin']], bbox[['xmax']], bbox[['ymax']]) %>%
+  setView(center_lon, center_lat, zoom = 10)
+````
+
+Crop the data to the bounding box
+
+```{r}
+datsf_c <- st_crop(datsf, bbox)
+```
+
+Plot the new data
+
+
+```{r out.with="100%"}
+leaflet() %>%
+  addTiles() %>%
+  addMarkers(data = datsf_c) %>%
+  setView(center_lon, center_lat, zoom = 10)
+```

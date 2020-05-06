@@ -9,3 +9,8 @@ man-roxygen
 notes.md
 .github
 Makefile
+^docs$
+reviewer_replies.md
+vignettes/use_cases.Rmd
+vignettes/use_cases.html
+^codemeta\.json$

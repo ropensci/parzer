@@ -9,8 +9,8 @@ pz_parse_lon <- function(x) {
     .Call('_parzer_pz_parse_lon', PACKAGE = 'parzer', x)
 }
 
-pz_hemisphere <- function(lat, lon) {
-    .Call('_parzer_pz_hemisphere', PACKAGE = 'parzer', lat, lon)
+pz_hemisphere <- function(lon, lat) {
+    .Call('_parzer_pz_hemisphere', PACKAGE = 'parzer', lon, lat)
 }
 
 split_decimal_degree <- function(x, fmt = "dms") {

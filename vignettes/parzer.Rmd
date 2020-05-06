@@ -1,18 +1,22 @@
-parzer
-======
+---
+title: "Introduction to the parzer package"
+author: "Scott Chamberlain"
+date: "2020-03-26"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    theme: readable
+vignette: >
+  %\VignetteIndexEntry{Introduction to the parzer package}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
 
 
 
-[![Project Status: WIP – Initial development is in progress, but there has not yet been a stable, usable release suitable for the public.](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip)
-[![cran checks](https://cranchecks.info/badges/worst/parzer)](https://cranchecks.info/pkgs/parzer)
-[![Build Status](https://travis-ci.com/ropensci/parzer.svg?branch=master)](https://travis-ci.com/ropensci/parzer)
-[![Build status](https://ci.appveyor.com/api/projects/status/m1aackjdyp2f2x3f?svg=true)](https://ci.appveyor.com/project/sckott/parzer)
-[![codecov.io](https://codecov.io/github/ropensci/parzer/coverage.svg?branch=master)](https://codecov.io/github/ropensci/parzer?branch=master)
-[![](https://badges.ropensci.org/341_status.svg)](https://github.com/ropensci/onboarding/issues/341)
-[![rstudio mirror downloads](http://cranlogs.r-pkg.org/badges/parzer?color=C9A115)](https://github.com/metacran/cranlogs.app)
-[![cran version](https://www.r-pkg.org/badges/version/parzer)](https://cran.r-project.org/package=parzer)
 
-`parzer` parses messy geographic coordinates
+`parzer` parses messy coordinates
 
 You may get data from a published study or a colleague, and the coordinates
 may be in some messy format that you'd like to clean up to e.g., have 
@@ -34,14 +38,7 @@ all decimal degree numeric data.
  - `pz_second`
 
 
-## Installation
-
-Stable version
-
-
-```r
-install.packages("parzer")
-```
+## Install
 
 Development version
 
@@ -57,7 +54,7 @@ library("parzer")
 
 ## parse
 
-latitudes
+### latitudes
 
 
 ```r
@@ -69,12 +66,8 @@ parse_lat("40.123°")
 #> [1] 40.123
 parse_lat("40.123N")
 #> [1] 40.123
-parse_lat("40.123S")
-#> [1] -40.123
 parse_lat("N45 04.25764")
 #> [1] 45.07096
-parse_lat("S45 04.25764")
-#> [1] -45.07096
 
 # bad values -> NaN
 parse_lat("191.89")
@@ -94,23 +87,18 @@ parse_lat(x)
 # parse_lat("N455698735", "HDDMMmmmmm") # custom formats not ready yet
 ```
 
-longitudes
+### longitudes
 
 
 ```r
 parse_lon("45W54.2356")
 #> [1] -45.90393
-parse_lon("45E54.2356")
-#> Warning in pz_parse_lon(lon): invalid characters, got: 45e54.2356
-#> [1] NaN
 parse_lon("-45.98739874")
 #> [1] -45.9874
 parse_lon("40.123°")
 #> [1] 40.123
 parse_lon("74.123W")
 #> [1] -74.123
-parse_lon("74.123E")
-#> [1] 74.123
 parse_lon("W45 04.25764")
 #> [1] -45.07096
 
@@ -120,15 +108,14 @@ parse_lon("361")
 #> [1] NaN
 
 # many inputs
-x <- c("45W54.2356", "361", 45, 45.234234, "-45.98739874")
+x <- c("45W54.2356", "181", 45, 45.234234, "-45.98739874")
 parse_lon(x)
-#> Warning in pz_parse_lon(lon): not within -180/360 range, got: 361
-#> [1] -45.90393       NaN  45.00000  45.23423 -45.98740
+#> [1] -45.90393 181.00000  45.00000  45.23423 -45.98740
 
 # parse_lon("N455698735", "HDDMMmmmmm") # custom formats not ready yet
 ```
 
-both lon and lat together
+### both lon and lat together
 
 
 ```r
@@ -143,16 +130,16 @@ parse_lon_lat(lons, lats)
 #> 5 -45.98740 45.07096
 ```
 
-parse into degree, min, sec parts
+### parse into degree, min, sec parts
 
 
 ```r
-parse_parts_lon("-74.6411133")
-#>   deg min      sec
-#> 1 -74  38 28.00784
 parse_parts_lat("45N54.2356")
 #>   deg min      sec
 #> 1  45  54 14.13674
+parse_parts_lon("-74.6411133")
+#>   deg min      sec
+#> 1 -74  38 28.00784
 # many inputs
 x <- c("40.123°", "40.123N74.123W", "191.89", 12, "N45 04.25764")
 parse_parts_lon(x)
@@ -164,7 +151,7 @@ parse_parts_lon(x)
 #> 5  NA  NA      NaN
 ```
 
-get hemisphere from lat/lon coords
+### get hemisphere from lat/lon coords
 
 
 ```r
@@ -178,7 +165,7 @@ parse_hemisphere("120", "-40.4183318")
 #> [1] "SE"
 ```
 
-get degree, minutes, or seconds separately
+### get degree, minutes, or seconds separately
 
 
 ```r
@@ -199,7 +186,7 @@ pz_second(lon = coords)
 #> [1] 59.626686  6.005895  6.005895
 ```
 
-add or subtract degrees, minutes, or seconds
+### add or subtract degrees, minutes, or seconds
 
 
 ```r
@@ -214,25 +201,3 @@ pz_d(31) + pz_m(44) + pz_s(59)
 pz_d(-121) + pz_m(1) + pz_s(33)
 #> -120.9742
 ```
-
-## Similar art
-
-- `sp::char2dms`: is most similar to `parzer::parse_lat` and `parzer::parse_lon`. However,
-with `sp::char2dms` you have to specify the termination character for each of degree,
-minutes and seconds. `parzer` does this for the user.
-- `biogeo::dms2dd`: very unlike functions in this package. You must pass separate degrees,
-minutes, seconds and direction to `dms2dd`. No exact analog is found in `parzer`, whos
-main focus is parsing messy geographic coordinates in strings to a more machine readable
-version
-
-## Meta
-
-* Please [report any issues or bugs](https://github.com/ropensci/parzer/issues).
-* License: MIT
-* Get citation information for `parzer` in R doing `citation(package = 'parzer')`
-* Please note that this project is released with a [Contributor Code of Conduct][coc]
-By participating in this project you agree to abide by its terms.
-
-[coc]: https://github.com/ropensci/parzer/blob/master/CODE_OF_CONDUCT.md
-
-[![ropensci_footer](https://ropensci.org/public_images/ropensci_footer.png)](https://ropensci.org)

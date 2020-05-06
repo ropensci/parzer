@@ -1,23 +1,49 @@
 Package: parzer
 Type: Package
-Title: Parse Coordinates
-Description: Parse Coordinates.
-Version: 0.0.3.9110
+Title: Parse Messy Geographic Coordinates
+Description: Parse geographic coordinates from various formats
+    to decimal degree numeric values. Parse coordinates into
+    their parts (degree, minutes, seconds); calculate hemisphere
+    from coordinates; pull out individually degrees,
+    minutes, or seconds; add and subtract degrees, minutes,
+    and seconds. C++ code herein originally inspired from code
+    written by Jeffrey D. Bogan (<http://bit.ly/CLongLatString>),
+    but then completely re-written.
+Version: 0.1.4.91
 Authors@R: c(
-		person("Scott", "Chamberlain", role = c("aut", "cre"),
-            email = "sckott@protonmail.com")
+	person("Scott", "Chamberlain", role = c("aut", "cre"),
+        email = "sckott@protonmail.com",
+        comment = c(ORCID = "0000-0003-1444-9135")),
+    person("Jeffrey", "Bogan", role = "ctb",
+        comment = "C++ code originally from Jeffrey Bogan,
+        but completely re-written"),
+    person("Julien", "Brun", role = "rev",
+        comment = "Julien Brun reviewed the package,
+        see https://github.com/ropensci/onboarding/issues/341"),
+    person("Maria", "Munafó", role = "rev",
+        comment = "Maria Munafó reviewed the package,
+        see https://github.com/ropensci/onboarding/issues/341"),
+    person("rOpenSci", role = "fnd",
+        comment = "https://ropensci.org")
 	)
 License: MIT + file LICENSE
-URL: https://github.com/ropenscilabs/parzer
-BugReports: https://github.com/ropenscilabs/parzer/issues
+URL: https://github.com/ropensci/parzer (devel)
+  https://docs.ropensci.org/parzer (docs)
+BugReports: https://github.com/ropensci/parzer/issues
 Imports:
-    Rcpp (>= 0.12.12)
+    Rcpp (>= 1.0.2)
 Suggests:
-    roxygen2 (>= 6.0.1),
     testthat,
-    randgeo
+    randgeo,
+    knitr,
+    rmarkdown
 LinkingTo: Rcpp
 SystemRequirements: C++11
+VignetteBuilder: knitr
 Roxygen: list(markdown = TRUE)
 Encoding: UTF-8
-RoxygenNote: 6.1.1
+Language: en-US
+RoxygenNote: 7.1.0
+X-schema.org-applicationCategory: Geospatial
+X-schema.org-keywords: geospatial, data, latitude, longitude, parser, coordinates
+X-schema.org-isPartOf: https://ropensci.org

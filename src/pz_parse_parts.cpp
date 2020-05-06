@@ -9,11 +9,14 @@ List split_decimal_degree(float x, std::string fmt = "dms") {
   float thirtysixh = 3600;
 
   double dir_val = 1.0;
+  if ( R_IsNA(x)) {
+    return List::create(NA_REAL, NA_REAL, NA_REAL);
+  };
   auto x_str = Rcpp::toString(x);
   if (is_negative(x_str)) {
     dir_val = -1.0;
   };
-  x = abs(x);
+  x = fabs(x);
 
   int d = static_cast<int>(x);
   int m = static_cast<int>((x - d) * sixty);

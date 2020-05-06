@@ -6,7 +6,7 @@
 \alias{parzer}
 \title{parzer}
 \description{
-parzer
+parse geographic coordinates
 }
 \author{
 Scott Chamberlain \email{myrmecocystus@gmail.com}

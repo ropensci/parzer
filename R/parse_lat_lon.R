@@ -1,26 +1,29 @@
-#' parse latitude and longitude as separate inputs
+#' parse longitude and latitude
 #'
 #' @export
-#' @param lat (character/numeric/integer) one or more latitude values
 #' @param lon (character/numeric/integer) one or more longitude values
-#' @details length(lat) == length(lon)
-#' @return data.frame, with columns lat, lon
+#' @param lat (character/numeric/integer) one or more latitude values
+#' @details length(lon) == length(lat)
+#' @return data.frame, with columns lon, lat. on an invalid values, an `NA`
+#' is returned. In addition, warnings are thrown on invalid values
 #' @examples
-#' parse_lat_lon(49.12, -120.43)
-#' parse_lat_lon(93, -120.43)
-#' parse_lat_lon(49.12, -190)
-#' parse_lat_lon(49.12, 240)
-#' parse_lat_lon(92, -190)
+#' parse_lon_lat(-120.43, 49.12)
+#' \dontrun{
+#' parse_lon_lat(-120.43, 93)
+#' parse_lon_lat(-190, 49.12)
+#' parse_lon_lat(240, 49.12)
+#' parse_lon_lat(-190, 92)
 #' # many
-#' lats <- c("40.123°", "40.123N74.123W", "191.89", 12, "N45 04.25764")
 #' lons <- c("45W54.2356", "181", 45, 45.234234, "-45.98739874")
-#' parse_lat_lon(lats, lons)
-parse_lat_lon <- function(lat, lon) {
-  lint_inputs(lat, lon, "")
-  stopifnot(length(lat) == length(lon))
+#' lats <- c("40.123°", "40.123N74.123W", "191.89", 12, "N45 04.25764")
+#' parse_lon_lat(lons, lats)
+#' }
+parse_lon_lat <- function(lon, lat) {
+  lint_inputs(lon, lat, "")
+  stopifnot(length(lon) == length(lat))
   data.frame(
-    lat = pz_parse_lat(as.character(lat)),
     lon = pz_parse_lon(as.character(lon)),
+    lat = pz_parse_lat(as.character(lat)),
     stringsAsFactors = FALSE
   )
 }

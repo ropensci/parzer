@@ -2,11 +2,12 @@
 using namespace Rcpp;
 // [[Rcpp::plugins(cpp11)]]
 
+#include <string>
 #include <regex>
+#include <iterator>
 #include <iostream>
 #include <sstream>
 #include <cstdlib>
-#include <string>
 #include <cstdio>
 #include <cmath>
 #include <functional>
@@ -134,6 +135,18 @@ bool has_non_direction_letters(std::string s, std::string reggex) {
   return z;
 };
 
+bool has_e_with_trailing_numbers(std::string s) {
+  bool res = false;
+  s = str_tolower(s);
+  std::regex reg("[0-9]+e[0-9]+");
+  std::smatch match;
+  if (std::regex_search(s, match, reg)) {
+    res = true;
+    Rcpp::warning("invalid characters, got: " + s);
+  };
+  return res;
+};
+
 bool invalid_degree_letter(std::string s, std::string reggex) {
   bool res = false;
 
@@ -195,13 +208,13 @@ float convert_lat(std::string str) {
       ret = NA_REAL;
     };
     if (nums.size() == 1) {
-      ret = abs(nums[0]);
+      ret = fabs(nums[0]);
     };
     if (nums.size() == 2) {
-      ret = abs(nums[0]) + decimal_minute(nums[1]);
+      ret = fabs(nums[0]) + decimal_minute(nums[1]);
     };
     if (nums.size() == 3) {
-      ret = abs(nums[0]) + decimal_minute(nums[1]) + decimal_second(nums[2]);
+      ret = fabs(nums[0]) + decimal_minute(nums[1]) + decimal_second(nums[2]);
     };
     if (nums.size() > 3) {
       Rcpp::warning("invalid format, more than 3 numeric slots, got: " + str);
@@ -217,7 +230,8 @@ float convert_lat(std::string str) {
     if (!NumericVector::is_na(ret)) {
       if (!check_lat(ret)) {
         ret = NA_REAL;
-        Rcpp::warning("not within -90/90 range, got: " + str);
+        Rcpp::warning("not within -90/90 range, got: " + str +
+          "\n  check that you did not invert lon and lat");
       };
     };
   };
@@ -229,7 +243,8 @@ float convert_lon(std::string str) {
   if (
       str.size() == 0 ||
       !any_digits(str) ||
-      has_non_direction_letters(str, "abcfghijklmnopqrstuvxyz")
+      has_non_direction_letters(str, "abcfghijklmnopqrstuvxyz") ||
+      has_e_with_trailing_numbers(str)
   ) {
     ret = NA_REAL;
   } else if (count_direction_matches(str, "[EWew]") > 1) {
@@ -253,13 +268,13 @@ float convert_lon(std::string str) {
       ret = NA_REAL;
     };
     if (nums.size() == 1) {
-      ret = abs(nums[0]);
+      ret = fabs(nums[0]);
     };
     if (nums.size() == 2) {
-      ret = abs(nums[0]) + decimal_minute(nums[1]);
+      ret = fabs(nums[0]) + decimal_minute(nums[1]);
     };
     if (nums.size() == 3) {
-      ret = abs(nums[0]) + decimal_minute(nums[1]) + decimal_second(nums[2]);
+      ret = fabs(nums[0]) + decimal_minute(nums[1]) + decimal_second(nums[2]);
     };
     if (nums.size() > 3) {
       Rcpp::warning("invalid format, more than 3 numeric slots, got: " + str);
@@ -275,7 +290,7 @@ float convert_lon(std::string str) {
     if (!NumericVector::is_na(ret)) {
       if (!check_lon(ret)) {
         ret = NA_REAL;
-        Rcpp::warning("not within -90/90 range, got: " + str);
+        Rcpp::warning("not within -180/360 range, got: " + str);
       };
     };
   };

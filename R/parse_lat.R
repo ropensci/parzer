@@ -17,6 +17,7 @@
 #'
 #' @examples
 #' parse_lat("")
+#' \dontrun{
 #' parse_lat("-91")
 #' parse_lat("95")
 #' parse_lat("asdfaf")
@@ -51,13 +52,10 @@
 #' parse_lat("40:25:6N")
 #' parse_lat("40:25:5.994N")
 #' parse_lat("40d 25’ 6\" N")
-#'
-#' # user specfied format
-#' # %C, %c, %H %h %D, %d, %M, %m, %S, and %s
-#' # parse_lat("40.255994", "")
+#' }
 parse_lat <- function(lat, format = NULL) {
   assert(lat, c("numeric", "integer", "character"))
   assert(format, "character")
   lat <- scrub(lat)
-  if (is.null(format)) pz_parse_lat(lat) else stop("format handling not ready yet")
+  if (is.null(format)) pz_parse_lat(lat) else stop_form()
 }

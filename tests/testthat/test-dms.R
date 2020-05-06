@@ -1,6 +1,7 @@
 context("degree-minute-second fxns")
 
 test_that("pz_degree works", {
+  skip_on_cran()
   aa <- pz_degree(45.23323)
 
   expect_is(aa, "integer")
@@ -9,6 +10,7 @@ test_that("pz_degree works", {
 })
 
 test_that("pz_minute works", {
+  skip_on_cran()
   aa <- pz_minute(45.23323)
 
   expect_is(aa, "integer")
@@ -17,6 +19,7 @@ test_that("pz_minute works", {
 })
 
 test_that("pz_second works", {
+  skip_on_cran()
   aa <- pz_second(45.23323)
 
   expect_is(aa, "numeric")
@@ -53,20 +56,22 @@ test_lats <- c(
 )
 
 test_that("degree works with varied formats", {
+  skip_on_cran()
   # out <- data.frame(input = test_lats, res = NA_real_,
   #                   stringsAsFactors = FALSE)
   for (i in seq_along(test_lats)) {
-    expect_equal(pz_degree(test_lats[i]), 40)
-    expect_equal(pz_minute(test_lats[i]), 25)
-    expect_equal(round(pz_second(test_lats[i])), 6)
+    expect_equal(pz_degree(lat = test_lats[i]), 40)
+    expect_equal(pz_minute(lat = test_lats[i]), 25)
+    expect_equal(round(pz_second(lat = test_lats[i])), 6)
     # out[i, "res"] <- degree(test_lats[i])
   }
 })
 
 test_that("pz_degree - fails well", {
+  skip_on_cran()
   expect_error(pz_degree(), "is not TRUE")
   expect_error(pz_degree(4, 5), "is not TRUE")
-  expect_error(pz_degree(mtcars), "lat must be of class")
+  expect_error(pz_degree(mtcars), "lon must be of class")
 })
 
 # invalid formats
@@ -91,14 +96,67 @@ invalid_formats <- c(
 )
 
 test_that("dms fxns fail as expected", {
+  skip_on_cran()
   out <- data.frame(input = invalid_formats, res = NA_real_,
                     stringsAsFactors = FALSE)
   for (i in seq_along(invalid_formats)) {
-    # out[i, "res"] <- suppressWarnings(degree(invalid_formats[i]))
-    expect_warning(pz_degree(invalid_formats[i]))
-    expect_warning(pz_minute(invalid_formats[i]))
-    expect_warning(pz_second(invalid_formats[i]))
-    # expect_is(aa, "numeric")
-    # expect_equal(aa, NaN)
+    expect_warning(pz_degree(lat = invalid_formats[i]))
+    expect_warning(pz_minute(lat = invalid_formats[i]))
+    expect_warning(pz_second(lat = invalid_formats[i]))
   }
+
+  expect_error(pz_d('a'), "x must be of class")
+  expect_error(pz_m('a'), "x must be of class")
+  expect_error(pz_s('a'), "x must be of class")
+
+  expect_error(pz_d(1) / pz_m(3), "division doesn't make sense here")
+  expect_error(pz_d(1) * pz_m(3), "multiplication doesn't make sense here")
+})
+
+test_that("dms adder fxns", {
+  skip_on_cran()
+  # basic usage, one at a time
+  deg1 <- pz_d(31)
+  min1 <- pz_m(44)
+  sec1 <- pz_s(17)
+
+  expect_is(deg1, "pz")
+  expect_is(min1, "pz")
+  expect_is(sec1, "pz")
+
+  expect_equal(deg1[1], 31)
+  expect_equal(min1[1], 44)
+  expect_equal(sec1[1], 17)
+
+  # addition
+  add1 <- pz_d(31) + pz_m(44)
+  add2 <- pz_d(31) + pz_m(44) + pz_s(59)
+
+  expect_is(add1, "pz")
+  expect_is(add2, "pz")
+
+  expect_equal(round(add1[1], 2), 31.73)
+  expect_equal(round(add2[1], 2), 31.75)
+
+  # subtraction
+  sub1 <- pz_d(5) - pz_m(49)
+  sub2 <- pz_d(-34) - pz_m(56) - pz_s(3)
+
+  expect_is(sub1, "pz")
+  expect_is(sub2, "pz")
+
+  expect_equal(round(sub1[1], 2), 4.18)
+  expect_equal(round(sub2[1], 2), -34.93)
+})
+
+test_that("dms fxns: utilities", {
+  skip_on_cran()
+  # unclass_strip_atts
+  z <- structure("a", foo = "bar")
+  zz <- unclass_strip_atts(z)
+  expect_is(attributes(z), "list")
+  expect_null(attributes(zz))
+
+  # print.pz
+  expect_output(print(pz_d(31)), "31")
 })
