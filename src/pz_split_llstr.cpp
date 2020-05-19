@@ -29,3 +29,17 @@ CharacterVector foo_bar (std::string x) {
 //   // return a list
 //   return List::create(lat_strs, lon_strs);
 // };
+
+// [[Rcpp::export]]
+int pz_split_llstr (std::string x) {
+
+  int nbDots = std::count(x.begin(), x.end(), 'e');
+  return nbDots;
+
+}
+
+
+//comma_number <- stringi::stri_count(str=coords, fixed=",")
+//  space_number <- stringi::stri_count(str=coords, fixed=" ")
+//  semicolon_number <- stringi::stri_count(str=coords, fixed=";")
+//  dot_number <- stringi::stri_count(str=coords, fixed="."))

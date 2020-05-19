@@ -29,3 +29,11 @@ foo_bar <- function(x) {
     .Call('_parzer_foo_bar', PACKAGE = 'parzer', x)
 }
 
+scrub_cpp <- function(x) {
+    .Call('_parzer_scrub_cpp', PACKAGE = 'parzer', x)
+}
+
+scrub_string_cpp <- function(x) {
+    .Call('_parzer_scrub_string_cpp', PACKAGE = 'parzer', x)
+}
+

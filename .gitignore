@@ -6,3 +6,4 @@ src/*.so
 src/*.a
 inst/ignore/
 reviewer_replies.md
+R/sourcing testing.r
