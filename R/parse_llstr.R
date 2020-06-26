@@ -2,7 +2,7 @@
 #'
 #' @export
 #' @param str (character) string with latitude and longitude, one or more
-#' @return xxx
+#' @return A data.frame with parsed latitude and longitude.
 #' @examples
 #' parse_llstr("N 04.1683, E 101.5823")
 #' parse_llstr("N04.82344, E101.61320")
@@ -22,10 +22,16 @@
 #' parse_llstr(c("4 51′36″S, 101 34′7″W", "N4 51′36″, E101 34′7″"))
 #'
 #' str <- "N 04.1683, E 101.5823"
-
-## This function should only do the split and then pass it to parse_lon and parse_lat (that will pass it to pz_parse_long and pz_parse_lat) OR directly pass it to the pz_parse_ functions.
 parse_llstr <- function(str) {
-  stopifnot(class(str) == "character")
-  pz_split_llstr(scrub(str))
-  # foo_bar(scrub(str))
+
+  assert(str, 'character')
+  tmp <- pz_split_llstr(scrub(str))
+
+  return(
+    data.frame(
+      lat = parse_lat(tmp$lat),
+      lon = parse_lon(tmp$lon)
+    )
+  )
 }
+
