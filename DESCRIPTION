@@ -37,7 +37,7 @@ Suggests:
     randgeo,
     knitr,
     rmarkdown
-LinkingTo: Rcpp
+LinkingTo: Rcpp, BH
 SystemRequirements: C++11
 VignetteBuilder: knitr
 Roxygen: list(markdown = TRUE)

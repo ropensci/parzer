@@ -1,45 +1,57 @@
+// [[Rcpp::depends(BH)]]
+
 #include <Rcpp.h>
-#include "latlong.h"
-
-#include <regex>
-
-using namespace Rcpp;
-
-// eg string: "N 04.25164, E 101.70695"
+#include <boost/algorithm/string.hpp>
 
 // [[Rcpp::export]]
-CharacterVector foo_bar (std::string x) {
-  std::regex rgx(",?\\s*[NnSsEeWw]");
-  std::sregex_token_iterator iter(x.begin(), x.end(), rgx, -1);
-  std::sregex_token_iterator end;
-  CharacterVector y;
-  for ( ; iter != end; ++iter)
-    y.push_back(*iter);
-  return y;
-};
+std::vector<std::string> pz_split_llstr_string (std::string x) {
 
-// List pz_split_llstr (std::string x) {
-//   // attempt to split the string
-//   // "N\\h*([\\d\\.]+),\\h*E\\h*([\\d\\.]+)"
-//
-//   // if successful, process lats and lons
-//   NumericVector lat_strs = pz_parse_lat(lats);
-//   NumericVector lon_strs = pz_parse_lat(lons);
-//
-//   // return a list
-//   return List::create(lat_strs, lon_strs);
-// };
+  int nbCommas = std::count(x.begin(), x.end(), ',');
+  int nbSpaces = std::count(x.begin(), x.end(), ' ');
+  int nbSC = std::count(x.begin(), x.end(), ';');
+  int nbDots = std::count(x.begin(), x.end(), '.');
 
+  std::vector<std::string> splitstr(2);
+
+  if(nbCommas == 1) {
+    boost::split(splitstr, x, [](char c){return c == ',';});
+  } else if (nbCommas > 0 && nbSpaces > 0) {
+    boost::split(splitstr, x, [](char c){return c == ', ';});
+  } else if (nbCommas == 0 && nbSpaces ==1 && nbSC == 0) {
+    boost::split(splitstr, x, [](char c){return c == ' ';});
+  } else if (nbSC == 1) {
+    boost::split(splitstr, x, [](char c){return c == ';';});
+  } else if (nbDots == 1){
+    boost::split(splitstr, x, [](char c){return c == '.';});
+  } else {
+    Rcpp::StringVector splitstr(2, "NA_STRING");
+  }
+  return splitstr;
+}
+// https://www.fluentcpp.com/2017/04/21/how-to-split-a-string-in-c/
+
+
+//’ Splits Latitude and Longitude from multiple strings in character a vector
+//’
+//’ @param x input character vector
+//’ @return data.frame with Latitude and Longitude split in 2 columns.
 // [[Rcpp::export]]
-int pz_split_llstr (std::string x) {
+Rcpp::DataFrame pz_split_llstr (Rcpp::StringVector x) {
 
-  int nbDots = std::count(x.begin(), x.end(), 'e');
-  return nbDots;
+  Rcpp::StringMatrix stringmat(x.size(), 2);
+  Rcpp::StringMatrix::Column lat = stringmat( Rcpp::_, 0);
+  Rcpp::StringMatrix::Column lon = stringmat( Rcpp::_, 1);
 
+
+  for(int i=0; i < x.size(); i++) {
+    std::vector<std::string> temp = pz_split_llstr_string (Rcpp::as< std::string >(x[i]));
+
+    lat[i] = temp[0];
+    lon[i] = temp[1];
+
+  }
+  Rcpp::DataFrame stringdf = Rcpp::DataFrame::create( Rcpp::Named("lat") = lat,
+                                                      Rcpp::_["lon"] = lon );
+  return stringdf;
 }
 
-
-//comma_number <- stringi::stri_count(str=coords, fixed=",")
-//  space_number <- stringi::stri_count(str=coords, fixed=" ")
-//  semicolon_number <- stringi::stri_count(str=coords, fixed=";")
-//  dot_number <- stringi::stri_count(str=coords, fixed="."))

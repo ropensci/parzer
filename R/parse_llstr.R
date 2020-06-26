@@ -26,6 +26,6 @@
 ## This function should only do the split and then pass it to parse_lon and parse_lat (that will pass it to pz_parse_long and pz_parse_lat) OR directly pass it to the pz_parse_ functions.
 parse_llstr <- function(str) {
   stopifnot(class(str) == "character")
-  # pz_split_llstr(scrub(str))
-  foo_bar(scrub(str))
+  pz_split_llstr(scrub(str))
+  # foo_bar(scrub(str))
 }

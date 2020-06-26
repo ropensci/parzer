@@ -73,14 +73,25 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// foo_bar
-CharacterVector foo_bar(std::string x);
-RcppExport SEXP _parzer_foo_bar(SEXP xSEXP) {
+// pz_split_llstr_string
+std::vector<std::string> pz_split_llstr_string(std::string x);
+RcppExport SEXP _parzer_pz_split_llstr_string(SEXP xSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< std::string >::type x(xSEXP);
-    rcpp_result_gen = Rcpp::wrap(foo_bar(x));
+    rcpp_result_gen = Rcpp::wrap(pz_split_llstr_string(x));
+    return rcpp_result_gen;
+END_RCPP
+}
+// pz_split_llstr
+Rcpp::DataFrame pz_split_llstr(Rcpp::StringVector x);
+RcppExport SEXP _parzer_pz_split_llstr(SEXP xSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::StringVector >::type x(xSEXP);
+    rcpp_result_gen = Rcpp::wrap(pz_split_llstr(x));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -95,17 +106,6 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// scrub_string_cpp
-std::string scrub_string_cpp(std::string x);
-RcppExport SEXP _parzer_scrub_string_cpp(SEXP xSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< std::string >::type x(xSEXP);
-    rcpp_result_gen = Rcpp::wrap(scrub_string_cpp(x));
-    return rcpp_result_gen;
-END_RCPP
-}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_parzer_pz_parse_lat", (DL_FUNC) &_parzer_pz_parse_lat, 1},
@@ -114,9 +114,9 @@ static const R_CallMethodDef CallEntries[] = {
     {"_parzer_split_decimal_degree", (DL_FUNC) &_parzer_split_decimal_degree, 2},
     {"_parzer_pz_parse_parts_lat", (DL_FUNC) &_parzer_pz_parse_parts_lat, 1},
     {"_parzer_pz_parse_parts_lon", (DL_FUNC) &_parzer_pz_parse_parts_lon, 1},
-    {"_parzer_foo_bar", (DL_FUNC) &_parzer_foo_bar, 1},
+    {"_parzer_pz_split_llstr_string", (DL_FUNC) &_parzer_pz_split_llstr_string, 1},
+    {"_parzer_pz_split_llstr", (DL_FUNC) &_parzer_pz_split_llstr, 1},
     {"_parzer_scrub_cpp", (DL_FUNC) &_parzer_scrub_cpp, 1},
-    {"_parzer_scrub_string_cpp", (DL_FUNC) &_parzer_scrub_string_cpp, 1},
     {NULL, NULL, 0}
 };
 

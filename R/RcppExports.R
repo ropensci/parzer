@@ -25,15 +25,15 @@ pz_parse_parts_lon <- function(x) {
     .Call('_parzer_pz_parse_parts_lon', PACKAGE = 'parzer', x)
 }
 
-foo_bar <- function(x) {
-    .Call('_parzer_foo_bar', PACKAGE = 'parzer', x)
+pz_split_llstr_string <- function(x) {
+    .Call('_parzer_pz_split_llstr_string', PACKAGE = 'parzer', x)
+}
+
+pz_split_llstr <- function(x) {
+    .Call('_parzer_pz_split_llstr', PACKAGE = 'parzer', x)
 }
 
 scrub_cpp <- function(x) {
     .Call('_parzer_scrub_cpp', PACKAGE = 'parzer', x)
-}
-
-scrub_string_cpp <- function(x) {
-    .Call('_parzer_scrub_string_cpp', PACKAGE = 'parzer', x)
 }
 
