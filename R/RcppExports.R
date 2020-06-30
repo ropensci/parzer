@@ -33,7 +33,3 @@ pz_split_llstr <- function(x) {
     .Call('_parzer_pz_split_llstr', PACKAGE = 'parzer', x)
 }
 
-scrub_cpp <- function(x) {
-    .Call('_parzer_scrub_cpp', PACKAGE = 'parzer', x)
-}
-

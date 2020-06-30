@@ -36,9 +36,9 @@ test_that("split_llstr works", {
   expect_is(ll, "data.frame")
   expect_equal(NCOL(ll), 2)
   expect_equal(NROW(ll), 2)
-  expect_named(ll, c("lat", "lon"))
-  expect_type(ll$lat, "character")
+  expect_named(ll, c("lon", "lat"))
   expect_type(ll$lon, "character")
+  expect_type(ll$lat, "character")
 
   expect_true(
     all(pz_split_llstr(example_1) == pz_split_llstr(example_2)) &&

@@ -6,6 +6,8 @@
 // [[Rcpp::export]]
 std::vector<std::string> pz_split_llstr_string (std::string x) {
 
+//  x = std::regex_replace(x, std::regex("^ +| +$|( ) +"), "$1");   // does not work even with // [[Rcpp::plugins(cpp11)]]
+
   int nbCommas = std::count(x.begin(), x.end(), ',');
   int nbSpaces = std::count(x.begin(), x.end(), ' ');
   int nbSC = std::count(x.begin(), x.end(), ';');
@@ -17,14 +19,14 @@ std::vector<std::string> pz_split_llstr_string (std::string x) {
     boost::split(splitstr, x, [](char c){return c == ',';});
   } else if (nbCommas > 0 && nbSpaces > 0) {
     boost::split(splitstr, x, [](char c){return c == ', ';});
-  } else if (nbCommas == 0 && nbSpaces ==1 && nbSC == 0) {
+  } else if (nbCommas == 0 && nbSpaces == 1 && nbSC == 0) {
     boost::split(splitstr, x, [](char c){return c == ' ';});
   } else if (nbSC == 1) {
     boost::split(splitstr, x, [](char c){return c == ';';});
   } else if (nbDots == 1){
     boost::split(splitstr, x, [](char c){return c == '.';});
   } else {
-    Rcpp::StringVector splitstr(2, "NA_STRING");
+    std::vector<std::string> splitstr(2, "NA_STRING");
   }
   return splitstr;
 }
@@ -39,19 +41,19 @@ std::vector<std::string> pz_split_llstr_string (std::string x) {
 Rcpp::DataFrame pz_split_llstr (Rcpp::StringVector x) {
 
   Rcpp::StringMatrix stringmat(x.size(), 2);
-  Rcpp::StringMatrix::Column lat = stringmat( Rcpp::_, 0);
   Rcpp::StringMatrix::Column lon = stringmat( Rcpp::_, 1);
+  Rcpp::StringMatrix::Column lat = stringmat( Rcpp::_, 0);
 
 
   for(int i=0; i < x.size(); i++) {
     std::vector<std::string> temp = pz_split_llstr_string (Rcpp::as< std::string >(x[i]));
 
-    lat[i] = temp[0];
     lon[i] = temp[1];
+    lat[i] = temp[0];
 
   }
-  Rcpp::DataFrame stringdf = Rcpp::DataFrame::create( Rcpp::Named("lat") = lat,
-                                                      Rcpp::_["lon"] = lon );
+  Rcpp::DataFrame stringdf = Rcpp::DataFrame::create( Rcpp::Named("lon") = lon,
+                                                      Rcpp::Named("lat") = lat );
   return stringdf;
 }
 

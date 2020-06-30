@@ -2,7 +2,7 @@
 #'
 #' @export
 #' @param str (character) string with latitude and longitude, one or more
-#' @return A data.frame with parsed latitude and longitude.
+#' @return A data.frame with parsed longitude and latitude in decimal degrees.
 #' @examples
 #' parse_llstr("N 04.1683, E 101.5823")
 #' parse_llstr("N04.82344, E101.61320")

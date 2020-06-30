@@ -7,9 +7,9 @@ test_that("parse_llstr works", {
   expect_is(aa, "data.frame")
   expect_equal(NCOL(aa), 2)
   expect_equal(NROW(aa), 1)
-  expect_named(aa, c("lat", "lon"))
-  expect_type(aa$lat, "double")
+  expect_named(aa, c("lon", "lat"))
   expect_type(aa$lon, "double")
+  expect_type(aa$lat, "double")
 })
 
 test_that("parse_llstr - fails well", {
