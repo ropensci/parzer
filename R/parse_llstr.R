@@ -14,14 +14,13 @@
 #' parse_llstr("N4.9196, E101.347")
 #' # no comma
 #' parse_llstr("N4.9196 E101.347")
-#' #' # no space
+#' # no space
 #' parse_llstr("N4.9196E101.347")
 #'
-#' DMS
+#' # DMS
 #' parse_llstr("N4 51′36″, E101 34′7″")
 #' parse_llstr(c("4 51′36″S, 101 34′7″W", "N4 51′36″, E101 34′7″"))
 #'
-#' str <- "N 04.1683, E 101.5823"
 parse_llstr <- function(str) {
 
   assert(str, 'character')
@@ -29,8 +28,8 @@ parse_llstr <- function(str) {
 
   return(
     data.frame(
-      lat = parse_lat(tmp$lat),
-      lon = parse_lon(tmp$lon)
+      lon = parse_lon(tmp$lon),
+      lat = parse_lat(tmp$lat)
     )
   )
 }

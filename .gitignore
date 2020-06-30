@@ -7,3 +7,4 @@ src/*.a
 inst/ignore/
 reviewer_replies.md
 R/sourcing testing.r
+src/desktop.ini
