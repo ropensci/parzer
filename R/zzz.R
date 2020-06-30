@@ -14,17 +14,9 @@ lint_inputs <- function(lon = NULL, lat = NULL, format) {
 }
 
 # FIXME: stopgap for now until figure out how to replace these on on src side
-# - single quotes
-# - double quotes
-# - degree symbols
-# - masculine ordinal indicator
-# - rare separators
-scrub <- function(x) {
-  if(is.character(x)){
-    if(length(x) == 1 && Encoding(x) != "UTF-8") x <- iconv(x, to = 'UTF-8')
-    if(length(x) > 1) x <- ifelse(Encoding(x) == 'UTF-8', x, iconv(x, to = "UTF-8"))
-  }
-  return(scrub_cpp(x))
-}
+# - smart quote
+# - degree symbol
+# - masculine oridinal indicator
+scrub <- function(x) gsub("\u2019|\u00b0|\u00ba", "'", x)
 
 stop_form <- function() stop("format handling not ready yet")
