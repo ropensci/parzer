@@ -73,6 +73,17 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// scrub_cpp
+CharacterVector scrub_cpp(CharacterVector x);
+RcppExport SEXP _parzer_scrub_cpp(SEXP xSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< CharacterVector >::type x(xSEXP);
+    rcpp_result_gen = Rcpp::wrap(scrub_cpp(x));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_parzer_pz_parse_lat", (DL_FUNC) &_parzer_pz_parse_lat, 1},
@@ -81,6 +92,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_parzer_split_decimal_degree", (DL_FUNC) &_parzer_split_decimal_degree, 2},
     {"_parzer_pz_parse_parts_lat", (DL_FUNC) &_parzer_pz_parse_parts_lat, 1},
     {"_parzer_pz_parse_parts_lon", (DL_FUNC) &_parzer_pz_parse_parts_lon, 1},
+    {"_parzer_scrub_cpp", (DL_FUNC) &_parzer_scrub_cpp, 1},
     {NULL, NULL, 0}
 };
 
