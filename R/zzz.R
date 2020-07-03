@@ -20,10 +20,7 @@ lint_inputs <- function(lon = NULL, lat = NULL, format) {
 # - masculine ordinal indicator
 # - rare separators
 scrub <- function(x) {
-  if(is.character(x)){
-    if(length(x) == 1 && Encoding(x) != "UTF-8") x <- iconv(x, to = 'UTF-8')
-    if(length(x) > 1) x <- ifelse(Encoding(x) == 'UTF-8', x, iconv(x, to = "UTF-8"))
-  }
+  if(is.character(x) && any(Encoding(x) != 'UTF-8')) x <- iconv(x, to = 'UTF-8')
   return(scrub_cpp(x))
 }
 
