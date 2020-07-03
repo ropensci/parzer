@@ -1,12 +1,13 @@
 // [[Rcpp::depends(BH)]]
 
 #include <Rcpp.h>
+#include <regex>
 #include <boost/algorithm/string.hpp>
 
 // [[Rcpp::export]]
 std::vector<std::string> pz_split_llstr_string (std::string x) {
 
-//  x = std::regex_replace(x, std::regex("^ +| +$|( ) +"), "$1");   // does not work even with // [[Rcpp::plugins(cpp11)]]
+ x = std::regex_replace(x, std::regex("^ +| +$|( ) +"), "$1");
 
   int nbCommas = std::count(x.begin(), x.end(), ',');
   int nbSpaces = std::count(x.begin(), x.end(), ' ');
@@ -17,8 +18,6 @@ std::vector<std::string> pz_split_llstr_string (std::string x) {
 
   if(nbCommas == 1) {
     boost::split(splitstr, x, [](char c){return c == ',';});
-  } else if (nbCommas > 0 && nbSpaces > 0) {
-    boost::split(splitstr, x, [](char c){return c == ', ';});
   } else if (nbCommas == 0 && nbSpaces == 1 && nbSC == 0) {
     boost::split(splitstr, x, [](char c){return c == ' ';});
   } else if (nbSC == 1) {
