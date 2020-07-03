@@ -1,13 +1,10 @@
-// [[Rcpp::depends(BH)]]
-
 #include <Rcpp.h>
 #include <regex>
-#include <boost/algorithm/string.hpp>
 
 // [[Rcpp::export]]
 std::vector<std::string> pz_split_llstr_string (std::string x) {
 
- x = std::regex_replace(x, std::regex("^ +| +$|( ) +"), "$1");
+  x = std::regex_replace(x, std::regex("^ +| +$|( ) +"), "$1");
 
   int nbCommas = std::count(x.begin(), x.end(), ',');
   int nbSpaces = std::count(x.begin(), x.end(), ' ');
@@ -17,19 +14,23 @@ std::vector<std::string> pz_split_llstr_string (std::string x) {
   std::vector<std::string> splitstr(2);
 
   if(nbCommas == 1) {
-    boost::split(splitstr, x, [](char c){return c == ',';});
-  } else if (nbCommas == 0 && nbSpaces == 1 && nbSC == 0) {
-    boost::split(splitstr, x, [](char c){return c == ' ';});
+    splitstr[0] = std::regex_replace(x, std::regex(",.*$"), "$1");
+    splitstr[1] = std::regex_replace(x, std::regex("^.*,"), "$1");
+  } else if (nbCommas == 0 && nbSpaces == 1 && nbSC == 0 && nbDots == 0) {
+    splitstr[0] = std::regex_replace(x, std::regex(" .*$"), "$1");
+    splitstr[1] = std::regex_replace(x, std::regex("^.* "), "$1");
   } else if (nbSC == 1) {
-    boost::split(splitstr, x, [](char c){return c == ';';});
+    splitstr[0] = std::regex_replace(x, std::regex(";.*$"), "$1");
+    splitstr[1] = std::regex_replace(x, std::regex("^.*;"), "$1");
   } else if (nbDots == 1){
-    boost::split(splitstr, x, [](char c){return c == '.';});
+    splitstr[0] = std::regex_replace(x, std::regex("\\..*$"), "$1");
+    splitstr[1] = std::regex_replace(x, std::regex("^.*\\."), "$1");
   } else {
     std::vector<std::string> splitstr(2, "NA_STRING");
   }
   return splitstr;
 }
-// https://www.fluentcpp.com/2017/04/21/how-to-split-a-string-in-c/
+
 
 
 //’ Splits Latitude and Longitude from multiple strings in character a vector
