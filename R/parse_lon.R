@@ -59,8 +59,7 @@
 parse_lon <- function(lon, format = NULL) {
   assert(lon, c("numeric", "integer", "character"))
   assert(format, "character")
-  # FIXME: stopgap for now until figure out how to replace these on on src side
-  ## -> smart quote and degree symbol
-  lon <- gsub("\u2019|\u00b0", "'", lon)
+
+  lon <- scrub(lon)
   if (is.null(format)) pz_parse_lon(lon) else stop_form()
 }
