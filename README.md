@@ -3,13 +3,12 @@ parzer
 
 
 
-[![Project Status: WIP – Initial development is in progress, but there has not yet been a stable, usable release suitable for the public.](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip)
+[![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 [![cran checks](https://cranchecks.info/badges/worst/parzer)](https://cranchecks.info/pkgs/parzer)
-[![Build Status](https://travis-ci.com/ropensci/parzer.svg?branch=master)](https://travis-ci.com/ropensci/parzer)
-[![Build status](https://ci.appveyor.com/api/projects/status/m1aackjdyp2f2x3f?svg=true)](https://ci.appveyor.com/project/sckott/parzer)
+[![R-check](https://github.com/ropensci/parzer/workflows/R-check/badge.svg)](https://github.com/ropensci/parzer/actions/)
 [![codecov.io](https://codecov.io/github/ropensci/parzer/coverage.svg?branch=master)](https://codecov.io/github/ropensci/parzer?branch=master)
 [![](https://badges.ropensci.org/341_status.svg)](https://github.com/ropensci/onboarding/issues/341)
-[![rstudio mirror downloads](http://cranlogs.r-pkg.org/badges/parzer?color=C9A115)](https://github.com/metacran/cranlogs.app)
+[![rstudio mirror downloads](https://cranlogs.r-pkg.org/badges/parzer?color=C9A115)](https://github.com/metacran/cranlogs.app)
 [![cran version](https://www.r-pkg.org/badges/version/parzer)](https://cran.r-project.org/package=parzer)
 
 `parzer` parses messy geographic coordinates
@@ -22,6 +21,7 @@ all decimal degree numeric data.
 
  - `parse_hemisphere`
  - `parse_lat`
+ - `parse_llstr`
  - `parse_lon`
  - `parse_lon_lat`
  - `parse_parts_lat`
@@ -230,9 +230,6 @@ version
 * Please [report any issues or bugs](https://github.com/ropensci/parzer/issues).
 * License: MIT
 * Get citation information for `parzer` in R doing `citation(package = 'parzer')`
-* Please note that this project is released with a [Contributor Code of Conduct][coc]
-By participating in this project you agree to abide by its terms.
-
-[coc]: https://github.com/ropensci/parzer/blob/master/CODE_OF_CONDUCT.md
+* Please note that this package is released with a [Contributor Code of Conduct](https://ropensci.org/code-of-conduct/). By contributing to this project, you agree to abide by its terms.
 
 [![ropensci_footer](https://ropensci.org/public_images/ropensci_footer.png)](https://ropensci.org)
