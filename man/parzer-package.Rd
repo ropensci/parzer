@@ -9,6 +9,6 @@
 parse geographic coordinates
 }
 \author{
-Scott Chamberlain \email{myrmecocystus@gmail.com}
+Scott Chamberlain
 }
 \keyword{package}
