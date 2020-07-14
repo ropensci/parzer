@@ -7,10 +7,10 @@
 parse_llstr(str)
 }
 \arguments{
-\item{str}{(character) string with latitude and longitude, one or more}
+\item{str}{(character) string with latitude and longitude, one or more in a vector.}
 }
 \value{
-xxx
+A data.frame with parsed latitude and longitude in decimal degrees.
 }
 \description{
 parse string with lat and lon together
@@ -26,4 +26,11 @@ parse_llstr("N4.9196, E101.346")
 parse_llstr("N4.9196, E101.347")
 # no comma
 parse_llstr("N4.9196 E101.347")
+# no space
+parse_llstr("N4.9196E101.347")
+
+# DMS
+parse_llstr("N4 51'36\", E101 34'7\"")
+parse_llstr(c("4 51'36\"S, 101 34'7\"W", "N4 51'36\", E101 34'7\""))
+
 }
