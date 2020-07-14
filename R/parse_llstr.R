@@ -1,8 +1,8 @@
 #' parse string with lat and lon together
 #'
 #' @export
-#' @param str (character) string with latitude and longitude, one or more
-#' @return A data.frame with parsed longitude and latitude in decimal degrees.
+#' @param str (character) string with latitude and longitude, one or more in a vector.
+#' @return A data.frame with parsed latitude and longitude in decimal degrees.
 #' @examples
 #' parse_llstr("N 04.1683, E 101.5823")
 #' parse_llstr("N04.82344, E101.61320")
@@ -18,8 +18,8 @@
 #' parse_llstr("N4.9196E101.347")
 #'
 #' # DMS
-#' parse_llstr("N4 51′36″, E101 34′7″")
-#' parse_llstr(c("4 51′36″S, 101 34′7″W", "N4 51′36″, E101 34′7″"))
+#' parse_llstr("N4 51'36\", E101 34'7\")
+#' parse_llstr(c("4 51'36\"S, 101 34'7\"W", "N4 51'36\", E101 34'7\"))
 #'
 parse_llstr <- function(str) {
 
@@ -28,8 +28,8 @@ parse_llstr <- function(str) {
 
   return(
     data.frame(
-      lon = parse_lon(tmp$lon),
-      lat = parse_lat(tmp$lat)
+      lat = parse_lat(tmp$lat),
+      lon = parse_lon(tmp$lon)
     )
   )
 }
