@@ -10,6 +10,10 @@ test_that("parse_llstr works", {
   expect_named(aa, c("lat", "lon"))
   expect_type(aa$lat, "double")
   expect_type(aa$lon, "double")
+
+  bb <- parse_llstr("45N54.2356 45W54.2356")
+
+  expect_equal(aa, bb)
 })
 
 test_that("parse_llstr - fails well", {

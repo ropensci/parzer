@@ -16,7 +16,7 @@ std::vector<std::string> pz_split_llstr_string (std::string x) {
   if(nbCommas == 1) {
     splitstr[0] = std::regex_replace(x, std::regex(",.*$"), "$1");
     splitstr[1] = std::regex_replace(x, std::regex("^.*,"), "$1");
-  } else if (nbCommas == 0 && nbSpaces == 1 && nbSC == 0 && nbDots == 0) {
+  } else if (nbCommas == 0 && nbSpaces == 1 && nbSC == 0 && (nbDots == 0 | nbDots == 2)) {
     splitstr[0] = std::regex_replace(x, std::regex(" .*$"), "$1");
     splitstr[1] = std::regex_replace(x, std::regex("^.* "), "$1");
   } else if (nbSC == 1) {

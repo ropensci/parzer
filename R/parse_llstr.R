@@ -18,8 +18,8 @@
 #' parse_llstr("N4.9196E101.347")
 #'
 #' # DMS
-#' parse_llstr("N4 51'36\", E101 34'7\")
-#' parse_llstr(c("4 51'36\"S, 101 34'7\"W", "N4 51'36\", E101 34'7\"))
+#' parse_llstr("N4 51'36\", E101 34'7\"")
+#' parse_llstr(c("4 51'36\"S, 101 34'7\"W", "N4 51'36\", E101 34'7\""))
 #'
 parse_llstr <- function(str) {
 
