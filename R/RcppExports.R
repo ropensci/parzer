@@ -25,3 +25,11 @@ pz_parse_parts_lon <- function(x) {
     .Call('_parzer_pz_parse_parts_lon', PACKAGE = 'parzer', x)
 }
 
+pz_split_llstr_string <- function(x) {
+    .Call('_parzer_pz_split_llstr_string', PACKAGE = 'parzer', x)
+}
+
+pz_split_llstr <- function(x) {
+    .Call('_parzer_pz_split_llstr', PACKAGE = 'parzer', x)
+}
+
