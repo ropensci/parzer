@@ -1,16 +1,15 @@
-#include <Rcpp.h>
-using namespace Rcpp;
-
-// [[Rcpp::plugins(cpp11)]]
+#include "cpp11.hpp"
+using namespace cpp11;
+#include <cpp11/strings.hpp>
 #include "latlong.h"
 
-// [[Rcpp::export]]
-CharacterVector pz_hemisphere(CharacterVector lon, CharacterVector lat) {
+[[cpp11::register]]
+cpp11::strings pz_hemisphere(cpp11::strings lon, cpp11::strings lat) {
   const int n = lat.size();
-  CharacterVector out;
+  cpp11::writable::strings out;
   for (int i=0; i < n; ++i) {
     std::string londir = "";
-    auto lon_ = as<std::string>(lon[i]);
+    auto lon_ = as_cpp<std::string>(lon[i]);
     float lon_f = convert_lon(lon_);
     if (R_IsNaN(lon_f)) {
       londir = "";
@@ -20,7 +19,7 @@ CharacterVector pz_hemisphere(CharacterVector lon, CharacterVector lat) {
     };
 
     std::string latdir = "";
-    auto lat_ = as<std::string>(lat[i]);
+    auto lat_ = as_cpp<std::string>(lat[i]);
     float lat_f = convert_lat(lat_);
     if (R_IsNaN(lat_f)) {
       latdir = "";

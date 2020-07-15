@@ -1,9 +1,12 @@
-#include <Rcpp.h>
+#include "cpp11.hpp"
+using namespace cpp11;
+
+#include "cpp11/strings.hpp"
+#include "cpp11/data_frame.hpp"
+#include "cpp11/matrix.hpp"
 #include <regex>
 
-// [[Rcpp::export]]
 std::vector<std::string> pz_split_llstr_string (std::string x) {
-
   x = std::regex_replace(x, std::regex("^ +| +$|( ) +"), "$1");
 
   int nbCommas = std::count(x.begin(), x.end(), ',');
@@ -33,27 +36,15 @@ std::vector<std::string> pz_split_llstr_string (std::string x) {
 
 
 
-//’ Splits Latitude and Longitude from multiple strings in character a vector
-//’
-//’ @param x input character vector
-//’ @return data.frame with Latitude and Longitude split in 2 columns.
-// [[Rcpp::export]]
-Rcpp::DataFrame pz_split_llstr (Rcpp::StringVector x) {
-
-  Rcpp::StringMatrix stringmat(x.size(), 2);
-  Rcpp::StringMatrix::Column lon = stringmat( Rcpp::_, 1);
-  Rcpp::StringMatrix::Column lat = stringmat( Rcpp::_, 0);
-
+[[cpp11::register]]
+cpp11::data_frame pz_split_llstr(cpp11::strings x) {
+  cpp11::writable::strings lon;
+  cpp11::writable::strings lat;
 
   for(int i=0; i < x.size(); i++) {
-    std::vector<std::string> temp = pz_split_llstr_string (Rcpp::as< std::string >(x[i]));
-
+    std::vector<std::string> temp = pz_split_llstr_string (as_cpp< std::string >(x[i]));
     lon[i] = temp[1];
     lat[i] = temp[0];
-
-  }
-  Rcpp::DataFrame stringdf = Rcpp::DataFrame::create( Rcpp::Named("lon") = lon,
-                                                      Rcpp::Named("lat") = lat );
-  return stringdf;
-}
-
+  };
+  return cpp11::writable::data_frame({"lon"_nm = lon, "lat"_nm = lat});
+};

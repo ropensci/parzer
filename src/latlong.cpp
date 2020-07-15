@@ -1,6 +1,6 @@
-#include <Rcpp.h>
-using namespace Rcpp;
-// [[Rcpp::plugins(cpp11)]]
+#include "cpp11.hpp"
+using namespace cpp11;
+#include <cpp11/r_vector.hpp>
 
 #include <string>
 #include <regex>
@@ -48,14 +48,14 @@ std::string remove_internal_dashes(std::string x) {
   return res;
 };
 
-NumericVector extract_floats_from_string(std::string str) {
+cpp11::doubles extract_floats_from_string(std::string str) {
   // str = strip_alpha(str);
   str = remove_internal_dashes(digits_only(strip_alpha(str)));
   // Rprintf("within extract_floats_from_string: %s \n", str.c_str());
   std::stringstream ss(str);
   std::string temp;
   double found;
-  NumericVector y;
+  cpp11::writable::doubles y;
   while (!ss.eof()) {
     /* extracting chunck by chunk from stream */
     ss >> temp;
@@ -119,7 +119,7 @@ double decimal_second(double x) {
 bool any_digits(std::string s) {
   bool z = std::string::npos != s.find_first_of("0123456789");
   if (!z) {
-    Rcpp::warning("no digits detected, got: " + s);
+    cpp11::warning("no digits detected, got: " + s);
   };
   return z;
 };
@@ -130,7 +130,7 @@ bool has_non_direction_letters(std::string s, std::string reggex) {
   // allow "d" for degree delimiter, check below to make sure d used correctly
   bool z = std::string::npos != s.find_first_of(reggex);
   if (z) {
-    Rcpp::warning("invalid characters, got: " + s);
+    cpp11::warning("invalid characters, got: " + s);
   };
   return z;
 };
@@ -142,7 +142,7 @@ bool has_e_with_trailing_numbers(std::string s) {
   std::smatch match;
   if (std::regex_search(s, match, reg)) {
     res = true;
-    Rcpp::warning("invalid characters, got: " + s);
+    cpp11::warning("invalid characters, got: " + s);
   };
   return res;
 };
@@ -188,11 +188,11 @@ float convert_lat(std::string str) {
     ret = NA_REAL;
   } else if (count_direction_matches(str, "[NSns]") > 1) {
     ret = NA_REAL;
-    Rcpp::warning("invalid cardinal direction, got: " + str);
+    cpp11::warning("invalid cardinal direction, got: " + str);
   } else if (invalid_degree_letter(str, "[nsdNSD]")) {
     // to support e.g.: 40d 25’ 6\" N
     ret = NA_REAL;
-    Rcpp::warning("expected single 'N|S|d' after degrees, got: " + str);
+    cpp11::warning("expected single 'N|S|d' after degrees, got: " + str);
   } else {
     std::string dir = extract_nsew(str, "[NSns]");
     double dir_val = 1.0;
@@ -203,7 +203,7 @@ float convert_lat(std::string str) {
       dir_val = -1.0;
     };
 
-    NumericVector nums = extract_floats_from_string(str);
+    cpp11::writable::doubles nums = extract_floats_from_string(str);
     if (nums.size() == 0) {
       ret = NA_REAL;
     };
@@ -217,7 +217,7 @@ float convert_lat(std::string str) {
       ret = fabs(nums[0]) + decimal_minute(nums[1]) + decimal_second(nums[2]);
     };
     if (nums.size() > 3) {
-      Rcpp::warning("invalid format, more than 3 numeric slots, got: " + str);
+      cpp11::warning("invalid format, more than 3 numeric slots, got: " + str);
       ret = NA_REAL;
     };
 
@@ -227,10 +227,10 @@ float convert_lat(std::string str) {
     // FIXME: need to do is na check
     // bool fart = !NumericVector::is_na(ret);
     // Rprintf("R_IsNA result: %d \n", fart );
-    if (!NumericVector::is_na(ret)) {
+    if (!cpp11::is_na(ret)) {
       if (!check_lat(ret)) {
         ret = NA_REAL;
-        Rcpp::warning("not within -90/90 range, got: " + str +
+        cpp11::warning("not within -90/90 range, got: " + str +
           "\n  check that you did not invert lon and lat");
       };
     };
@@ -249,10 +249,10 @@ float convert_lon(std::string str) {
     ret = NA_REAL;
   } else if (count_direction_matches(str, "[EWew]") > 1) {
     ret = NA_REAL;
-    Rcpp::warning("invalid cardinal direction, got: " + str);
+    cpp11::warning("invalid cardinal direction, got: " + str);
   } else if (invalid_degree_letter(str, "[ewdEWD]")) {
     ret = NA_REAL;
-    Rcpp::warning("expected single 'E|W|d' after degrees, got: " + str);
+    cpp11::warning("expected single 'E|W|d' after degrees, got: " + str);
   } else {
     std::string dir = extract_nsew(str, "[EWew]");
     double dir_val = 1.0;
@@ -263,7 +263,7 @@ float convert_lon(std::string str) {
       dir_val = -1.0;
     };
 
-    NumericVector nums = extract_floats_from_string(str);
+    cpp11::writable::doubles nums = extract_floats_from_string(str);
     if (nums.size() == 0) {
       ret = NA_REAL;
     };
@@ -277,7 +277,7 @@ float convert_lon(std::string str) {
       ret = fabs(nums[0]) + decimal_minute(nums[1]) + decimal_second(nums[2]);
     };
     if (nums.size() > 3) {
-      Rcpp::warning("invalid format, more than 3 numeric slots, got: " + str);
+      cpp11::warning("invalid format, more than 3 numeric slots, got: " + str);
       ret = NA_REAL;
     };
 
@@ -287,10 +287,10 @@ float convert_lon(std::string str) {
     // FIXME: need to do is na check
     // bool fart = !NumericVector::is_na(ret);
     // Rprintf("R_IsNA result: %d \n", fart );
-    if (!NumericVector::is_na(ret)) {
+    if (!cpp11::is_na(ret)) {
       if (!check_lon(ret)) {
         ret = NA_REAL;
-        Rcpp::warning("not within -180/360 range, got: " + str);
+        cpp11::warning("not within -180/360 range, got: " + str);
       };
     };
   };

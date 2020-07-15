@@ -1,8 +1,7 @@
 #' @title parzer
 #' @description parse geographic coordinates
 #'
-#' @useDynLib parzer
-#' @importFrom Rcpp sourceCpp
+#' @useDynLib parzer, .registration = TRUE
 #' @name parzer-package
 #' @aliases parzer
 #' @docType package
