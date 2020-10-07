@@ -7,8 +7,7 @@ Description: Parse geographic coordinates from various formats
     from coordinates; pull out individually degrees,
     minutes, or seconds; add and subtract degrees, minutes,
     and seconds. C++ code herein originally inspired from code
-    written by Jeffrey D. Bogan (<http://bit.ly/CLongLatString>),
-    but then completely re-written.
+    written by Jeffrey D. Bogan, but then completely re-written.
 Version: 0.2.0
 Authors@R: c(
 	person("Scott", "Chamberlain", role = c("aut", "cre"),

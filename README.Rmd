@@ -17,7 +17,7 @@ knitr::opts_chunk$set(
 [![cran checks](https://cranchecks.info/badges/worst/parzer)](https://cranchecks.info/pkgs/parzer)
 [![R-check](https://github.com/ropensci/parzer/workflows/R-check/badge.svg)](https://github.com/ropensci/parzer/actions/)
 [![codecov.io](https://codecov.io/github/ropensci/parzer/coverage.svg?branch=master)](https://codecov.io/github/ropensci/parzer?branch=master)
-[![](https://badges.ropensci.org/341_status.svg)](https://github.com/ropensci/onboarding/issues/341)
+[![](https://badges.ropensci.org/341_status.svg)](https://github.com/ropensci/software-review/issues/341)
 [![rstudio mirror downloads](https://cranlogs.r-pkg.org/badges/parzer?color=C9A115)](https://github.com/r-hub/cranlogs.app)
 [![cran version](https://www.r-pkg.org/badges/version/parzer)](https://cran.r-project.org/package=parzer)
 
