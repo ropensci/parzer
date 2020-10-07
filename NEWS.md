@@ -1,3 +1,15 @@
+parzer 0.2.0
+============
+
+### NEW FEATURES
+
+* new contributor to the package @AlbanSagouis
+* gains new function `parse_llstr()` to parse a string that contains both latitude and longitude (#3) (#24) (#26) (#28) work by @AlbanSagouis
+
+### MINOR IMPROVEMENTS
+
+* updated `scrub()` internal function that strips certain characters to include more things to scrub (#25) work by @AlbanSagouis
+
 parzer 0.1.4
 ============
 
