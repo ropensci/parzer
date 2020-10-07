@@ -14,3 +14,4 @@ reviewer_replies.md
 vignettes/use_cases.Rmd
 vignettes/use_cases.html
 ^codemeta\.json$
+^revdep$
