@@ -53,7 +53,8 @@ Rcpp::DataFrame pz_split_llstr (Rcpp::StringVector x) {
 
   }
   Rcpp::DataFrame stringdf = Rcpp::DataFrame::create( Rcpp::Named("lon") = lon,
-                                                      Rcpp::Named("lat") = lat );
+                                                      Rcpp::Named("lat") = lat,
+                                                      Rcpp::Named("stringsAsFactors") = false);
   return stringdf;
 }
 
