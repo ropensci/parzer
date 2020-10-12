@@ -14,13 +14,13 @@
   ],
   "issueTracker": "https://github.com/ropensci/parzer/issues",
   "license": "https://spdx.org/licenses/MIT",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "programmingLanguage": {
     "@type": "ComputerLanguage",
     "name": "R",
     "url": "https://r-project.org"
   },
-  "runtimePlatform": "R version 4.0.2 Patched (2020-09-01 r79114)",
+  "runtimePlatform": "R version 4.0.3 (2020-10-10)",
   "author": [
     {
       "@type": "Person",

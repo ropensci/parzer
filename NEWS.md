@@ -1,3 +1,10 @@
+parzer 0.3.0
+============
+
+### BUG FIXES
+
+* fix problem in `parse_llstr()`: on older R versions where `stringsAsFactors=TRUE` by default this function was returning strings as factors from an internal function that caused a problem in a subsequent step in the function (#29)
+
 parzer 0.2.0
 ============
 
