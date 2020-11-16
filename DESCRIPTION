@@ -8,7 +8,7 @@ Description: Parse geographic coordinates from various formats
     minutes, or seconds; add and subtract degrees, minutes,
     and seconds. C++ code herein originally inspired from code
     written by Jeffrey D. Bogan, but then completely re-written.
-Version: 0.3.0
+Version: 0.3.1.91
 Authors@R: c(
 	person("Scott", "Chamberlain", role = c("aut", "cre"),
         email = "sckott@protonmail.com",
