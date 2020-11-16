@@ -20,7 +20,7 @@ lint_inputs <- function(lon = NULL, lat = NULL, format) {
 # - masculine ordinal indicator
 # - rare separators
 
-scrub <- function(x) {gsub("[^A-Za-z0-9\\.\\ ,'-]|d|g", "'", x)}
+scrub <- function(x) gsub("[^A-Za-z0-9\\.\\ ,'-]|d|g", "'", x)
 
 stop_form <- function() stop("format handling not ready yet")
 
