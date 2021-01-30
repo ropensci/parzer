@@ -21,7 +21,7 @@ test_that("parse_lat() works on Japanese locale", {
   # Since parse_lat("10") might take very long time if it hits the std::regex's
   # bug, so we need to call it as an external process so that we can set timeout.
   test_func <- function() {
-    pkgload::load_all(".")
+    pkgload::load_all(".", compile = FALSE)
     withr::with_locale(
       c(LC_COLLATE = "Japanese"),
       parse_lat("10")
