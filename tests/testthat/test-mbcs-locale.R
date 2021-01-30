@@ -28,10 +28,11 @@ test_that("parse_lat() works on Japanese locale", {
     )
   }
 
-  # On Windows, `pkgload::load_all()` requires compilation (I don't understand why).
-  # But, we cannot let it happen in `test_func()` otherwise it easily times out.
-  # So, do it beforehand.
-  pkgbuild::compile_dll(".", force = FALSE)
+  # `pkgload::load_all()` requires compilation (only on Windows?). I don't know
+  # the reason, but, we cannot let it happen in `test_func()`, otherwise it
+  # easily times out. So, do it here beforehand. Note that, as Windows test is
+  # done on i686 and x86 one by one, so this always need to be recompiled.
+  pkgbuild::compile_dll(".", force = TRUE)
 
   expect_error(callr::r_safe(test_func, timeout = 10), NA)
 })
