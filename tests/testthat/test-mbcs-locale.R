@@ -16,6 +16,7 @@ skip_if_japanese_locale_unavailable <- function() {
 test_that("parse_lat() works on Japanese locale", {
   skip_if_japanese_locale_unavailable()
   skip_if_not_installed("callr")
+  skip_if_not_installed("pkgbuild")
   skip_if_not_installed("pkgload")
 
   # Since parse_lat("10") might take very long time if it hits the std::regex's
