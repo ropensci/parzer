@@ -36,7 +36,9 @@ Suggests:
     testthat,
     randgeo,
     knitr,
-    rmarkdown
+    rmarkdown,
+    callr,
+    pkgload
 LinkingTo: Rcpp
 SystemRequirements: C++11
 VignetteBuilder: knitr
