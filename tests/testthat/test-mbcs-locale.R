@@ -25,7 +25,13 @@ test_that("parse_lat() works on Japanese locale", {
     pkgload::load_all(".", recompile = FALSE)
     withr::with_locale(
       c(LC_COLLATE = "Japanese"),
-      parse_lat("10")
+      {
+        parse_lat("10")
+        # Check if the locale stays the same.
+        if(!identical(Sys.getlocale("LC_COLLATE"), "Japanese")) {
+          stop("locale changed after executing parse_lat()", call. = FALSE)
+        }
+      }
     )
   }
 
