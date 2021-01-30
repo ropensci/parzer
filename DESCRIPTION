@@ -39,6 +39,7 @@ Suggests:
     knitr,
     rmarkdown,
     callr,
+    pkgbuild,
     pkgload
 LinkingTo: Rcpp
 SystemRequirements: C++11
