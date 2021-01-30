@@ -13,7 +13,7 @@ skip_if_japanese_locale_unavailable <- function() {
   )
 }
 
-test_that("parse_lat() works on Japanese locale", {
+test_that("parse_lat() doesn't hang on Japanese locale", {
   skip_if_japanese_locale_unavailable()
   skip_if_not_installed("callr")
   skip_if_not_installed("pkgbuild")
