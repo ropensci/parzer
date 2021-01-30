@@ -24,7 +24,9 @@ scrub <- function(x) gsub("[^A-Za-z0-9\\.\\ ,'-]|d|g", "'", x)
 
 stop_form <- function() stop("format handling not ready yet")
 
-# Tweak function body on package build; this is needed only on Windows
+# Because of a std::regex's bug, all Rcpp functions hangs on Windows with MBCS
+# locale (#31). As a workaround for this, wrap the functions with `withr::with_locale()`
+# on building package.
 if (identical(tolower(Sys.info()[["sysname"]]), "windows")
     || identical(Sys.getenv("PARZER_DEBUG_LOCALE_WRAPPER"), "true")) {
 
