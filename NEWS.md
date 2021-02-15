@@ -1,3 +1,11 @@
+parzer 0.4.0
+============
+
+### MINOR IMPROVEMENTS
+
+* performance improvement for internal function `scrub()`, used in most exported functions in parzer (#30) work by @AlbanSagouis
+* work around for non-UTF8 MBCS locales: now all exported functions go through a modified `.Call()` in which we use `withr::with_locale()` if the user is on a Windows operating system (#31) (#32) work by @yutannihilation
+
 parzer 0.3.0
 ============
 

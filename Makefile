@@ -23,7 +23,7 @@ check: build
 	@rm -rf ${PACKAGE}.Rcheck
 
 check_windows:
-	${RSCRIPT} -e "devtools::check_win_devel(); devtools::check_win_release()"
+	${RSCRIPT} -e "devtools::check_win_devel(quiet=TRUE); devtools::check_win_release(quiet=TRUE)"
 
 eg:
 	${RSCRIPT} -e "devtools::run_examples()"
