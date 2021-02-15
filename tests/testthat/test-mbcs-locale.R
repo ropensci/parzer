@@ -18,6 +18,7 @@ test_that("parse_lat() doesn't hang on Japanese locale", {
   skip_if_not_installed("callr")
   skip_if_not_installed("pkgbuild")
   skip_if_not_installed("pkgload")
+  skip_on_cran()
 
   # Since parse_lat("10") might take very long time if it hits the std::regex's
   # bug, so we need to call it as an external process so that we can set timeout.
