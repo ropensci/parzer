@@ -46,6 +46,8 @@ parse_lat(c("45N54.2356", "-45.98739874", "40.123°")
 parse_lon(c("45W54.2356", "-45.98739874", "40.123°"))
 ```
 
+See more in the [Introduction to the `parzer` package vignette](https://docs.ropensci.org/parzer/articles/parzer.html). 
+
 ## Installation
 
 Stable version
