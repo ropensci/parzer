@@ -40,6 +40,12 @@ all decimal degree numeric data.
 
 ## Install
 
+Stable version
+
+```r
+install.packages("parzer")
+```
+
 Development version
 
 
