@@ -19,7 +19,7 @@ vignette: >
 `parzer` parses messy coordinates
 
 You may get data from a published study or a colleague, and the coordinates
-may be in some messy format that you'd like to clean up to e.g., have 
+may be in some messy character format that you'd like to clean up to have 
 all decimal degree numeric data.
 
 `parzer` API:
@@ -40,6 +40,12 @@ all decimal degree numeric data.
 
 ## Install
 
+Stable version
+
+```r
+install.packages("parzer")
+```
+
 Development version
 
 
@@ -48,11 +54,11 @@ remotes::install_github("ropensci/parzer")
 ```
 
 
+## parse
+
 ```r
 library("parzer")
 ```
-
-## parse
 
 ### latitudes
 
