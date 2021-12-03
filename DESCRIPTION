@@ -8,24 +8,29 @@ Description: Parse messy geographic coordinates from various character formats
     minutes, or seconds; add and subtract degrees, minutes,
     and seconds. C++ code herein originally inspired from code
     written by Jeffrey D. Bogan, but then completely re-written.
-Version: 0.4.0.91
+Version: 0.4.1
 Authors@R: c(
-	person("Scott", "Chamberlain", role = c("aut", "cre"),
+	person("Scott", "Chamberlain", role = "aut",
         email = "sckott@protonmail.com",
         comment = c(ORCID = "0000-0003-1444-9135")),
-    person("Alban", "Sagouis", role = "ctb"),
-    person("Jeffrey", "Bogan", role = "ctb",
+  person("Alban", "Sagouis", role = c("aut","cre"),
+        email = "sagouis@pm.me",
+        comment = c(ORCID = "0000-0002-3827-1063")),
+  person("Alec L.", "Robitaille", role = "ctb"),
+  person("Hiroaki", "Yutani", role = "ctb"),
+  person("Jeffrey", "Bogan", role = "ctb",
         comment = "C++ code originally from Jeffrey Bogan,
         but completely re-written"),
-    person("Julien", "Brun", role = "rev",
+  person("Julien", "Brun", role = "rev",
         comment = "Julien Brun reviewed the package,
         see https://github.com/ropensci/onboarding/issues/341"),
-    person("Maria", "Munafó", role = "rev",
+  person("Maria", "Munafó", role = "rev",
         comment = "Maria Munafó reviewed the package,
         see https://github.com/ropensci/onboarding/issues/341"),
-    person("rOpenSci", role = "fnd",
+  person("rOpenSci", role = "fnd",
         comment = "https://ropensci.org")
 	)
+Maintainer: Alban Sagouis <sagouis@pm.me>
 License: MIT + file LICENSE
 URL: https://github.com/ropensci/parzer (devel)
   https://docs.ropensci.org/parzer/ (docs)
@@ -47,7 +52,7 @@ VignetteBuilder: knitr
 Roxygen: list(markdown = TRUE)
 Encoding: UTF-8
 Language: en-US
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
 X-schema.org-applicationCategory: Geospatial
 X-schema.org-keywords: geospatial, data, latitude, longitude, parser, coordinates
 X-schema.org-isPartOf: https://ropensci.org
