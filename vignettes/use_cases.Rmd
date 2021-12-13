@@ -118,7 +118,7 @@ leaflet() %>%
   addTiles() %>%
   addRectangles(bbox[['xmin']], bbox[['ymin']], bbox[['xmax']], bbox[['ymax']]) %>%
   setView(center_lon, center_lat, zoom = 10)
-````
+```
 
 Crop the data to the bounding box
 
