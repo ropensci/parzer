@@ -32,7 +32,7 @@ jobs:
       - uses: r-lib/actions/setup-pandoc@v1
 
       - uses: r-lib/actions/setup-tinytex@v1
-        env: 
+        env:
           TINYTEX_VERSION: 2021.02
         if: contains(matrix.config.args, 'no-manual') == false
 
@@ -60,7 +60,7 @@ jobs:
           sudo apt-get install -y --no-install-recommends g++-6
 
       - name: Install dependencies
-        run: Rscript -e "install.packages('remotes')" -e "remotes::install_deps(dependencies = TRUE)" -e "remotes::install_cran('rcmdcheck')"
+        shell: Rscript -e "install.packages('remotes')" -e "remotes::install_deps(dependencies = TRUE)" -e "remotes::install_cran('rcmdcheck')"
 
       - name: Session info
         run: |
@@ -70,7 +70,7 @@ jobs:
         shell: Rscript {0}
 
       - name: Check
-        run: Rscript -e "rcmdcheck::rcmdcheck(args = c('--as-cran', '${{ matrix.config.args }}'), error_on = 'warning', check_dir = 'check')"
+        shell: Rscript -e "rcmdcheck::rcmdcheck(args = c('--as-cran', '${{ matrix.config.args }}'), error_on = 'warning', check_dir = 'check')"
 
       - name: Show testthat output
         if: always()
@@ -86,6 +86,6 @@ jobs:
 
       - name: Test coverage
         if: matrix.config.os == 'ubuntu-16.04' && matrix.config.r == 'release'
-        run: |
+        shell: |
           Rscript -e 'remotes::install_github("r-lib/covr@gh-actions")'
           Rscript -e 'covr::codecov(token = "${{secrets.CODECOV_TOKEN}}")'
