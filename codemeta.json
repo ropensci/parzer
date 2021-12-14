@@ -45,6 +45,12 @@
     },
     {
       "@type": "Person",
+      "givenName": "Maëlle",
+      "familyName": "Salmon",
+      "@id": "https://orcid.org/0000-0002-2815-0399"
+    },
+    {
+      "@type": "Person",
       "givenName": "Hiroaki",
       "familyName": "Yutani"
     },
@@ -186,5 +192,5 @@
   "applicationCategory": "Geospatial",
   "isPartOf": "https://ropensci.org",
   "keywords": ["geospatial", "data", "latitude", "longitude", "parser", "coordinates"],
-  "fileSize": "14371.893KB"
+  "fileSize": "14372.542KB"
 }

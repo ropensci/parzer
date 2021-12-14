@@ -17,6 +17,8 @@ Authors@R: c(
         email = "sagouis@pm.me",
         comment = c(ORCID = "0000-0002-3827-1063")),
   person("Alec L.", "Robitaille", role = "ctb"),
+  person("Maëlle", "Salmon", role = "ctb",
+        comment = c(ORCID = "0000-0002-2815-0399")),
   person("Hiroaki", "Yutani", role = "ctb"),
   person("Jeffrey", "Bogan", role = "ctb",
         comment = "C++ code originally from Jeffrey Bogan,

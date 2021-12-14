@@ -7,7 +7,7 @@ parzer 0.4.1
 character strings to convert them to decimal numeric values. Suggestion and work by @robitalec
 
 ### ACKONWLEDGEMENTS CHANGES
-* new contributors to the package: @robitalec and @yutannihilation
+* new contributors to the package: @robitalec, @maelle and @yutannihilation
 * new maintainer: @AlbanSagouis
 
 parzer 0.4.0
