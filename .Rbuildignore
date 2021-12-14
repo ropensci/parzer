@@ -16,3 +16,4 @@ vignettes/use_cases.html
 ^codemeta\.json$
 ^revdep$
 ^LICENSE\.md$
+^\.github$
