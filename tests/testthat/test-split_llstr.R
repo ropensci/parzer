@@ -13,9 +13,8 @@ test_that("pz_split_llstr_string works", {
 
   expect_true(
     all(pz_split_llstr_string(example_1s) == pz_split_llstr_string(example_2s)) &&
-    all(pz_split_llstr_string(example_2s) == pz_split_llstr_string(example_3s))
+      all(pz_split_llstr_string(example_2s) == pz_split_llstr_string(example_3s))
   )
-
 })
 
 test_that("pz_split_llstr_string fails well", {
@@ -27,9 +26,9 @@ test_that("pz_split_llstr_string fails well", {
 
 test_that("split_llstr works", {
   skip_on_cran()
-  example_1 <- c("N4'51'36',E101'34'7'","N4'55'33',E112'13'40'")
-  example_2 <- c("N4'51'36';E101'34'7'","N4'55'33';E112'13'40'")
-  example_3 <- c("N4'51'36' E101'34'7'","N4'55'33' E112'13'40'")
+  example_1 <- c("N4'51'36',E101'34'7'", "N4'55'33',E112'13'40'")
+  example_2 <- c("N4'51'36';E101'34'7'", "N4'55'33';E112'13'40'")
+  example_3 <- c("N4'51'36' E101'34'7'", "N4'55'33' E112'13'40'")
 
   ll <- pz_split_llstr(example_1)
 
@@ -42,7 +41,7 @@ test_that("split_llstr works", {
 
   expect_true(
     all(pz_split_llstr(example_1) == pz_split_llstr(example_2)) &&
-    all(pz_split_llstr(example_2) == pz_split_llstr(example_3))
+      all(pz_split_llstr(example_2) == pz_split_llstr(example_3))
   )
 })
 
@@ -52,4 +51,3 @@ test_that("split_llstr - fails well", {
   # expect_error(pz_split_llstr(c("195431345", "195431345")))
   # expect_error(pz_split_llstr(195431345))
 })
-

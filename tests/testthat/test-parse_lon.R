@@ -38,8 +38,10 @@ test_lons <- c(
 
 test_that("parse_lon works: run through test_lons", {
   skip_on_cran()
-  out <- data.frame(input = test_lons, res = NA_real_,
-    stringsAsFactors = FALSE)
+  out <- data.frame(
+    input = test_lons, res = NA_real_,
+    stringsAsFactors = FALSE
+  )
   for (i in seq_along(test_lons)) {
     expect_equal(round(parse_lon(test_lons[i]), 5), -74.64111)
     # out[i, "res"] <- parse_lon(test_lons[i])
@@ -79,8 +81,10 @@ invalid_formats <- c(
 # res column should all give NaN
 test_that("parse_lon works: invalid formats fail as expected", {
   skip_on_cran()
-  out <- data.frame(input = invalid_formats, res = NA_real_,
-                    stringsAsFactors = FALSE)
+  out <- data.frame(
+    input = invalid_formats, res = NA_real_,
+    stringsAsFactors = FALSE
+  )
   for (i in seq_along(invalid_formats)) {
     out[i, "res"] <- suppressWarnings(parse_lon(invalid_formats[i]))
     expect_warning(aa <- parse_lon(invalid_formats[i]))

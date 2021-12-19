@@ -10,7 +10,7 @@
 #' if one of the coordinate values is invalid, and one is valid, you get
 #' a length 1 string. if both coordinate values are bad, you get
 #' a zero length string.
-#' 
+#'
 #' Warnings are thrown on invalid values
 #' @examples
 #' # NE

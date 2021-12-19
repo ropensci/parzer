@@ -23,6 +23,6 @@ test_that("parse_llstr - fails well", {
   expect_error(parse_llstr("", mtcars))
 
   # src/ error
-  expect_warning(parse_llstr('190, 45'), "not within -90")
-  expect_warning(parse_llstr('190, 45'), "check that you did not invert")
+  expect_warning(parse_llstr("190, 45"), "not within -90")
+  expect_warning(parse_llstr("190, 45"), "check that you did not invert")
 })

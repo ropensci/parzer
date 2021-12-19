@@ -97,17 +97,19 @@ invalid_formats <- c(
 
 test_that("dms fxns fail as expected", {
   skip_on_cran()
-  out <- data.frame(input = invalid_formats, res = NA_real_,
-                    stringsAsFactors = FALSE)
+  out <- data.frame(
+    input = invalid_formats, res = NA_real_,
+    stringsAsFactors = FALSE
+  )
   for (i in seq_along(invalid_formats)) {
     expect_warning(pz_degree(lat = invalid_formats[i]))
     expect_warning(pz_minute(lat = invalid_formats[i]))
     expect_warning(pz_second(lat = invalid_formats[i]))
   }
 
-  expect_error(pz_d('a'), "x must be of class")
-  expect_error(pz_m('a'), "x must be of class")
-  expect_error(pz_s('a'), "x must be of class")
+  expect_error(pz_d("a"), "x must be of class")
+  expect_error(pz_m("a"), "x must be of class")
+  expect_error(pz_s("a"), "x must be of class")
 
   expect_error(pz_d(1) / pz_m(3), "division doesn't make sense here")
   expect_error(pz_d(1) * pz_m(3), "multiplication doesn't make sense here")

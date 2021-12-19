@@ -31,7 +31,7 @@ test_that("parse_lat() doesn't hang on Japanese locale", {
         loc <- Sys.getlocale("LC_COLLATE")
         parse_lat("10")
         # Check if the locale stays the same.
-        if(!identical(Sys.getlocale("LC_COLLATE"), loc)) {
+        if (!identical(Sys.getlocale("LC_COLLATE"), loc)) {
           stop("locale changed after executing parse_lat()", call. = FALSE)
         }
       }

@@ -65,7 +65,8 @@ Parse messy coordinates
 ```{r}
 dat <- tibble::tibble(
   longitude = parse_lon(lons),
-  latitude = parse_lat(lats))
+  latitude = parse_lat(lats)
+)
 dat
 ```
 
@@ -81,7 +82,7 @@ dat
 Coerce to an sf object
 
 ```{r}
-datsf <- sf::st_as_sf(dat, coords = c('longitude', 'latitude'))
+datsf <- sf::st_as_sf(dat, coords = c("longitude", "latitude"))
 datsf
 ```
 
@@ -116,7 +117,7 @@ bbox <- c(
 )
 leaflet() %>%
   addTiles() %>%
-  addRectangles(bbox[['xmin']], bbox[['ymin']], bbox[['xmax']], bbox[['ymax']]) %>%
+  addRectangles(bbox[["xmin"]], bbox[["ymin"]], bbox[["xmax"]], bbox[["ymax"]]) %>%
   setView(center_lon, center_lat, zoom = 10)
 ```
 

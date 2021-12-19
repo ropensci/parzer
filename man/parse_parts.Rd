@@ -48,4 +48,5 @@ x <- c("40.123°", "40.123N74.123W", "191.89", 12, "N45 04.25764")
 parse_parts_lat(x)
 system.time(parse_parts_lat(rep(x, 10^2)))
 }
+
 }

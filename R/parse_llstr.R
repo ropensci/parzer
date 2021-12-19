@@ -20,10 +20,8 @@
 #' # DMS
 #' parse_llstr("N4 51'36\", E101 34'7\"")
 #' parse_llstr(c("4 51'36\"S, 101 34'7\"W", "N4 51'36\", E101 34'7\""))
-#'
 parse_llstr <- function(str) {
-
-  assert(str, 'character')
+  assert(str, "character")
   tmp <- pz_split_llstr(scrub(str))
 
   return(
@@ -33,4 +31,3 @@ parse_llstr <- function(str) {
     )
   )
 }
-

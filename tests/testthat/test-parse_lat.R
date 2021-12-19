@@ -39,8 +39,10 @@ test_lats <- c(
 
 test_that("parse_lat works: run through test_lats", {
   skip_on_cran()
-  out <- data.frame(input = test_lats, res = NA_real_,
-    stringsAsFactors = FALSE)
+  out <- data.frame(
+    input = test_lats, res = NA_real_,
+    stringsAsFactors = FALSE
+  )
   for (i in seq_along(test_lats)) {
     expect_equal(round(parse_lat(test_lats[i]), 5), 40.41833)
     # cat(test_lats[i], sep = "\n")
@@ -81,8 +83,10 @@ invalid_formats <- c(
 # res column should all give NaN
 test_that("parse_lat works: invalid formats fail as expected", {
   skip_on_cran()
-  out <- data.frame(input = invalid_formats, res = NA_real_,
-                    stringsAsFactors = FALSE)
+  out <- data.frame(
+    input = invalid_formats, res = NA_real_,
+    stringsAsFactors = FALSE
+  )
   for (i in seq_along(invalid_formats)) {
     out[i, "res"] <- suppressWarnings(parse_lat(invalid_formats[i]))
     expect_warning(aa <- parse_lat(invalid_formats[i]))
