@@ -81,7 +81,7 @@ library("parzer")
     seconds. `parzer` does this for the user.
 -   `biogeo::dms2dd`: very unlike functions in this package. You must
     pass separate degrees, minutes, seconds and direction to `dms2dd`.
-    No exact analog is found in `parzer`, whos main focus is parsing
+    No exact analog is found in `parzer`, whose main focus is parsing
     messy geographic coordinates in strings to a more machine readable
     version
 
