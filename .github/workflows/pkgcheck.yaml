@@ -18,3 +18,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: ropensci-review-tools/pkgcheck-action@main
+        with:
+            summary-only: false
