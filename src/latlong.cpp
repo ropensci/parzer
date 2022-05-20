@@ -18,35 +18,35 @@ bool check_lat(float lat) {
   bool lat_check = false;
   if (lat >= -90  && lat <= 90) {
     lat_check = true;
-  };
+  }
   return lat_check;
-};
+}
 
 // check if longitude within acceptable range, etc.
 bool check_lon(float lon) {
   bool lon_check = false;
   if (lon >= -180  && lon <= 360) {
     lon_check = true;
-  };
+  }
   return lon_check;
-};
+}
 
 std::string strip_alpha(std::string x) {
   std::replace_if(x.begin(), x.end(), ::isalpha, ' ');
   return x;
-};
+}
 
 std::string digits_only(std::string x) {
   std::replace_if(x.begin(), x.end(),
                   [](char z){ return ::ispunct(z) && z != '.' && z != '-'; }, ' ');
   return x;
-};
+}
 
 std::string remove_internal_dashes(std::string x) {
   std::regex dash_reg("([0-9]+)(-)");
   std::string res = std::regex_replace(x, dash_reg, "$1 ");
   return res;
-};
+}
 
 NumericVector extract_floats_from_string(std::string str) {
   // str = strip_alpha(str);
@@ -64,9 +64,9 @@ NumericVector extract_floats_from_string(std::string str) {
       y.push_back(found);
     /* To save from space at the end of string */
     temp = "";
-  };
+  }
   return y;
-};
+}
 
 int count_direction_matches(std::string s, std::string re) {
   std::regex words_regex(re);
@@ -75,7 +75,7 @@ int count_direction_matches(std::string s, std::string re) {
   auto words_end = std::sregex_iterator();
 
   return std::distance(words_begin, words_end);
-};
+}
 
 std::string extract_nsew(std::string s, std::string reggex) {
   std::regex reg(reggex);
@@ -86,14 +86,14 @@ std::string extract_nsew(std::string s, std::string reggex) {
   // Rprintf("extract_ns length: %f \n", match.size());
   // Rprintf("extract_nsew result: %s \n", out.c_str());
   return out;
-};
+}
 
 std::string str_tolower(std::string s) {
   std::transform(s.begin(), s.end(), s.begin(),
                  [](unsigned char c){ return std::tolower(c); }
   );
   return s;
-};
+}
 
 double plus_minus(std::string x) {
   double out = 1.0;
@@ -101,28 +101,28 @@ double plus_minus(std::string x) {
   // Rprintf("within plus_minus = %s \n", x.c_str());
   if (x == "n" || x == "e") {
     out = 1.0;
-  };
+  }
   if (x == "s" || x == "w") {
     out = -1.0;
-  };
+  }
   return out;
-};
+}
 
 double decimal_minute(double x) {
   return (x / 60.0);
-};
+}
 
 double decimal_second(double x) {
   return (x / 3600.0);
-};
+}
 
 bool any_digits(std::string s) {
   bool z = std::string::npos != s.find_first_of("0123456789");
   if (!z) {
     Rcpp::warning("no digits detected, got: " + s);
-  };
+  }
   return z;
-};
+}
 
 bool has_non_direction_letters(std::string s, std::string reggex) {
   s = str_tolower(s);
@@ -131,9 +131,9 @@ bool has_non_direction_letters(std::string s, std::string reggex) {
   bool z = std::string::npos != s.find_first_of(reggex);
   if (z) {
     Rcpp::warning("invalid characters, got: " + s);
-  };
+  }
   return z;
-};
+}
 
 bool has_e_with_trailing_numbers(std::string s) {
   bool res = false;
@@ -143,9 +143,9 @@ bool has_e_with_trailing_numbers(std::string s) {
   if (std::regex_search(s, match, reg)) {
     res = true;
     Rcpp::warning("invalid characters, got: " + s);
-  };
+  }
   return res;
-};
+}
 
 bool invalid_degree_letter(std::string s, std::string reggex) {
   bool res = false;
@@ -163,10 +163,10 @@ bool invalid_degree_letter(std::string s, std::string reggex) {
     std::string out2 = "";
     if (!std::regex_search(out, match2, reg2)) {
       res = true;
-    };
-  };
+    }
+  }
   return res;
-};
+}
 
 bool is_negative(std::string s) {
   bool res = false;
@@ -174,9 +174,9 @@ bool is_negative(std::string s) {
   std::smatch match;
   if (std::regex_search(s, match, reg)) {
     res = true;
-  };
+  }
   return res;
-};
+}
 
 float convert_lat(std::string str) {
   float ret;
@@ -198,28 +198,28 @@ float convert_lat(std::string str) {
     double dir_val = 1.0;
     if (dir != "") {
       dir_val = plus_minus(dir);
-    };
+    }
     if (is_negative(str)) {
       dir_val = -1.0;
-    };
+    }
 
     NumericVector nums = extract_floats_from_string(str);
     if (nums.size() == 0) {
       ret = NA_REAL;
-    };
+    }
     if (nums.size() == 1) {
       ret = fabs(nums[0]);
-    };
+    }
     if (nums.size() == 2) {
       ret = fabs(nums[0]) + decimal_minute(nums[1]);
-    };
+    }
     if (nums.size() == 3) {
       ret = fabs(nums[0]) + decimal_minute(nums[1]) + decimal_second(nums[2]);
-    };
+    }
     if (nums.size() > 3) {
       Rcpp::warning("invalid format, more than 3 numeric slots, got: " + str);
       ret = NA_REAL;
-    };
+    }
 
     // apply direction
     ret = ret * dir_val;
@@ -232,11 +232,11 @@ float convert_lat(std::string str) {
         ret = NA_REAL;
         Rcpp::warning("not within -90/90 range, got: " + str +
           "\n  check that you did not invert lon and lat");
-      };
-    };
-  };
+      }
+    }
+  }
   return ret;
-};
+}
 
 float convert_lon(std::string str) {
   float ret;
@@ -258,28 +258,28 @@ float convert_lon(std::string str) {
     double dir_val = 1.0;
     if (dir != "") {
       dir_val = plus_minus(dir);
-    };
+    }
     if (is_negative(str)) {
       dir_val = -1.0;
-    };
+    }
 
     NumericVector nums = extract_floats_from_string(str);
     if (nums.size() == 0) {
       ret = NA_REAL;
-    };
+    }
     if (nums.size() == 1) {
       ret = fabs(nums[0]);
-    };
+    }
     if (nums.size() == 2) {
       ret = fabs(nums[0]) + decimal_minute(nums[1]);
-    };
+    }
     if (nums.size() == 3) {
       ret = fabs(nums[0]) + decimal_minute(nums[1]) + decimal_second(nums[2]);
-    };
+    }
     if (nums.size() > 3) {
       Rcpp::warning("invalid format, more than 3 numeric slots, got: " + str);
       ret = NA_REAL;
-    };
+    }
 
     // apply direction
     ret = ret * dir_val;
@@ -291,8 +291,8 @@ float convert_lon(std::string str) {
       if (!check_lon(ret)) {
         ret = NA_REAL;
         Rcpp::warning("not within -180/360 range, got: " + str);
-      };
-    };
-  };
+      }
+    }
+  }
   return ret;
-};
+}

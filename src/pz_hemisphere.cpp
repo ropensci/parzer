@@ -17,7 +17,7 @@ CharacterVector pz_hemisphere(CharacterVector lon, CharacterVector lat) {
     } else {
       std::string lon1 = std::to_string(lon_f);
       londir = is_negative(lon1) ? "W" : "E";
-    };
+    }
 
     std::string latdir = "";
     auto lat_ = as<std::string>(lat[i]);
@@ -27,10 +27,10 @@ CharacterVector pz_hemisphere(CharacterVector lon, CharacterVector lat) {
     } else {
       std::string lat1 = std::to_string(lat_f);
       latdir = is_negative(lat1) ? "S" : "N";
-    };
+    }
 
     std::string ss = latdir + londir;
     out.push_back(ss);
-  };
+  }
   return out;
-};
+}
