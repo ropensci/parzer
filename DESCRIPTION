@@ -54,7 +54,7 @@ VignetteBuilder: knitr
 Roxygen: list(markdown = TRUE)
 Encoding: UTF-8
 Language: en-US
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.0
 X-schema.org-applicationCategory: Geospatial
 X-schema.org-keywords: geospatial, data, latitude, longitude, parser, coordinates
 X-schema.org-isPartOf: https://ropensci.org
