@@ -1,10 +1,10 @@
-context("parse_lon_lat")
+# parse_lon_lat
 
 test_that("parse_lon_lat works", {
   skip_on_cran()
   aa <- parse_lon_lat("45W54.2356", "45N54.2356")
 
-  expect_is(aa, "data.frame")
+  expect_type(aa, "list")
   expect_equal(NCOL(aa), 2)
   expect_equal(NROW(aa), 1)
   expect_named(aa, c("lon", "lat"))

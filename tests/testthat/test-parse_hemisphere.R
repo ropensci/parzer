@@ -1,4 +1,4 @@
-context("parse_hemisphere")
+# parse_hemisphere
 
 test_that("parse_hemisphere works", {
   skip_on_cran()
@@ -11,7 +11,7 @@ test_that("parse_hemisphere works", {
   # SE
   se <- parse_hemisphere("120", "-40.4183318")
 
-  for (i in c(ne, nw, sw, se)) expect_is(i, "character")
+  for (i in c(ne, nw, sw, se)) expect_type(i, "character")
   for (i in c(ne, nw, sw, se)) expect_equal(nchar(i), 2)
 
   # bad values

@@ -1,10 +1,10 @@
-context("parse_lat")
+# parse_lat
 
 test_that("parse_lat works", {
   skip_on_cran()
   aa <- parse_lat("45N54.2356")
 
-  expect_is(aa, "numeric")
+  expect_type(aa, "double")
   expect_equal(round(aa), 46)
   expect_match(strsplit(as.character(aa), "\\.")[[1]][2], "903")
 })
@@ -90,7 +90,7 @@ test_that("parse_lat works: invalid formats fail as expected", {
   for (i in seq_along(invalid_formats)) {
     out[i, "res"] <- suppressWarnings(parse_lat(invalid_formats[i]))
     expect_warning(aa <- parse_lat(invalid_formats[i]))
-    expect_is(aa, "numeric")
+    expect_type(aa, "double")
     expect_equal(aa, NaN)
   }
 })
