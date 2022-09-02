@@ -163,11 +163,10 @@ std::string extract_nsew_old(std::string s, std::string reggex) {
   return out;
 }
 
-std::string str_tolower(std::string &s) {
+void str_tolower(std::string &s) {
   std::transform(s.begin(), s.end(), s.begin(),
                  [](unsigned char c){ return std::tolower(c); }
   );
-  return s;
 }
 std::string str_tolower_old(std::string s) {
   std::transform(s.begin(), s.end(), s.begin(),
@@ -190,7 +189,7 @@ double plus_minus(const std::string& x) {
 }
 double plus_minus_old(std::string x) {
   double out = 1.0;
-  x = str_tolower(x);
+  x = str_tolower_old(x);
   // Rprintf("within plus_minus = %s \n", x.c_str());
   if (x == "n" || x == "e") {
     out = 1.0;
@@ -268,7 +267,7 @@ bool has_e_with_trailing_numbers(std::string& s) {
 
 bool has_e_with_trailing_numbers_old(std::string s) {
   bool res = false;
-  s = str_tolower(s);
+  s = str_tolower_old(s);
   std::regex reg("[0-9]+e[0-9]+");
   std::smatch match;
   if (std::regex_search(s, match, reg)) {
@@ -342,7 +341,7 @@ bool is_negative_old(std::string s) {
 // [[Rcpp::export]]
 float convert_lat(std::string& str) {
   float ret;
-  str = str_tolower(str);
+  str_tolower(str);
   if (
       str.size() == 0 ||
         !any_digits(str) ||
@@ -359,7 +358,6 @@ float convert_lat(std::string& str) {
     Rcpp::warning("expected single 'N|S|d' after degrees, got: " + str);
   } else {
     std::string dir = extract_nsew(str, "[ns]"); // str was already str_tolowered
-    // by has_non_direction_letters so no need to include capital letters anymore
     double dir_val = 1.0;
     if (dir != "") {
       dir_val = plus_minus(dir);
@@ -461,7 +459,7 @@ float convert_lat_old(std::string str) {
 // [[Rcpp::export]]
 float convert_lon(std::string& str) {
   float ret;
-  str = str_tolower(str);
+  str_tolower(str);
   if (
       str.size() == 0 ||
         !any_digits(str) ||
