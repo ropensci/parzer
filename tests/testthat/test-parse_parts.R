@@ -1,7 +1,7 @@
 # parse_parts_lat
 
 test_that("parse_parts_lat works", {
-  skip_on_cran()
+  # skip_on_cran()
   aa <- parse_parts_lat("45N54.2356")
 
   expect_type(aa, "list")
@@ -17,14 +17,14 @@ test_that("parse_parts_lat works", {
 })
 
 test_that("parse_parts_lat - fails well", {
-  skip_on_cran()
+  # skip_on_cran()
   expect_error(parse_parts_lat(), "argument \"str\" is missing")
   expect_error(parse_parts_lat(mtcars), "str must be of class")
 })
 
 
 test_that("parse_parts_lon works", {
-  skip_on_cran()
+  # skip_on_cran()
   aa <- parse_parts_lon("45W54.2356")
 
   expect_type(aa, "list")
@@ -40,7 +40,7 @@ test_that("parse_parts_lon works", {
 })
 
 test_that("parse_parts_lon - fails well", {
-  skip_on_cran()
+  # skip_on_cran()
   expect_error(parse_parts_lon(), "argument \"str\" is missing")
   expect_error(parse_parts_lon(mtcars), "str must be of class")
 })

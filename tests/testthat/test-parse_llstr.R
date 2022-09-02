@@ -1,7 +1,7 @@
 # parse_llstr
 
 test_that("parse_llstr works", {
-  skip_on_cran()
+  # skip_on_cran()
   aa <- parse_llstr("45N54.2356,    45W54.2356")
 
   expect_type(aa, "list")
@@ -17,7 +17,7 @@ test_that("parse_llstr works", {
 })
 
 test_that("parse_llstr - fails well", {
-  skip_on_cran()
+  # skip_on_cran()
   expect_error(parse_llstr())
   expect_error(parse_llstr(mtcars), "str must be of class character")
   expect_error(parse_llstr("", mtcars))
