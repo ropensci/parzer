@@ -7,20 +7,21 @@ developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.re
 [![cran
 checks](https://cranchecks.info/badges/worst/parzer)](https://cranchecks.info/pkgs/parzer)
 [![R-CMD-check](https://github.com/ropensci/parzer/workflows/R-CMD-check/badge.svg)](https://github.com/ropensci/parzer/actions/)
-[![codecov.io](https://codecov.io/github/ropensci/parzer/coverage.svg?branch=master)](https://codecov.io/github/ropensci/parzer?branch=master)
-[![](https://badges.ropensci.org/341_status.svg)](https://github.com/ropensci/software-review/issues/341)
 [![rstudio mirror
-downloads](https://cranlogs.r-pkg.org/badges/parzer?color=C9A115)](https://github.com/r-hub/cranlogs.app)
+downloads](https://cranlogs.r-pkg.org/badges/parzer)](https://github.com/r-hub/cranlogs.app)
 [![cran
 version](https://www.r-pkg.org/badges/version/parzer)](https://cran.r-project.org/package=parzer)
+
+[![codecov.io](https://codecov.io/github/ropensci/parzer/coverage.svg?branch=master)](https://codecov.io/github/ropensci/parzer?branch=master)
+[![](https://badges.ropensci.org/341_status.svg)](https://github.com/ropensci/software-review/issues/341)
 
 `parzer` parses messy geographic coordinates
 
 Docs: <https://docs.ropensci.org/parzer/>
 
-You may get data from a published study or a colleague, and the
-coordinates may be in some messy character format that you’d like to
-clean up to have all decimal degree numeric data.
+You may get data from a published study or a colleague where the
+coordinates are in some messy character format that you’d like to clean
+up to get all decimal degree numeric data.
 
 `parzer` API:
 
@@ -50,6 +51,16 @@ parse_lat(c("45N54.2356", "-45.98739874", "40.123°"))
 ``` r
 parse_lon(c("45W54.2356", "-45.98739874", "40.123°"))
 #> [1] -45.90393 -45.98740  40.12300
+```
+
+And you can even split and parse strings that contain latitude and
+longitude together.
+
+``` r
+parse_llstr(c("4 51'36\"S, 101 34'7\"W", "40.123°; 45W54.2356"))
+#>      lat        lon
+#> 1 -4.860 -101.56861
+#> 2 40.123  -45.90393
 ```
 
 See more in the [Introduction to the `parzer` package

@@ -1,10 +1,10 @@
-context("parse_lon")
+# parse_lon
 
 test_that("parse_lon works", {
   skip_on_cran()
   aa <- parse_lon("45W54.2356")
 
-  expect_is(aa, "numeric")
+  expect_type(aa, "double")
   expect_equal(round(aa), -46)
   expect_match(strsplit(as.character(aa), "\\.")[[1]][2], "903")
 })
@@ -88,7 +88,7 @@ test_that("parse_lon works: invalid formats fail as expected", {
   for (i in seq_along(invalid_formats)) {
     out[i, "res"] <- suppressWarnings(parse_lon(invalid_formats[i]))
     expect_warning(aa <- parse_lon(invalid_formats[i]))
-    expect_is(aa, "numeric")
+    expect_type(aa, "double")
     expect_equal(aa, NaN)
   }
 })

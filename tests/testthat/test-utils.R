@@ -1,5 +1,5 @@
 test_that("scrub", {
-  expect_is(scrub, "function")
+  expect_type(scrub, "closure")
 
   # degree symbol
   expect_equal(scrub("°"), "'")
