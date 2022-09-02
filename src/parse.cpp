@@ -4,7 +4,7 @@
 using namespace Rcpp;
 
 // [[Rcpp::export]]
-NumericVector pz_parse_lat(CharacterVector& x) {
+NumericVector pz_parse_lat(const CharacterVector& x) {
   const int n = x.size();
   NumericVector y(n);
   for (int i=0; i < n; ++i) {
@@ -28,7 +28,7 @@ NumericVector pz_parse_lat_old(CharacterVector x) {
 }
 
 // [[Rcpp::export]]
-NumericVector pz_parse_lon(CharacterVector& x) {
+NumericVector pz_parse_lon(const CharacterVector& x) {
   const int n = x.size();
   NumericVector y(n);
   for (int i=0; i < n; ++i) {

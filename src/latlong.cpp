@@ -48,9 +48,8 @@ bool check_lon_old(float lon) {
   return lon_check;
 }
 
-std::string strip_alpha(std::string& x) {
+void strip_alpha(std::string& x) {
   std::replace_if(x.begin(), x.end(), ::isalpha, ' ');
-  return x;
 }
 
 std::string strip_alpha_old(std::string x) {
@@ -58,10 +57,9 @@ std::string strip_alpha_old(std::string x) {
   return x;
 }
 
-std::string digits_only(std::string& x) {
+void digits_only(std::string& x) {
   std::replace_if(x.begin(), x.end(),
                   [](char z){ return ::ispunct(z) && z != '.' && z != '-'; }, ' ');
-  return x;
 }
 
 std::string digits_only_old(std::string x) {
@@ -70,10 +68,9 @@ std::string digits_only_old(std::string x) {
   return x;
 }
 
-std::string remove_internal_dashes(std::string& x) {
+void remove_internal_dashes(std::string& x) {
   std::regex dash_reg("([0-9]+)(-)");
   x = std::regex_replace(x, dash_reg, "$1 ");
-  return x;
 }
 
 std::string remove_internal_dashes_old(std::string x) {
@@ -238,7 +235,7 @@ bool has_non_direction_letters(std::string& s, const std::string& reggex) {
   // allow "d" for degree delimiter, check below to make sure d used correctly
   bool z = std::string::npos != s.find_first_of(reggex);
   if (z) {
-    Rcpp::warning("invalid characters, got: " + s);
+    Rcpp::warning("invalid direction letter, got: " + s);
   }
   return z;
 }
@@ -253,7 +250,7 @@ bool has_non_direction_letters_old(std::string s, std::string reggex) {
   return z;
 }
 
-bool has_e_with_trailing_numbers(std::string& s) {
+bool has_e_with_trailing_numbers(const std::string& s) {
   bool res = false;
   // s = str_tolower(s);
   std::regex reg("[0-9]+e[0-9]+");
