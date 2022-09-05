@@ -1,14 +1,12 @@
 #include <Rcpp.h>
 #include "latlong.h"
 
-using namespace Rcpp;
-
 // [[Rcpp::export]]
-NumericVector pz_parse_lat(const CharacterVector& x) {
+Rcpp::NumericVector pz_parse_lat(const Rcpp::CharacterVector& x) {
   const int n = x.size();
-  NumericVector y(n);
+  Rcpp::NumericVector y(n);
   for (int i=0; i < n; ++i) {
-    auto w = as<std::string>(x[i]);
+    auto w = Rcpp::as<std::string>(x[i]);
     float z = convert_lat(w);
     y[i] = z;
   }
@@ -16,11 +14,11 @@ NumericVector pz_parse_lat(const CharacterVector& x) {
 }
 
 // [[Rcpp::export]]
-NumericVector pz_parse_lat_old(CharacterVector x) {
+Rcpp::NumericVector pz_parse_lat_old(Rcpp::CharacterVector x) {
   const int n = x.size();
-  NumericVector y(n);
+  Rcpp::NumericVector y(n);
   for (int i=0; i < n; ++i) {
-    auto w = as<std::string>(x[i]);
+    auto w = Rcpp::as<std::string>(x[i]);
     float z = convert_lat_old(w);
     y[i] = z;
   }
@@ -28,11 +26,11 @@ NumericVector pz_parse_lat_old(CharacterVector x) {
 }
 
 // [[Rcpp::export]]
-NumericVector pz_parse_lon(const CharacterVector& x) {
+Rcpp::NumericVector pz_parse_lon(const Rcpp::CharacterVector& x) {
   const int n = x.size();
-  NumericVector y(n);
+  Rcpp::NumericVector y(n);
   for (int i=0; i < n; ++i) {
-    auto w = as<std::string>(x[i]);
+    auto w = Rcpp::as<std::string>(x[i]);
     float z = convert_lon(w);
     y[i] = z;
   }
@@ -40,11 +38,11 @@ NumericVector pz_parse_lon(const CharacterVector& x) {
 }
 
 // [[Rcpp::export]]
-NumericVector pz_parse_lon_old(CharacterVector x) {
+Rcpp::NumericVector pz_parse_lon_old(Rcpp::CharacterVector x) {
   const int n = x.size();
-  NumericVector y(n);
+  Rcpp::NumericVector y(n);
   for (int i=0; i < n; ++i) {
-    auto w = as<std::string>(x[i]);
+    auto w = Rcpp::as<std::string>(x[i]);
     float z = convert_lon_old(w);
     y[i] = z;
   }

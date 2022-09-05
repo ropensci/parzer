@@ -55,63 +55,63 @@ BEGIN_RCPP
 END_RCPP
 }
 // pz_parse_lat
-NumericVector pz_parse_lat(const CharacterVector& x);
+Rcpp::NumericVector pz_parse_lat(const Rcpp::CharacterVector& x);
 RcppExport SEXP _parzer_pz_parse_lat(SEXP xSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const CharacterVector& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::CharacterVector& >::type x(xSEXP);
     rcpp_result_gen = Rcpp::wrap(pz_parse_lat(x));
     return rcpp_result_gen;
 END_RCPP
 }
 // pz_parse_lat_old
-NumericVector pz_parse_lat_old(CharacterVector x);
+Rcpp::NumericVector pz_parse_lat_old(Rcpp::CharacterVector x);
 RcppExport SEXP _parzer_pz_parse_lat_old(SEXP xSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< CharacterVector >::type x(xSEXP);
+    Rcpp::traits::input_parameter< Rcpp::CharacterVector >::type x(xSEXP);
     rcpp_result_gen = Rcpp::wrap(pz_parse_lat_old(x));
     return rcpp_result_gen;
 END_RCPP
 }
 // pz_parse_lon
-NumericVector pz_parse_lon(const CharacterVector& x);
+Rcpp::NumericVector pz_parse_lon(const Rcpp::CharacterVector& x);
 RcppExport SEXP _parzer_pz_parse_lon(SEXP xSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const CharacterVector& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::CharacterVector& >::type x(xSEXP);
     rcpp_result_gen = Rcpp::wrap(pz_parse_lon(x));
     return rcpp_result_gen;
 END_RCPP
 }
 // pz_parse_lon_old
-NumericVector pz_parse_lon_old(CharacterVector x);
+Rcpp::NumericVector pz_parse_lon_old(Rcpp::CharacterVector x);
 RcppExport SEXP _parzer_pz_parse_lon_old(SEXP xSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< CharacterVector >::type x(xSEXP);
+    Rcpp::traits::input_parameter< Rcpp::CharacterVector >::type x(xSEXP);
     rcpp_result_gen = Rcpp::wrap(pz_parse_lon_old(x));
     return rcpp_result_gen;
 END_RCPP
 }
 // pz_hemisphere
-CharacterVector pz_hemisphere(CharacterVector lon, CharacterVector lat);
+Rcpp::CharacterVector pz_hemisphere(Rcpp::CharacterVector lon, Rcpp::CharacterVector lat);
 RcppExport SEXP _parzer_pz_hemisphere(SEXP lonSEXP, SEXP latSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< CharacterVector >::type lon(lonSEXP);
-    Rcpp::traits::input_parameter< CharacterVector >::type lat(latSEXP);
+    Rcpp::traits::input_parameter< Rcpp::CharacterVector >::type lon(lonSEXP);
+    Rcpp::traits::input_parameter< Rcpp::CharacterVector >::type lat(latSEXP);
     rcpp_result_gen = Rcpp::wrap(pz_hemisphere(lon, lat));
     return rcpp_result_gen;
 END_RCPP
 }
 // split_decimal_degree
-List split_decimal_degree(float& x, const std::string& fmt);
+Rcpp::List split_decimal_degree(float& x, const std::string& fmt);
 RcppExport SEXP _parzer_split_decimal_degree(SEXP xSEXP, SEXP fmtSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
@@ -123,7 +123,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // split_decimal_degree_old
-List split_decimal_degree_old(float x, std::string fmt);
+Rcpp::List split_decimal_degree_old(float x, std::string fmt);
 RcppExport SEXP _parzer_split_decimal_degree_old(SEXP xSEXP, SEXP fmtSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
@@ -135,45 +135,45 @@ BEGIN_RCPP
 END_RCPP
 }
 // pz_parse_parts_lat
-DataFrame pz_parse_parts_lat(CharacterVector& x);
+Rcpp::DataFrame pz_parse_parts_lat(Rcpp::CharacterVector& x);
 RcppExport SEXP _parzer_pz_parse_parts_lat(SEXP xSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< CharacterVector& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< Rcpp::CharacterVector& >::type x(xSEXP);
     rcpp_result_gen = Rcpp::wrap(pz_parse_parts_lat(x));
     return rcpp_result_gen;
 END_RCPP
 }
 // pz_parse_parts_lat_old
-DataFrame pz_parse_parts_lat_old(CharacterVector x);
+Rcpp::DataFrame pz_parse_parts_lat_old(Rcpp::CharacterVector x);
 RcppExport SEXP _parzer_pz_parse_parts_lat_old(SEXP xSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< CharacterVector >::type x(xSEXP);
+    Rcpp::traits::input_parameter< Rcpp::CharacterVector >::type x(xSEXP);
     rcpp_result_gen = Rcpp::wrap(pz_parse_parts_lat_old(x));
     return rcpp_result_gen;
 END_RCPP
 }
 // pz_parse_parts_lon
-DataFrame pz_parse_parts_lon(CharacterVector& x);
+Rcpp::DataFrame pz_parse_parts_lon(Rcpp::CharacterVector& x);
 RcppExport SEXP _parzer_pz_parse_parts_lon(SEXP xSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< CharacterVector& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< Rcpp::CharacterVector& >::type x(xSEXP);
     rcpp_result_gen = Rcpp::wrap(pz_parse_parts_lon(x));
     return rcpp_result_gen;
 END_RCPP
 }
 // pz_parse_parts_lon_old
-DataFrame pz_parse_parts_lon_old(CharacterVector x);
+Rcpp::DataFrame pz_parse_parts_lon_old(Rcpp::CharacterVector x);
 RcppExport SEXP _parzer_pz_parse_parts_lon_old(SEXP xSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< CharacterVector >::type x(xSEXP);
+    Rcpp::traits::input_parameter< Rcpp::CharacterVector >::type x(xSEXP);
     rcpp_result_gen = Rcpp::wrap(pz_parse_parts_lon_old(x));
     return rcpp_result_gen;
 END_RCPP

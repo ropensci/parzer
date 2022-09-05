@@ -1,5 +1,4 @@
 #include <Rcpp.h>
-using namespace Rcpp;
 // [[Rcpp::plugins(cpp11)]]
 
 #include <string>
@@ -79,7 +78,7 @@ std::string remove_internal_dashes_old(std::string x) {
   return res;
 }
 
-NumericVector extract_floats_from_string(std::string& str) {
+Rcpp::NumericVector extract_floats_from_string(std::string& str) {
   // str = remove_internal_dashes(digits_only(strip_alpha(str)));
   strip_alpha(str);
   digits_only(str);
@@ -88,7 +87,7 @@ NumericVector extract_floats_from_string(std::string& str) {
   std::stringstream ss(str);
   std::string temp;
   double found;
-  NumericVector y;
+  Rcpp::NumericVector y;
   while (!ss.eof()) {
     /* extracting chunk by chunk from stream */
     ss >> temp;
@@ -101,14 +100,14 @@ NumericVector extract_floats_from_string(std::string& str) {
   return y;
 }
 
-NumericVector extract_floats_from_string_old(std::string str) {
+Rcpp::NumericVector extract_floats_from_string_old(std::string str) {
   // str = strip_alpha(str);
   str = remove_internal_dashes_old(digits_only_old(strip_alpha_old(str)));
   // Rprintf("within extract_floats_from_string: %s \n", str.c_str());
   std::stringstream ss(str);
   std::string temp;
   double found;
-  NumericVector y;
+  Rcpp::NumericVector y;
   while (!ss.eof()) {
     /* extracting chunk by chunk from stream */
     ss >> temp;
@@ -363,7 +362,7 @@ float convert_lat(std::string& str) {
       dir_val = -1.0;
     }
 
-    NumericVector nums = extract_floats_from_string(str);
+    Rcpp::NumericVector nums = extract_floats_from_string(str);
     if (nums.size() == 0) {
       ret = NA_REAL;
     }
@@ -384,7 +383,7 @@ float convert_lat(std::string& str) {
     // apply direction
     ret = ret * dir_val;
 
-    if (!NumericVector::is_na(ret)) {
+    if (!Rcpp::NumericVector::is_na(ret)) {
       if (!check_lat(ret)) {
         ret = NA_REAL;
         Rcpp::warning("not within -90/90 range, got: " + str +
@@ -421,7 +420,7 @@ float convert_lat_old(std::string str) {
       dir_val = -1.0;
     }
 
-    NumericVector nums = extract_floats_from_string_old(str);
+    Rcpp::NumericVector nums = extract_floats_from_string_old(str);
     if (nums.size() == 0) {
       ret = NA_REAL;
     }
@@ -442,7 +441,7 @@ float convert_lat_old(std::string str) {
     // apply direction
     ret = ret * dir_val;
 
-    if (!NumericVector::is_na(ret)) {
+    if (!Rcpp::NumericVector::is_na(ret)) {
       if (!check_lat_old(ret)) {
         ret = NA_REAL;
         Rcpp::warning("not within -90/90 range, got: " + str +
@@ -480,7 +479,7 @@ float convert_lon(std::string& str) {
       dir_val = -1.0;
     }
 
-    NumericVector nums = extract_floats_from_string(str);
+    Rcpp::NumericVector nums = extract_floats_from_string(str);
     if (nums.size() == 0) {
       ret = NA_REAL;
     }
@@ -501,7 +500,7 @@ float convert_lon(std::string& str) {
     // apply direction
     ret = ret * dir_val;
 
-    if (!NumericVector::is_na(ret)) {
+    if (!Rcpp::NumericVector::is_na(ret)) {
       if (!check_lon(ret)) {
         ret = NA_REAL;
         Rcpp::warning("not within -180/360 range, got: " + str);
@@ -537,7 +536,7 @@ float convert_lon_old(std::string str) {
       dir_val = -1.0;
     }
 
-    NumericVector nums = extract_floats_from_string_old(str);
+    Rcpp::NumericVector nums = extract_floats_from_string_old(str);
     if (nums.size() == 0) {
       ret = NA_REAL;
     }
@@ -561,7 +560,7 @@ float convert_lon_old(std::string str) {
     // FIXME: need to do is na check
     // bool fart = !NumericVector::is_na(ret);
     // Rprintf("R_IsNA result: %d \n", fart );
-    if (!NumericVector::is_na(ret)) {
+    if (!Rcpp::NumericVector::is_na(ret)) {
       if (!check_lon_old(ret)) {
         ret = NA_REAL;
         Rcpp::warning("not within -180/360 range, got: " + str);

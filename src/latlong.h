@@ -1,5 +1,4 @@
-#include <Rcpp.h> // is this necessary?
-using namespace Rcpp; // is this necessary?
+// no include needed
 
 float convert_lat(std::string& str);
 float convert_lat_old(std::string str);
