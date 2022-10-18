@@ -55,10 +55,7 @@
 #' }
 parse_lat <- function(lat, format = NULL) {
   assert(lat, c("numeric", "integer", "character"))
-  # assert(format, "character")
-  if (!is.null(format)) warning("At the moment, format is not taken into account by the function.")
-
-  return(
-    pz_parse_lat(scrub(lat))
-  )
+  assert(format, "character")
+  lat <- scrub(lat)
+  if (is.null(format)) pz_parse_lat(lat) else stop_form()
 }
