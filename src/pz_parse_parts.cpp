@@ -2,25 +2,28 @@
 #include "latlong.h"
 
 // [[Rcpp::export]]
-Rcpp::List split_decimal_degree(float& x, const std::string& fmt = "dms") {
+std::vector<float> split_decimal_degree(const float& x, const std::string& fmt = "dms") {
   const float sixty = 60;
   const float thirtysixh = 3600;
+  float dir_val = 1.0;
 
-  double dir_val = 1.0;
   if ( R_IsNA(x)) {
-    return Rcpp::List::create(NA_REAL, NA_REAL, NA_REAL);
+    std::vector<float>{0, 0, 0}; // this has to be updated
+    // return Rcpp::List::create(NA_REAL, NA_REAL, NA_REAL);
   }
-  auto x_str = Rcpp::toString(x);
-  if (is_negative(x_str)) {
+  // auto x_str = Rcpp::toString(x); // Rcpp should be replaced here
+  // if (is_negative(x)) { // does not use Rcpp but uses regex
+  if (x < 0.) {
     dir_val = -1.0;
   }
-  x = fabs(x);
+  float x_abs = std::fabs(x);
 
-  int d = static_cast<int>(x);
-  int m = static_cast<int>((x - d) * sixty);
-  double s = ((x - d) - (m/sixty)) * thirtysixh;
-  d = static_cast<int>(d * dir_val);
-  return Rcpp::List::create(d, m, s); // should be an std::tuple?
+  float d = static_cast<int>(x_abs); // is this : "float X = static_cast<int>(Y);" OK? it works...
+  float m = static_cast<int>((x_abs - d) * sixty);
+  float s = ((x_abs - d) - (m/sixty)) * thirtysixh;
+  d = d * dir_val;
+
+  return std::vector<float>{d, m, s};
 }
 
 // [[Rcpp::export]]
@@ -55,7 +58,7 @@ Rcpp::DataFrame pz_parse_parts_lat(Rcpp::CharacterVector& x) {
   for (int i=0; i < n; ++i) {
     auto w = Rcpp::as<std::string>(x[i]);
     float out = convert_lat(w); // passed as a reference.
-    Rcpp::List parts = split_decimal_degree(out); // passed as a reference.
+    std::vector<float> parts = split_decimal_degree(out); // passed as a reference.
     deg[i] = parts[0];
     min[i] = parts[1];
     sec[i] = parts[2];
@@ -96,7 +99,7 @@ Rcpp::DataFrame pz_parse_parts_lon(Rcpp::CharacterVector& x) {
   for (int i=0; i < n; ++i) {
     auto w = Rcpp::as<std::string>(x[i]);
     float out = convert_lon(w); // passed as a reference.
-    Rcpp::List parts = split_decimal_degree(out); // passed as a reference.
+    std::vector<float> parts = split_decimal_degree(out); // passed as a reference.
     deg[i] = parts[0];
     min[i] = parts[1];
     sec[i] = parts[2];
