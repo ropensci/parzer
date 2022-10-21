@@ -78,7 +78,7 @@ std::string remove_internal_dashes_old(std::string x) {
   return res;
 }
 
-Rcpp::NumericVector extract_floats_from_string(std::string& str) {
+std::vector<float> extract_floats_from_string(std::string& str) {
   // str = remove_internal_dashes(digits_only(strip_alpha(str)));
   strip_alpha(str);
   digits_only(str);
@@ -87,7 +87,7 @@ Rcpp::NumericVector extract_floats_from_string(std::string& str) {
   std::stringstream ss(str);
   std::string temp;
   double found;
-  Rcpp::NumericVector y;
+  std::vector<float> y;
   while (!ss.eof()) {
     /* extracting chunk by chunk from stream */
     ss >> temp;
@@ -362,7 +362,7 @@ float convert_lat(std::string& str) {
       dir_val = -1.0;
     }
 
-    Rcpp::NumericVector nums = extract_floats_from_string(str);
+    std::vector<float> nums = extract_floats_from_string(str);
     if (nums.size() == 0) {
       ret = NA_REAL;
     }
@@ -479,7 +479,7 @@ float convert_lon(std::string& str) {
       dir_val = -1.0;
     }
 
-    Rcpp::NumericVector nums = extract_floats_from_string(str);
+    std::vector<float> nums = extract_floats_from_string(str);
     if (nums.size() == 0) {
       ret = NA_REAL;
     }
