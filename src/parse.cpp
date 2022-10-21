@@ -2,12 +2,11 @@
 #include "latlong.h"
 
 // [[Rcpp::export]]
-Rcpp::NumericVector pz_parse_lat(const Rcpp::CharacterVector& x) {
+std::vector<float> pz_parse_lat(std::vector<std::string>& x) {
   const int n = x.size();
-  Rcpp::NumericVector y(n);
+  std::vector<float> y(n);
   for (int i=0; i < n; ++i) {
-    auto w = Rcpp::as<std::string>(x[i]);
-    float z = convert_lat(w);
+    float z = convert_lat(x[i]);
     y[i] = z;
   }
   return y;
@@ -26,12 +25,11 @@ Rcpp::NumericVector pz_parse_lat_old(Rcpp::CharacterVector x) {
 }
 
 // [[Rcpp::export]]
-Rcpp::NumericVector pz_parse_lon(const Rcpp::CharacterVector& x) {
+std::vector<float> pz_parse_lon(std::vector<std::string>& x) {
   const int n = x.size();
-  Rcpp::NumericVector y(n);
+  std::vector<float> y(n);
   for (int i=0; i < n; ++i) {
-    auto w = Rcpp::as<std::string>(x[i]);
-    float z = convert_lon(w);
+    float z = convert_lon(x[i]);
     y[i] = z;
   }
   return y;
