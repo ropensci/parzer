@@ -111,12 +111,12 @@ BEGIN_RCPP
 END_RCPP
 }
 // split_decimal_degree
-Rcpp::List split_decimal_degree(float& x, const std::string& fmt);
+std::vector<float> split_decimal_degree(const float& x, const std::string& fmt);
 RcppExport SEXP _parzer_split_decimal_degree(SEXP xSEXP, SEXP fmtSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< float& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const float& >::type x(xSEXP);
     Rcpp::traits::input_parameter< const std::string& >::type fmt(fmtSEXP);
     rcpp_result_gen = Rcpp::wrap(split_decimal_degree(x, fmt));
     return rcpp_result_gen;

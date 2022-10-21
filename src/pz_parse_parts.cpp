@@ -58,7 +58,7 @@ Rcpp::DataFrame pz_parse_parts_lat(Rcpp::CharacterVector& x) {
   for (int i=0; i < n; ++i) {
     auto w = Rcpp::as<std::string>(x[i]);
     float out = convert_lat(w); // passed as a reference.
-    std::vector<float> parts = split_decimal_degree(out); // passed as a reference.
+    std::vector<float> parts = split_decimal_degree(out); // passed as a const reference.
     deg[i] = parts[0];
     min[i] = parts[1];
     sec[i] = parts[2];
