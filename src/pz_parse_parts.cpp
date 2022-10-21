@@ -49,15 +49,14 @@ Rcpp::List split_decimal_degree_old(float x, std::string fmt = "dms") {
 }
 
 // [[Rcpp::export]]
-Rcpp::DataFrame pz_parse_parts_lat(Rcpp::CharacterVector& x) {
+Rcpp::DataFrame pz_parse_parts_lat(std::vector<std::string>& x) {
   const int n = x.size();
-  std::vector<int> deg(n, 0); // IntegerVector.push_back copies the whole vector a each pushback
+  std::vector<int> deg(n, 0);
   std::vector<int> min(n, 0);
   std::vector<double> sec(n, 0.);
 
   for (int i=0; i < n; ++i) {
-    auto w = Rcpp::as<std::string>(x[i]);
-    float out = convert_lat(w); // passed as a reference.
+    float out = convert_lat(x[i]); // passed as a reference.
     std::vector<float> parts = split_decimal_degree(out); // passed as a const reference.
     deg[i] = parts[0];
     min[i] = parts[1];
@@ -90,16 +89,15 @@ Rcpp::DataFrame pz_parse_parts_lat_old(Rcpp::CharacterVector x) {
 }
 
 // [[Rcpp::export]]
-Rcpp::DataFrame pz_parse_parts_lon(Rcpp::CharacterVector& x) {
+Rcpp::DataFrame pz_parse_parts_lon(std::vector<std::string>& x) {
   const int n = x.size();
-  std::vector<int> deg(n, 0); // IntegerVector.push_back copies the whole vector a each pushback
+  std::vector<int> deg(n, 0);
   std::vector<int> min(n, 0);
   std::vector<double> sec(n, 0.);
 
   for (int i=0; i < n; ++i) {
-    auto w = Rcpp::as<std::string>(x[i]);
-    float out = convert_lon(w); // passed as a reference.
-    std::vector<float> parts = split_decimal_degree(out); // passed as a reference.
+    float out = convert_lon(x[i]); // passed as a reference.
+    std::vector<float> parts = split_decimal_degree(out); // passed as a const reference.
     deg[i] = parts[0];
     min[i] = parts[1];
     sec[i] = parts[2];
