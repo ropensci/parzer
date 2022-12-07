@@ -20,6 +20,6 @@ test_that("parse_lon_lat - fails well", {
   expect_error(parse_lon_lat("", mtcars), "lat must be of class")
 
   # src/ error
-  expect_warning(parse_lon_lat(45, 190), "not within -90")
-  expect_warning(parse_lon_lat(45, 190), "check that you did not invert")
+  expect_warning(parse_lon_lat("45", "190"), "not within -90")
+  expect_warning(parse_lon_lat("45", "190"), "check that you did not invert")
 })

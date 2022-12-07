@@ -10,8 +10,8 @@ assert <- function(x, y) {
 }
 
 lint_inputs <- function(lon = NULL, lat = NULL, format) {
-  assert(lon, c("character", "numeric", "integer"))
-  assert(lat, c("character", "numeric", "integer"))
+  assert(lon, "character")
+  assert(lat, "character")
   assert(format, "character")
 }
 
