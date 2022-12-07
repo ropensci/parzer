@@ -190,12 +190,12 @@ BEGIN_RCPP
 END_RCPP
 }
 // pz_split_llstr
-Rcpp::DataFrame pz_split_llstr(Rcpp::StringVector x);
+Rcpp::DataFrame pz_split_llstr(std::vector<std::string> x);
 RcppExport SEXP _parzer_pz_split_llstr(SEXP xSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< Rcpp::StringVector >::type x(xSEXP);
+    Rcpp::traits::input_parameter< std::vector<std::string> >::type x(xSEXP);
     rcpp_result_gen = Rcpp::wrap(pz_split_llstr(x));
     return rcpp_result_gen;
 END_RCPP
