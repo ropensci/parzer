@@ -5,32 +5,16 @@ convert_lat <- function(str) {
     .Call('_parzer_convert_lat', PACKAGE = 'parzer', str)
 }
 
-convert_lat_old <- function(str) {
-    .Call('_parzer_convert_lat_old', PACKAGE = 'parzer', str)
-}
-
 convert_lon <- function(str) {
     .Call('_parzer_convert_lon', PACKAGE = 'parzer', str)
-}
-
-convert_lon_old <- function(str) {
-    .Call('_parzer_convert_lon_old', PACKAGE = 'parzer', str)
 }
 
 pz_parse_lat <- function(x) {
     .Call('_parzer_pz_parse_lat', PACKAGE = 'parzer', x)
 }
 
-pz_parse_lat_old <- function(x) {
-    .Call('_parzer_pz_parse_lat_old', PACKAGE = 'parzer', x)
-}
-
 pz_parse_lon <- function(x) {
     .Call('_parzer_pz_parse_lon', PACKAGE = 'parzer', x)
-}
-
-pz_parse_lon_old <- function(x) {
-    .Call('_parzer_pz_parse_lon_old', PACKAGE = 'parzer', x)
 }
 
 pz_hemisphere <- function(lon, lat) {
@@ -41,24 +25,12 @@ split_decimal_degree <- function(x, fmt = "dms") {
     .Call('_parzer_split_decimal_degree', PACKAGE = 'parzer', x, fmt)
 }
 
-split_decimal_degree_old <- function(x, fmt = "dms") {
-    .Call('_parzer_split_decimal_degree_old', PACKAGE = 'parzer', x, fmt)
-}
-
 pz_parse_parts_lat <- function(x) {
     .Call('_parzer_pz_parse_parts_lat', PACKAGE = 'parzer', x)
 }
 
-pz_parse_parts_lat_old <- function(x) {
-    .Call('_parzer_pz_parse_parts_lat_old', PACKAGE = 'parzer', x)
-}
-
 pz_parse_parts_lon <- function(x) {
     .Call('_parzer_pz_parse_parts_lon', PACKAGE = 'parzer', x)
-}
-
-pz_parse_parts_lon_old <- function(x) {
-    .Call('_parzer_pz_parse_parts_lon_old', PACKAGE = 'parzer', x)
 }
 
 pz_split_llstr_string <- function(x) {
