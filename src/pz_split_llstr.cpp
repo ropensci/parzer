@@ -38,15 +38,17 @@ std::vector<std::string> pz_split_llstr_string (std::string x) {
 //’ @param x input character vector
 //’ @return data.frame with Latitude and Longitude split in 2 columns.
 // [[Rcpp::export]]
-Rcpp::DataFrame pz_split_llstr (Rcpp::StringVector x) {
+Rcpp::DataFrame pz_split_llstr (std::vector<std::string> x) {
 
-  Rcpp::StringMatrix stringmat(x.size(), 2);
-  Rcpp::StringMatrix::Column lon = stringmat( Rcpp::_, 1);
-  Rcpp::StringMatrix::Column lat = stringmat( Rcpp::_, 0);
+  // Rcpp::StringMatrix stringmat(x.size(), 2);
+  // Rcpp::StringMatrix::Column lon = stringmat( Rcpp::_, 1);
+  // Rcpp::StringMatrix::Column lat = stringmat( Rcpp::_, 0);
 
+  std::vector<std::string> lat{x.size()};
+  std::vector<std::string> lon{x.size()};
 
   for(int i=0; i < x.size(); i++) {
-    std::vector<std::string> temp = pz_split_llstr_string (Rcpp::as< std::string >(x[i]));
+    std::vector<std::string> temp = pz_split_llstr_string (x[i]);
 
     lon[i] = temp[1];
     lat[i] = temp[0];
