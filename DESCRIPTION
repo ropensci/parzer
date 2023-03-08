@@ -42,7 +42,6 @@ Imports:
     withr
 Suggests:
     testthat (>= 3.0.0),
-    randgeo,
     knitr,
     rmarkdown,
     callr,
@@ -56,7 +55,7 @@ VignetteBuilder: knitr
 Roxygen: list(markdown = TRUE)
 Encoding: UTF-8
 Language: en-US
-RoxygenNote: 7.2.0
+RoxygenNote: 7.2.3
 X-schema.org-applicationCategory: Geospatial
 X-schema.org-keywords: geospatial, data, latitude, longitude, parser, coordinates
 X-schema.org-isPartOf: https://ropensci.org

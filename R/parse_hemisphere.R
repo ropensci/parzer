@@ -28,10 +28,9 @@
 #' parse_hemisphere(-120, -192.4183318)
 #'
 #' # many inputs
-#' library(randgeo)
-#' pts <- rg_position(count = 1000)
-#' lons <- as.character(vapply(pts, "[[", 1, 1))
-#' lats <- as.character(vapply(pts, "[[", 1, 2))
+#' n <- 100
+#' lons <- runif(n, min = -180, max = 180)
+#' lats <- runif(n, min = -90, max = 90)
 #' parse_hemisphere(lons, lats)
 #' }
 parse_hemisphere <- function(lon, lat) {
