@@ -74,7 +74,13 @@ invalid_formats <- c(
   "60.1° S",
   "N60.1",
   "S60.1",
-  "-45.23232e24"
+  "-45.23232e24",
+  "400",
+  "-200",
+  "400E",
+  "200W",
+  "400E45",
+  "200W45"
   # "-40.4183318, 12.345, 74.6411133"
 )
 
@@ -92,3 +98,4 @@ test_that("parse_lon works: invalid formats fail as expected", {
     expect_equal(aa, NaN)
   }
 })
+

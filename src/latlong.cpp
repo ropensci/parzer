@@ -13,7 +13,7 @@
 #include <algorithm>
 
 // check if latitude within acceptable range, etc.
-bool check_lat(const float& lat) {
+bool check_lat(const double& lat) {
   bool lat_check = false;
   if (lat >= -90  && lat <= 90) {
     lat_check = true;
@@ -22,7 +22,7 @@ bool check_lat(const float& lat) {
 }
 
 // check if longitude within acceptable range, etc.
-bool check_lon(const float& lon) {
+bool check_lon(const double& lon) {
   bool lon_check = false;
   if (lon >= -180  && lon <= 360) {
     lon_check = true;
@@ -44,7 +44,7 @@ void remove_internal_dashes(std::string& x) {
   x = std::regex_replace(x, dash_reg, "$1 ");
 }
 
-std::vector<float> extract_floats_from_string(std::string& str) {
+std::vector<double> extract_floats_from_string(std::string& str) {
   // str = remove_internal_dashes(digits_only(strip_alpha(str)));
   strip_alpha(str);
   digits_only(str);
@@ -53,7 +53,7 @@ std::vector<float> extract_floats_from_string(std::string& str) {
   std::stringstream ss(str);
   std::string temp;
   double found;
-  std::vector<float> y;
+  std::vector<double> y;
   while (!ss.eof()) {
     /* extracting chunk by chunk from stream */
     ss >> temp;
@@ -176,8 +176,8 @@ bool is_negative(const std::string& s) {
 }
 
 // [[Rcpp::export]]
-float convert_lat(std::string& str) {
-  float ret;
+double convert_lat(std::string& str) {
+  double ret;
   str_tolower(str);
   if (
       str.size() == 0 ||
@@ -194,7 +194,7 @@ float convert_lat(std::string& str) {
     ret = NA_REAL;
     Rcpp::warning("expected single 'N|S|d' after degrees, got: " + str);
   } else {
-    std::string dir = extract_nsew(str, "[ns]"); // str was already str_tolowered
+    std::string dir = extract_nsew(str, "[ns]");
     double dir_val = 1.0;
     if (dir != "") {
       dir_val = plus_minus(dir);
@@ -203,7 +203,7 @@ float convert_lat(std::string& str) {
       dir_val = -1.0;
     }
 
-    std::vector<float> nums = extract_floats_from_string(str);
+    std::vector<double> nums = extract_floats_from_string(str);
     if (nums.size() == 0) {
       ret = NA_REAL;
     }
@@ -237,8 +237,8 @@ float convert_lat(std::string& str) {
 
 
 // [[Rcpp::export]]
-float convert_lon(std::string& str) {
-  float ret;
+double convert_lon(std::string& str) {
+  double ret;
   str_tolower(str);
   if (
       str.size() == 0 ||
@@ -251,6 +251,7 @@ float convert_lon(std::string& str) {
     ret = NA_REAL;
     Rcpp::warning("invalid cardinal direction, got: " + str);
   } else if (invalid_degree_letter(str, "[ewd]")) {
+    // to support e.g.: 40d 25’ 6\" E
     ret = NA_REAL;
     Rcpp::warning("expected single 'E|W|d' after degrees, got: " + str);
   } else {
@@ -263,7 +264,7 @@ float convert_lon(std::string& str) {
       dir_val = -1.0;
     }
 
-    std::vector<float> nums = extract_floats_from_string(str);
+    std::vector<double> nums = extract_floats_from_string(str);
     if (nums.size() == 0) {
       ret = NA_REAL;
     }

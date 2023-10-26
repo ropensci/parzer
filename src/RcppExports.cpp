@@ -11,7 +11,7 @@ Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
 // convert_lat
-float convert_lat(std::string& str);
+double convert_lat(std::string& str);
 RcppExport SEXP _parzer_convert_lat(SEXP strSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
@@ -22,7 +22,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // convert_lon
-float convert_lon(std::string& str);
+double convert_lon(std::string& str);
 RcppExport SEXP _parzer_convert_lon(SEXP strSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
@@ -33,7 +33,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // pz_parse_lat
-std::vector<float> pz_parse_lat(std::vector<std::string>& x);
+std::vector<double> pz_parse_lat(std::vector<std::string>& x);
 RcppExport SEXP _parzer_pz_parse_lat(SEXP xSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
@@ -44,7 +44,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // pz_parse_lon
-std::vector<float> pz_parse_lon(std::vector<std::string>& x);
+std::vector<double> pz_parse_lon(std::vector<std::string>& x);
 RcppExport SEXP _parzer_pz_parse_lon(SEXP xSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
@@ -67,12 +67,12 @@ BEGIN_RCPP
 END_RCPP
 }
 // split_decimal_degree
-std::vector<float> split_decimal_degree(const float& x, const std::string& fmt);
+std::vector<double> split_decimal_degree(const double& x, const std::string& fmt);
 RcppExport SEXP _parzer_split_decimal_degree(SEXP xSEXP, SEXP fmtSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const float& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const double& >::type x(xSEXP);
     Rcpp::traits::input_parameter< const std::string& >::type fmt(fmtSEXP);
     rcpp_result_gen = Rcpp::wrap(split_decimal_degree(x, fmt));
     return rcpp_result_gen;

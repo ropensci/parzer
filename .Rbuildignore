@@ -15,4 +15,5 @@ vignettes/use_cases.html
 ^LICENSE\.md$
 ^CRAN-RELEASE$
 ^\.git$
+^\.vscode$
 ^\.github$

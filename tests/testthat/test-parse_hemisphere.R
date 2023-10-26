@@ -34,4 +34,5 @@ test_that("parse_hemisphere - fails well", {
 
   expect_warning(parse_hemisphere("45", "190"), "not within -90")
   expect_warning(parse_hemisphere("45", "190"), "check that you did not invert")
+  expect_warning(parse_hemisphere("190", "45"), "longitude value within 180/360 range, got: 190")
 })
