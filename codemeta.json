@@ -8,13 +8,13 @@
   "codeRepository": "https://github.com/ropensci/parzer",
   "issueTracker": "https://github.com/ropensci/parzer/issues",
   "license": "https://spdx.org/licenses/MIT",
-  "version": "0.4.1",
+  "version": "0.4.1.9013",
   "programmingLanguage": {
     "@type": "ComputerLanguage",
     "name": "R",
     "url": "https://r-project.org"
   },
-  "runtimePlatform": "R version 4.1.1 (2021-08-10)",
+  "runtimePlatform": "R version 4.3.1 (2023-06-16)",
   "provider": {
     "@id": "https://cran.r-project.org",
     "@type": "Organization",
@@ -33,7 +33,7 @@
       "@type": "Person",
       "givenName": "Alban",
       "familyName": "Sagouis",
-      "email": "sagouis@pm.me",
+      "email": "alban.sagouis@idiv.de",
       "@id": "https://orcid.org/0000-0002-3827-1063"
     }
   ],
@@ -64,6 +64,10 @@
     {
       "@type": "Organization",
       "name": "rOpenSci"
+    },
+    {
+      "@type": "Organization",
+      "name": "German Centre for Integrative Biodiversity Research (iDiv) Halle-Jena-Leipzig"
     }
   ],
   "maintainer": [
@@ -71,7 +75,7 @@
       "@type": "Person",
       "givenName": "Alban",
       "familyName": "Sagouis",
-      "email": "sagouis@pm.me",
+      "email": "alban.sagouis@idiv.de",
       "@id": "https://orcid.org/0000-0002-3827-1063"
     }
   ],
@@ -80,6 +84,7 @@
       "@type": "SoftwareApplication",
       "identifier": "testthat",
       "name": "testthat",
+      "version": ">= 3.0.0",
       "provider": {
         "@id": "https://cran.r-project.org",
         "@type": "Organization",
@@ -187,10 +192,19 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=withr"
     },
-    "SystemRequirements": "C++11"
+    "SystemRequirements": "C++17"
   },
   "applicationCategory": "Geospatial",
   "isPartOf": "https://ropensci.org",
-  "keywords": ["geospatial", "data", "latitude", "longitude", "parser", "coordinates"],
-  "fileSize": "1648.077KB"
+  "keywords": ["geospatial", "data", "latitude", "longitude", "parser", "coordinates", "r", "rstats", "geo"],
+  "fileSize": "7069.917KB",
+  "releaseNotes": "https://github.com/ropensci/parzer/blob/master/NEWS.md",
+  "readme": "https://github.com/ropensci/parzer/blob/master/README.md",
+  "contIntegration": ["https://github.com/ropensci/parzer/actions/", "https://codecov.io/github/ropensci/parzer?branch=master"],
+  "developmentStatus": "https://www.repostatus.org/#active",
+  "review": {
+    "@type": "Review",
+    "url": "https://github.com/ropensci/software-review/issues/341",
+    "provider": "https://ropensci.org"
+  }
 }
