@@ -53,7 +53,6 @@ Suggests:
 Config/testthat/edition: 3
 Config/testthat/parallel: true
 LinkingTo: Rcpp
-SystemRequirements: C++17
 VignetteBuilder: knitr
 Roxygen: list(markdown = TRUE)
 Encoding: UTF-8

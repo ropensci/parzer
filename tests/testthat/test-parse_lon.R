@@ -1,7 +1,6 @@
 # parse_lon
 
 test_that("parse_lon works", {
-  skip_on_cran()
   aa <- parse_lon("45W54.2356")
 
   expect_type(aa, "double")
@@ -37,7 +36,6 @@ test_lons <- c(
 )
 
 test_that("parse_lon works: run through test_lons", {
-  skip_on_cran()
   out <- data.frame(
     input = test_lons, res = NA_real_,
     stringsAsFactors = FALSE
@@ -50,7 +48,6 @@ test_that("parse_lon works: run through test_lons", {
 })
 
 test_that("parse_lon - fails well", {
-  skip_on_cran()
   expect_error(parse_lon(), "argument \"lon\" is missing")
   expect_error(parse_lon(mtcars), "lon must be of class")
   expect_error(parse_lon("", 5), "format must be of class character")
@@ -86,14 +83,13 @@ invalid_formats <- c(
 
 # res column should all give NaN
 test_that("parse_lon works: invalid formats fail as expected", {
-  skip_on_cran()
   out <- data.frame(
     input = invalid_formats, res = NA_real_,
     stringsAsFactors = FALSE
   )
   for (i in seq_along(invalid_formats)) {
-    out[i, "res"] <- suppressWarnings(parse_lon(invalid_formats[i]))
-    expect_warning(aa <- parse_lon(invalid_formats[i]))
+    out[i, "res"] <- suppressWarnings({parse_lon(invalid_formats[i])})
+    expect_warning({aa <- parse_lon(invalid_formats[i])})
     expect_type(aa, "double")
     expect_equal(aa, NaN)
   }

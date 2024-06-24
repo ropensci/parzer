@@ -1,7 +1,6 @@
 # parse_lon_lat
 
 test_that("parse_lon_lat works", {
-  skip_on_cran()
   aa <- parse_lon_lat("45W54.2356", "45N54.2356")
 
   expect_type(aa, "list")
@@ -13,7 +12,6 @@ test_that("parse_lon_lat works", {
 })
 
 test_that("parse_lon_lat - fails well", {
-  skip_on_cran()
   expect_error(parse_lon_lat(), "argument \"lon\" is missing")
   expect_error(parse_lon_lat(""), "argument \"lat\" is missing")
   expect_error(parse_lon_lat(mtcars), "lon must be of class")
