@@ -30,7 +30,7 @@ Authors@R: c(
         comment = "Maria Munafó reviewed the package,
         see https://github.com/ropensci/onboarding/issues/341"),
   person("rOpenSci", role = "fnd",
-        comment = "https://ropensci.org")
+        comment = c(ROR = "019jywm96"))
 	)
 Maintainer: Alban Sagouis <sagouis@pm.me>
 License: MIT + file LICENSE
