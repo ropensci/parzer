@@ -1,17 +1,18 @@
 # Platform
 
-|field    |value                        |
-|:--------|:----------------------------|
-|version  |R version 4.2.1 (2022-06-23) |
-|os       |macOS Ventura 13.0.1         |
-|system   |aarch64, darwin20            |
-|ui       |X11                          |
-|language |(EN)                         |
-|collate  |en_US.UTF-8                  |
-|ctype    |en_US.UTF-8                  |
-|tz       |Europe/Berlin                |
-|date     |2022-12-15                   |
-|pandoc   |NA                           |
+|field    |value                                    |
+|:--------|:----------------------------------------|
+|version  |R version 4.3.2 (2023-10-31)             |
+|os       |macOS Sonoma 14.5                        |
+|system   |aarch64, darwin20                        |
+|ui       |RStudio                                  |
+|language |(EN)                                     |
+|collate  |en_US.UTF-8                              |
+|ctype    |en_US.UTF-8                              |
+|tz       |Europe/Berlin                            |
+|date     |2024-06-24                               |
+|rstudio  |2024.04.1+748 Chocolate Cosmos (desktop) |
+|pandoc   |3.1.8 @ /opt/homebrew/bin/pandoc         |
 
 # Dependencies
 

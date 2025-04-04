@@ -1,11 +1,11 @@
-#' @title parzer
-#' @description parse geographic coordinates
-#'
-#' @useDynLib parzer
+## usethis namespace: start
 #' @importFrom Rcpp sourceCpp
-#' @name parzer-package
-#' @aliases parzer
-#' @docType package
-#' @keywords package
-#' @author Scott Chamberlain
+## usethis namespace: end
 NULL
+
+#' @useDynLib parzer, .registration = TRUE
+#' @details
+#' `r lifecycle::badge("stable")`
+#'
+#' parse geographic coordinates
+"_PACKAGE"

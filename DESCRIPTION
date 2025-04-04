@@ -16,7 +16,8 @@ Authors@R: c(
   person("Alban", "Sagouis", role = c("aut","cre"),
         email = "alban.sagouis@idiv.de",
         comment = c(ORCID = "0000-0002-3827-1063")),
-  person("Alec L.", "Robitaille", role = "ctb"),
+  person("Alec L.", "Robitaille", role = "ctb",
+        comment = c(ORCID = "0000-0002-4706-1762")),
   person("Maëlle", "Salmon", role = "ctb",
         comment = c(ORCID = "0000-0002-2815-0399")),
   person("Hiroaki", "Yutani", role = "ctb"),
@@ -24,8 +25,9 @@ Authors@R: c(
         comment = "C++ code originally from Jeffrey Bogan,
         but completely re-written"),
   person("Julien", "Brun", role = "rev",
-        comment = "Julien Brun reviewed the package,
-        see https://github.com/ropensci/onboarding/issues/341"),
+        comment = c(ORCID = "0000-0002-7751-6238",
+        "Julien Brun reviewed the package,
+        see https://github.com/ropensci/onboarding/issues/341")),
   person("Maria", "Munafó", role = "rev",
         comment = "Maria Munafó reviewed the package,
         see https://github.com/ropensci/onboarding/issues/341"),
@@ -57,7 +59,7 @@ VignetteBuilder: knitr
 Roxygen: list(markdown = TRUE)
 Encoding: UTF-8
 Language: en-US
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.2
 X-schema.org-applicationCategory: Geospatial
 X-schema.org-keywords: geospatial, data, latitude, longitude, parser, coordinates
 X-schema.org-isPartOf: https://ropensci.org
