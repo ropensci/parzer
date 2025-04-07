@@ -46,14 +46,13 @@ Imports:
     withr
 Suggests:
     testthat (>= 3.0.0),
-    randgeo,
     knitr,
     rmarkdown,
     callr,
     pkgbuild,
     pkgload
 Config/testthat/edition: 3
-Config/testthat/parallel: true
+Config/testthat/parallel: false
 LinkingTo: Rcpp
 VignetteBuilder: knitr
 Roxygen: list(markdown = TRUE)

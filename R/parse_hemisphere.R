@@ -26,14 +26,8 @@
 #' # bad inputs, get one of the two strings
 #' parse_hemisphere(-181, -40.4183318)
 #' parse_hemisphere(-120, -192.4183318)
-#'
-#' # many inputs
-#' library(randgeo)
-#' pts <- rg_position(count = 1000)
-#' lons <- as.character(vapply(pts, "[[", 1, 1))
-#' lats <- as.character(vapply(pts, "[[", 1, 2))
-#' parse_hemisphere(lons, lats)
 #' }
+
 parse_hemisphere <- function(lon, lat) {
   lint_inputs(lon, lat, "")
   stopifnot(length(lon) == length(lat))
