@@ -1,6 +1,7 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^CODE_OF_CONDUCT\.md$
+CONTRIBUTING.md
 README.Rmd
 cran-comments.md
 man-roxygen
@@ -17,3 +18,5 @@ vignettes/use_cases.html
 ^\.vscode$
 ^\.github$
 ^\.git$
+^doc$
+^Meta$

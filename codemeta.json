@@ -14,7 +14,7 @@
     "name": "R",
     "url": "https://r-project.org"
   },
-  "runtimePlatform": "R version 4.3.2 (2023-10-31)",
+  "runtimePlatform": "R version 4.4.3 (2025-02-28)",
   "provider": {
     "@id": "https://cran.r-project.org",
     "@type": "Organization",
@@ -41,7 +41,8 @@
     {
       "@type": "Person",
       "givenName": "Alec L.",
-      "familyName": "Robitaille"
+      "familyName": "Robitaille",
+      "@id": "https://orcid.org/0000-0002-4706-1762"
     },
     {
       "@type": "Person",
@@ -92,18 +93,6 @@
         "url": "https://cran.r-project.org"
       },
       "sameAs": "https://CRAN.R-project.org/package=testthat"
-    },
-    {
-      "@type": "SoftwareApplication",
-      "identifier": "randgeo",
-      "name": "randgeo",
-      "provider": {
-        "@id": "https://cran.r-project.org",
-        "@type": "Organization",
-        "name": "Comprehensive R Archive Network (CRAN)",
-        "url": "https://cran.r-project.org"
-      },
-      "sameAs": "https://CRAN.R-project.org/package=randgeo"
     },
     {
       "@type": "SoftwareApplication",
@@ -197,8 +186,8 @@
   "applicationCategory": "Geospatial",
   "isPartOf": "https://ropensci.org",
   "keywords": ["geospatial", "data", "latitude", "longitude", "parser", "coordinates", "r", "rstats", "geo"],
-  "fileSize": "6688.671KB",
-  "releaseNotes": "https://github.com/ropensci/parzer/blob/master/NEWS.md",
+  "fileSize": "4748.209KB",
+  "releaseNotes": "https://github.com/ropensci/parzer/blob/main/NEWS.md",
   "readme": "https://github.com/ropensci/parzer/blob/master/README.md",
   "contIntegration": ["https://github.com/ropensci/parzer/actions/", "https://codecov.io/github/ropensci/parzer?branch=master"],
   "developmentStatus": "https://www.repostatus.org/#active",

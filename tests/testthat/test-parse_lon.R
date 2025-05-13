@@ -18,11 +18,8 @@ test_lons <- c(
   "-74 38 28.008",
   "-74.6411133",
   "-74.6411133°",
-  # "-268708007.88",
   "74.6411133W",
-  # "7438.4668W",
   "74°38’28.008\"W",
-  # "743828.008W",
   "W 74 38.4668",
   "74:38:28W",
   "74:38:28.008W",
@@ -42,9 +39,7 @@ test_that("parse_lon works: run through test_lons", {
   )
   for (i in seq_along(test_lons)) {
     expect_equal(round(parse_lon(test_lons[i]), 5), -74.64111)
-    # out[i, "res"] <- parse_lon(test_lons[i])
   }
-  # out
 })
 
 test_that("parse_lon - fails well", {
@@ -94,4 +89,3 @@ test_that("parse_lon works: invalid formats fail as expected", {
     expect_equal(aa, NaN)
   }
 })
-

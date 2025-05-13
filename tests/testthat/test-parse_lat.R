@@ -19,11 +19,8 @@ test_lats <- c(
   "40 25 5.994",
   "40.4183318",
   "40.4183318°",
-  # "145505994.48",
   "40.4183318N",
-  # "4025.0999N",
   "40°25’5.994\"N",
-  # "402505.994N",
   "N 40 25.0999",
   "40:25:6N",
   "40:25:5.994N",
@@ -43,11 +40,7 @@ test_that("parse_lat works: run through test_lats", {
   )
   for (i in seq_along(test_lats)) {
     expect_equal(round(parse_lat(test_lats[i]), 5), 40.41833)
-    # cat(test_lats[i], sep = "\n")
-    # out[i, "res"] <- parse_lat(test_lats[i])
-    # expect_is(out[i, "res"], "numeric")
   }
-  # out
 })
 
 test_that("parse_lat - fails well", {

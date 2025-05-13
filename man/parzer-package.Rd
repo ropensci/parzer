@@ -37,8 +37,8 @@ Other contributors:
   \item Jeffrey Bogan (C++ code originally from Jeffrey Bogan, but completely re-written) [contributor]
   \item Julien Brun (\href{https://orcid.org/0000-0002-7751-6238}{ORCID}) (Julien Brun reviewed the package, see https://github.com/ropensci/onboarding/issues/341) [reviewer]
   \item Maria Munafó (Maria Munafó reviewed the package, see https://github.com/ropensci/onboarding/issues/341) [reviewer]
-  \item rOpenSci (https://ropensci.org) [funder]
-  \item German Centre for Integrative Biodiversity Research (iDiv) Halle-Jena-Leipzig [funder]
+  \item rOpenSci (019jywm96) [funder]
+  \item German Centre for Integrative Biodiversity Research (iDiv) Halle-Jena-Leipzig (01jty7g66) [funder]
 }
 
 }

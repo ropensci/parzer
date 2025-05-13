@@ -21,7 +21,6 @@ test_that("pz_second works", {
   expect_equal(round(aa), 60)
 })
 
-# FIXME: look into commented out values
 test_lats <- c(
   "40.4183318",
   "40.4183318° N",
@@ -32,11 +31,8 @@ test_lats <- c(
   "40 25 5.994",
   "40.4183318",
   "40.4183318°",
-  # "145505994.48",
   "40.4183318N",
-  # "4025.0999N",
   "40°25’5.994\"N",
-  # "402505.994N",
   "N 40 25.0999",
   "40:25:6N",
   "40:25:5.994N",
@@ -50,13 +46,10 @@ test_lats <- c(
 )
 
 test_that("degree works with varied formats", {
-  # out <- data.frame(input = test_lats, res = NA_real_,
-  #                   stringsAsFactors = FALSE)
   for (i in seq_along(test_lats)) {
-    expect_equal(pz_degree(lat = test_lats[i]), 40)
-    expect_equal(pz_minute(lat = test_lats[i]), 25)
-    expect_equal(round(pz_second(lat = test_lats[i])), 6)
-    # out[i, "res"] <- degree(test_lats[i])
+    expect_equal(pz_degree(lat = test_lats[[i]]), 40)
+    expect_equal(pz_minute(lat = test_lats[[i]]), 25)
+    expect_equal(round(pz_second(lat = test_lats[[i]])), 6)
   }
 })
 
