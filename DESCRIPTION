@@ -32,9 +32,10 @@ Authors@R: c(
         comment = "Maria Munafó reviewed the package,
         see https://github.com/ropensci/onboarding/issues/341"),
   person("rOpenSci", role = "fnd",
-        comment = "https://ropensci.org"),
+       comment = c("https://ropensci.org/", ROR = "019jywm96")),
   person("German Centre for Integrative Biodiversity Research (iDiv) Halle-Jena-Leipzig",
-        role = "fnd")
+        role = "fnd",
+        comment = c("https://idiv.de", ROR = "01jty7g66"))
 	)
 Maintainer: Alban Sagouis <alban.sagouis@idiv.de>
 License: MIT + file LICENSE
