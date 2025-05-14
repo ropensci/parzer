@@ -49,7 +49,6 @@ Suggests:
     quarto,
     sf,
     leaflet,
-    tibble,
     callr,
     pkgbuild,
     pkgload

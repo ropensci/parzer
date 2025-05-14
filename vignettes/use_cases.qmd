@@ -14,11 +14,16 @@ vignette: >
 ## Use case: working with spatial R packages
 
 ```{r}
+#| label: packages
 #| collapse: true
 #| eval: false
 if (!requireNamespace("sf")) install.packages("sf")
 if (!requireNamespace("leaflet")) install.packages("leaflet")
-if (!requireNamespace("tibble")) install.packages("tibble")
+```
+```{r}
+#| label: loading_parzer
+#| eval: true
+library(parzer)
 ```
 
 One may find themselves having to clean up messy coordinates as part of
@@ -29,6 +34,7 @@ Let's say you have the following messy coordinates that you've compiled
 from different places, leading to a variety of messy formats:
 
 ```{r}
+#| label: lats_lons
 lats <- c(
   "46.4183",
   "46.4383° N",
@@ -51,10 +57,11 @@ Parse messy coordinates:
 
 
 ```{r}
+#| label: creating_dat
 #| collapse: true
-dat <- tibble::tibble(
-  longitude = parzer::parse_lon(lons),
-  latitude = parzer::parse_lat(lats)
+dat <- data.frame(
+  longitude = parse_lon(lons),
+  latitude = parse_lat(lats)
 )
 dat
 ```
@@ -63,6 +70,7 @@ Combine coordinates with other data.
 
 
 ```{r}
+#| label: adding_variables_to_dat
 #| collapse: true
 dat$shape <- c("round", "square", "triangle", "round", "square", "square")
 dat$color <- c("blue", "yellow", "green", "red", "green", "yellow")
@@ -72,6 +80,7 @@ dat
 Coerce to an `sf` object
 
 ```{r}
+#| label: converting_dat_to_sf
 #| warning: false
 #| collapse: true
 datsf <- sf::st_as_sf(dat, coords = c("longitude", "latitude"))
@@ -81,6 +90,7 @@ datsf
 Calculate the center of the plot view
 
 ```{r}
+#| label: map_center
 center_lon <- mean(dat$longitude)
 center_lat <- mean(dat$latitude)
 ```
@@ -88,6 +98,7 @@ center_lat <- mean(dat$latitude)
 Plot data using the `leaflet` package
 
 ```{r out.with="100%"}
+#| label: fig-leaflet_1
 #| warning: false
 #| collapse: true
 library("leaflet")
@@ -103,6 +114,7 @@ a park boundary. We can clip the data to a bounding box using `sf::st_crop()`.
 First, define the bounding box, and visualize:
 
 ```{r}
+#| label: fig-leaflet_2
 #| warning: false
 bbox <- c(
   xmin = 25.42813, ymin = 46.39455,
@@ -117,12 +129,14 @@ leaflet() |>
 Crop the data to the bounding box:
 
 ```{r}
+#| label: cropping_dat
 datsf_c <- sf::st_crop(datsf, bbox)
 ```
 
 Plot the new data:
 
 ```{r out.with="100%"}
+#| label: fig-leaflet_3
 #| warning: false
 leaflet() |>
   addTiles() |>

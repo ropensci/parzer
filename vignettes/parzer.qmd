@@ -55,7 +55,8 @@ remotes::install_github("ropensci/parzer")
 ## Parse
 
 ```{r}
-library("parzer")
+#| eval: true
+library(parzer)
 ```
 
 ### Latitudes:
