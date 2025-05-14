@@ -8,15 +8,16 @@ concurrency:
 on:
   # Manually trigger the Action under Actions/pkgcheck
   workflow_dispatch:
-  # Run on every push to master
+  # Run on every push to main
   push:
     branches:
+      - main
       - master
 
 jobs:
-  check:
+  pkgcheck:
     runs-on: ubuntu-latest
+    permissions:
+      issues: write
     steps:
       - uses: ropensci-review-tools/pkgcheck-action@main
-        with:
-            summary-only: false

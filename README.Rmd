@@ -30,7 +30,7 @@ knitr::opts_chunk$set(
 Docs: https://docs.ropensci.org/parzer/
 
 You may get data from a published study or a colleague where the coordinates
-are in some messy character format that you'd like to clean up to get 
+are in some messy character format that you'd like to clean up to get
 all decimal degree numeric data.
 
 `parzer` API:
@@ -40,7 +40,7 @@ cat(paste(" -", paste(sprintf("`%s`", sort(getNamespaceExports("parzer"))), coll
 ```
 
 ## Usage
-For example, parse latitude and longitude from messy character vectors. 
+For example, parse latitude and longitude from messy character vectors.
 
 ```{r eval=TRUE, echo=FALSE}
 library("parzer")
@@ -59,7 +59,7 @@ And you can even split and parse strings that contain latitude and longitude tog
 parse_llstr(c("4 51'36\"S, 101 34'7\"W", "40.123°; 45W54.2356"))
 ```
 
-See more in the [Introduction to the `parzer` package vignette](https://docs.ropensci.org/parzer/articles/parzer.html). 
+See more in the [Introduction to the `parzer` package vignette](https://docs.ropensci.org/parzer/articles/parzer.html).
 
 ## Installation
 

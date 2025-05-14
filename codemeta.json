@@ -8,13 +8,13 @@
   "codeRepository": "https://github.com/ropensci/parzer",
   "issueTracker": "https://github.com/ropensci/parzer/issues",
   "license": "https://spdx.org/licenses/MIT",
-  "version": "0.4.1.9001",
+  "version": "0.4.1.9013",
   "programmingLanguage": {
     "@type": "ComputerLanguage",
     "name": "R",
     "url": "https://r-project.org"
   },
-  "runtimePlatform": "R version 4.2.2 (2022-10-31)",
+  "runtimePlatform": "R version 4.4.3 (2025-02-28)",
   "provider": {
     "@id": "https://cran.r-project.org",
     "@type": "Organization",
@@ -33,7 +33,7 @@
       "@type": "Person",
       "givenName": "Alban",
       "familyName": "Sagouis",
-      "email": "sagouis@pm.me",
+      "email": "alban.sagouis@idiv.de",
       "@id": "https://orcid.org/0000-0002-3827-1063"
     }
   ],
@@ -41,7 +41,8 @@
     {
       "@type": "Person",
       "givenName": "Alec L.",
-      "familyName": "Robitaille"
+      "familyName": "Robitaille",
+      "@id": "https://orcid.org/0000-0002-4706-1762"
     },
     {
       "@type": "Person",
@@ -64,6 +65,10 @@
     {
       "@type": "Organization",
       "name": "rOpenSci"
+    },
+    {
+      "@type": "Organization",
+      "name": "German Centre for Integrative Biodiversity Research (iDiv) Halle-Jena-Leipzig"
     }
   ],
   "maintainer": [
@@ -71,7 +76,7 @@
       "@type": "Person",
       "givenName": "Alban",
       "familyName": "Sagouis",
-      "email": "sagouis@pm.me",
+      "email": "alban.sagouis@idiv.de",
       "@id": "https://orcid.org/0000-0002-3827-1063"
     }
   ],
@@ -176,13 +181,13 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=withr"
     },
-    "SystemRequirements": "C++11"
+    "SystemRequirements": null
   },
   "applicationCategory": "Geospatial",
   "isPartOf": "https://ropensci.org",
   "keywords": ["geospatial", "data", "latitude", "longitude", "parser", "coordinates", "r", "rstats", "geo"],
-  "fileSize": "9355.926KB",
-  "releaseNotes": "https://github.com/ropensci/parzer/blob/master/NEWS.md",
+  "fileSize": "4748.209KB",
+  "releaseNotes": "https://github.com/ropensci/parzer/blob/main/NEWS.md",
   "readme": "https://github.com/ropensci/parzer/blob/master/README.md",
   "contIntegration": ["https://github.com/ropensci/parzer/actions/", "https://codecov.io/github/ropensci/parzer?branch=master"],
   "developmentStatus": "https://www.repostatus.org/#active",

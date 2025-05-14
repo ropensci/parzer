@@ -2,13 +2,43 @@
 % Please edit documentation in R/parzer-package.R
 \docType{package}
 \name{parzer-package}
-\alias{parzer-package}
 \alias{parzer}
-\title{parzer}
+\alias{parzer-package}
+\title{parzer: Parse Messy Geographic Coordinates}
 \description{
+Parse messy geographic coordinates from various character formats to decimal degree numeric values. Parse coordinates into their parts (degree, minutes, seconds); calculate hemisphere from coordinates; pull out individually degrees, minutes, or seconds; add and subtract degrees, minutes, and seconds. C++ code herein originally inspired from code written by Jeffrey D. Bogan, but then completely re-written.
+}
+\details{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
 parse geographic coordinates
 }
-\author{
-Scott Chamberlain
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/ropensci/parzer (devel) https://docs.ropensci.org/parzer/ (docs)}
+  \item Report bugs at \url{https://github.com/ropensci/parzer/issues}
 }
-\keyword{package}
+
+}
+\author{
+\strong{Maintainer}: Alban Sagouis \email{alban.sagouis@idiv.de} (\href{https://orcid.org/0000-0002-3827-1063}{ORCID})
+
+Authors:
+\itemize{
+  \item Scott Chamberlain \email{sckott@protonmail.com} (\href{https://orcid.org/0000-0003-1444-9135}{ORCID})
+}
+
+Other contributors:
+\itemize{
+  \item Alec L. Robitaille (\href{https://orcid.org/0000-0002-4706-1762}{ORCID}) [contributor]
+  \item Maëlle Salmon (\href{https://orcid.org/0000-0002-2815-0399}{ORCID}) [contributor]
+  \item Hiroaki Yutani [contributor]
+  \item Jeffrey Bogan (C++ code originally from Jeffrey Bogan, but completely re-written) [contributor]
+  \item Julien Brun (\href{https://orcid.org/0000-0002-7751-6238}{ORCID}) (Julien Brun reviewed the package, see https://github.com/ropensci/onboarding/issues/341) [reviewer]
+  \item Maria Munafó (Maria Munafó reviewed the package, see https://github.com/ropensci/onboarding/issues/341) [reviewer]
+  \item rOpenSci (019jywm96) [funder]
+  \item German Centre for Integrative Biodiversity Research (iDiv) Halle-Jena-Leipzig (01jty7g66) [funder]
+}
+
+}

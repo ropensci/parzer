@@ -1,22 +1,24 @@
 # Platform
 
-|field    |value                                       |
-|:--------|:-------------------------------------------|
-|version  |R version 4.0.2 Patched (2020-09-01 r79114) |
-|os       |macOS Catalina 10.15.6                      |
-|system   |x86_64, darwin17.0                          |
-|ui       |X11                                         |
-|language |(EN)                                        |
-|collate  |en_US.UTF-8                                 |
-|ctype    |en_US.UTF-8                                 |
-|tz       |US/Pacific                                  |
-|date     |2020-10-07                                  |
+|field    |value                                    |
+|:--------|:----------------------------------------|
+|version  |R version 4.3.2 (2023-10-31)             |
+|os       |macOS Sonoma 14.5                        |
+|system   |aarch64, darwin20                        |
+|ui       |RStudio                                  |
+|language |(EN)                                     |
+|collate  |en_US.UTF-8                              |
+|ctype    |en_US.UTF-8                              |
+|tz       |Europe/Berlin                            |
+|date     |2024-06-24                               |
+|rstudio  |2024.04.1+748 Chocolate Cosmos (desktop) |
+|pandoc   |3.1.8 @ /opt/homebrew/bin/pandoc         |
 
 # Dependencies
 
-|package |old   |new   |Δ  |
-|:-------|:-----|:-----|:--|
-|parzer  |0.1.4 |0.2.0 |*  |
+|package |old   |new        |Δ  |
+|:-------|:-----|:----------|:--|
+|parzer  |0.4.1 |0.4.1.9013 |*  |
 
 # Revdeps
 

@@ -10,70 +10,92 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
+// convert_lat
+double convert_lat(std::string& str);
+RcppExport SEXP _parzer_convert_lat(SEXP strSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::string& >::type str(strSEXP);
+    rcpp_result_gen = Rcpp::wrap(convert_lat(str));
+    return rcpp_result_gen;
+END_RCPP
+}
+// convert_lon
+double convert_lon(std::string& str);
+RcppExport SEXP _parzer_convert_lon(SEXP strSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< std::string& >::type str(strSEXP);
+    rcpp_result_gen = Rcpp::wrap(convert_lon(str));
+    return rcpp_result_gen;
+END_RCPP
+}
 // pz_parse_lat
-NumericVector pz_parse_lat(CharacterVector x);
+std::vector<double> pz_parse_lat(std::vector<std::string>& x);
 RcppExport SEXP _parzer_pz_parse_lat(SEXP xSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< CharacterVector >::type x(xSEXP);
+    Rcpp::traits::input_parameter< std::vector<std::string>& >::type x(xSEXP);
     rcpp_result_gen = Rcpp::wrap(pz_parse_lat(x));
     return rcpp_result_gen;
 END_RCPP
 }
 // pz_parse_lon
-NumericVector pz_parse_lon(CharacterVector x);
+std::vector<double> pz_parse_lon(std::vector<std::string>& x);
 RcppExport SEXP _parzer_pz_parse_lon(SEXP xSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< CharacterVector >::type x(xSEXP);
+    Rcpp::traits::input_parameter< std::vector<std::string>& >::type x(xSEXP);
     rcpp_result_gen = Rcpp::wrap(pz_parse_lon(x));
     return rcpp_result_gen;
 END_RCPP
 }
 // pz_hemisphere
-CharacterVector pz_hemisphere(CharacterVector lon, CharacterVector lat);
+std::vector<std::string> pz_hemisphere(std::vector<std::string> lon, std::vector<std::string> lat);
 RcppExport SEXP _parzer_pz_hemisphere(SEXP lonSEXP, SEXP latSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< CharacterVector >::type lon(lonSEXP);
-    Rcpp::traits::input_parameter< CharacterVector >::type lat(latSEXP);
+    Rcpp::traits::input_parameter< std::vector<std::string> >::type lon(lonSEXP);
+    Rcpp::traits::input_parameter< std::vector<std::string> >::type lat(latSEXP);
     rcpp_result_gen = Rcpp::wrap(pz_hemisphere(lon, lat));
     return rcpp_result_gen;
 END_RCPP
 }
 // split_decimal_degree
-List split_decimal_degree(float x, std::string fmt);
+std::vector<double> split_decimal_degree(const double& x, const std::string& fmt);
 RcppExport SEXP _parzer_split_decimal_degree(SEXP xSEXP, SEXP fmtSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< float >::type x(xSEXP);
-    Rcpp::traits::input_parameter< std::string >::type fmt(fmtSEXP);
+    Rcpp::traits::input_parameter< const double& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const std::string& >::type fmt(fmtSEXP);
     rcpp_result_gen = Rcpp::wrap(split_decimal_degree(x, fmt));
     return rcpp_result_gen;
 END_RCPP
 }
 // pz_parse_parts_lat
-DataFrame pz_parse_parts_lat(CharacterVector x);
+Rcpp::DataFrame pz_parse_parts_lat(std::vector<std::string>& x);
 RcppExport SEXP _parzer_pz_parse_parts_lat(SEXP xSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< CharacterVector >::type x(xSEXP);
+    Rcpp::traits::input_parameter< std::vector<std::string>& >::type x(xSEXP);
     rcpp_result_gen = Rcpp::wrap(pz_parse_parts_lat(x));
     return rcpp_result_gen;
 END_RCPP
 }
 // pz_parse_parts_lon
-DataFrame pz_parse_parts_lon(CharacterVector x);
+Rcpp::DataFrame pz_parse_parts_lon(std::vector<std::string>& x);
 RcppExport SEXP _parzer_pz_parse_parts_lon(SEXP xSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< CharacterVector >::type x(xSEXP);
+    Rcpp::traits::input_parameter< std::vector<std::string>& >::type x(xSEXP);
     rcpp_result_gen = Rcpp::wrap(pz_parse_parts_lon(x));
     return rcpp_result_gen;
 END_RCPP
@@ -90,18 +112,20 @@ BEGIN_RCPP
 END_RCPP
 }
 // pz_split_llstr
-Rcpp::DataFrame pz_split_llstr(Rcpp::StringVector x);
+Rcpp::DataFrame pz_split_llstr(std::vector<std::string> x);
 RcppExport SEXP _parzer_pz_split_llstr(SEXP xSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< Rcpp::StringVector >::type x(xSEXP);
+    Rcpp::traits::input_parameter< std::vector<std::string> >::type x(xSEXP);
     rcpp_result_gen = Rcpp::wrap(pz_split_llstr(x));
     return rcpp_result_gen;
 END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_parzer_convert_lat", (DL_FUNC) &_parzer_convert_lat, 1},
+    {"_parzer_convert_lon", (DL_FUNC) &_parzer_convert_lon, 1},
     {"_parzer_pz_parse_lat", (DL_FUNC) &_parzer_pz_parse_lat, 1},
     {"_parzer_pz_parse_lon", (DL_FUNC) &_parzer_pz_parse_lon, 1},
     {"_parzer_pz_hemisphere", (DL_FUNC) &_parzer_pz_hemisphere, 2},

@@ -26,13 +26,8 @@
 #' # bad inputs, get one of the two strings
 #' parse_hemisphere(-181, -40.4183318)
 #' parse_hemisphere(-120, -192.4183318)
-#'
-#' # many inputs
-#' n <- 100
-#' lons <- runif(n, min = -180, max = 180)
-#' lats <- runif(n, min = -90, max = 90)
-#' parse_hemisphere(lons, lats)
 #' }
+
 parse_hemisphere <- function(lon, lat) {
   lint_inputs(lon, lat, "")
   stopifnot(length(lon) == length(lat))

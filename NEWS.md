@@ -1,3 +1,10 @@
+parzer 0.4.2
+============
+
+### MINOR IMPROVEMENTS
+
+* C++ code was slightly improved by replacing push.backs with direct assignations in  vectors and also by passing many arguments by reference.
+
 parzer 0.4.1
 ============
 

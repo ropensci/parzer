@@ -25,19 +25,19 @@ up to get all decimal degree numeric data.
 
 `parzer` API:
 
--   `parse_hemisphere`
--   `parse_lat`
--   `parse_llstr`
--   `parse_lon`
--   `parse_lon_lat`
--   `parse_parts_lat`
--   `parse_parts_lon`
--   `pz_d`
--   `pz_degree`
--   `pz_m`
--   `pz_minute`
--   `pz_s`
--   `pz_second`
+- `parse_hemisphere`
+- `parse_lat`
+- `parse_llstr`
+- `parse_lon`
+- `parse_lon_lat`
+- `parse_parts_lat`
+- `parse_parts_lon`
+- `pz_d`
+- `pz_degree`
+- `pz_m`
+- `pz_minute`
+- `pz_s`
+- `pz_second`
 
 ## Usage
 
@@ -45,12 +45,12 @@ For example, parse latitude and longitude from messy character vectors.
 
 ``` r
 parse_lat(c("45N54.2356", "-45.98739874", "40.123°"))
-#> [1]  45.90393 -45.98740  40.12300
+#> [1]  45.90 -45.99  40.12
 ```
 
 ``` r
 parse_lon(c("45W54.2356", "-45.98739874", "40.123°"))
-#> [1] -45.90393 -45.98740  40.12300
+#> [1] -45.90 -45.99  40.12
 ```
 
 And you can even split and parse strings that contain latitude and
@@ -58,9 +58,9 @@ longitude together.
 
 ``` r
 parse_llstr(c("4 51'36\"S, 101 34'7\"W", "40.123°; 45W54.2356"))
-#>      lat        lon
-#> 1 -4.860 -101.56861
-#> 2 40.123  -45.90393
+#>     lat    lon
+#> 1 -4.86 -101.6
+#> 2 40.12  -45.9
 ```
 
 See more in the [Introduction to the `parzer` package
@@ -86,25 +86,24 @@ library("parzer")
 
 ## Similar art
 
--   `sp::char2dms`: is most similar to `parzer::parse_lat` and
-    `parzer::parse_lon`. However, with `sp::char2dms` you have to
-    specify the termination character for each of degree, minutes and
-    seconds. `parzer` does this for the user.
--   `biogeo::dms2dd`: very unlike functions in this package. You must
-    pass separate degrees, minutes, seconds and direction to `dms2dd`.
-    No exact analog is found in `parzer`, whose main focus is parsing
-    messy geographic coordinates in strings to a more machine readable
-    version
+- `sp::char2dms`: is most similar to `parzer::parse_lat` and
+  `parzer::parse_lon`. However, with `sp::char2dms` you have to specify
+  the termination character for each of degree, minutes and seconds.
+  `parzer` does this for the user.
+- `biogeo::dms2dd`: very unlike functions in this package. You must pass
+  separate degrees, minutes, seconds and direction to `dms2dd`. No exact
+  analog is found in `parzer`, whose main focus is parsing messy
+  geographic coordinates in strings to a more machine readable version
 
 ## Meta
 
--   Please [report any issues or
-    bugs](https://github.com/ropensci/parzer/issues).
--   License: MIT
--   Get citation information for `parzer` in R doing
-    `citation(package = 'parzer')`
--   Please note that this package is released with a [Contributor Code
-    of Conduct](https://ropensci.org/code-of-conduct/). By contributing
-    to this project, you agree to abide by its terms.
+- Please [report any issues or
+  bugs](https://github.com/ropensci/parzer/issues).
+- License: MIT
+- Get citation information for `parzer` in R doing
+  `citation(package = 'parzer')`
+- Please note that this package is released with a [Contributor Code of
+  Conduct](https://ropensci.org/code-of-conduct/). By contributing to
+  this project, you agree to abide by its terms.
 
 [![ropensci_footer](https://ropensci.org/public_images/ropensci_footer.png)](https://ropensci.org)

@@ -1,7 +1,6 @@
 # parse_hemisphere
 
 test_that("parse_hemisphere works", {
-  skip_on_cran()
   # NE
   ne <- parse_hemisphere("74.123E", "45N54.2356")
   # NW
@@ -26,12 +25,12 @@ test_that("parse_hemisphere works", {
 })
 
 test_that("parse_hemisphere - fails well", {
-  skip_on_cran()
   expect_error(parse_hemisphere(), "argument \"lon\" is missing")
   expect_error(parse_hemisphere(""), "argument \"lat\" is missing")
   expect_error(parse_hemisphere(mtcars), "lon must be of class")
   expect_error(parse_hemisphere("", mtcars), "lat must be of class")
 
-  expect_warning(parse_hemisphere(45, 190), "not within -90")
-  expect_warning(parse_hemisphere(45, 190), "check that you did not invert")
+  expect_warning(parse_hemisphere("45", "190"), "not within -90")
+  expect_warning(parse_hemisphere("45", "190"), "check that you did not invert")
+  expect_warning(parse_hemisphere("190", "45"), "longitude value within 180/360 range, got: 190")
 })

@@ -1,13 +1,11 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^CODE_OF_CONDUCT\.md$
+CONTRIBUTING.md
 README.Rmd
-.travis.yml
-appveyor.yml
 cran-comments.md
 man-roxygen
 notes.md
-.github
 Makefile
 ^docs$
 reviewer_replies.md
@@ -16,5 +14,9 @@ vignettes/use_cases.html
 ^codemeta\.json$
 ^revdep$
 ^LICENSE\.md$
-^\.github$
 ^CRAN-RELEASE$
+^\.vscode$
+^\.github$
+^\.git$
+^doc$
+^Meta$
