@@ -5,7 +5,7 @@ parzer
 state and is being actively
 developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 [![cran
-checks](https://cranchecks.info/badges/worst/parzer)](https://cranchecks.info/pkgs/parzer)
+checks](https://badges.cranchecks.info/worst/parzer.svg)](https://cran.r-project.org/web/checks/check_results_parzer.html)
 [![R-CMD-check](https://github.com/ropensci/parzer/workflows/R-CMD-check/badge.svg)](https://github.com/ropensci/parzer/actions/)
 [![rstudio mirror
 downloads](https://cranlogs.r-pkg.org/badges/parzer)](https://github.com/r-hub/cranlogs.app)
@@ -25,32 +25,16 @@ up to get all decimal degree numeric data.
 
 `parzer` API:
 
-- `parse_hemisphere`
-- `parse_lat`
-- `parse_llstr`
-- `parse_lon`
-- `parse_lon_lat`
-- `parse_parts_lat`
-- `parse_parts_lon`
-- `pz_d`
-- `pz_degree`
-- `pz_m`
-- `pz_minute`
-- `pz_s`
-- `pz_second`
-
 ## Usage
 
 For example, parse latitude and longitude from messy character vectors.
 
 ``` r
 parse_lat(c("45N54.2356", "-45.98739874", "40.123°"))
-#> [1]  45.90 -45.99  40.12
 ```
 
 ``` r
 parse_lon(c("45W54.2356", "-45.98739874", "40.123°"))
-#> [1] -45.90 -45.99  40.12
 ```
 
 And you can even split and parse strings that contain latitude and
@@ -58,9 +42,6 @@ longitude together.
 
 ``` r
 parse_llstr(c("4 51'36\"S, 101 34'7\"W", "40.123°; 45W54.2356"))
-#>     lat    lon
-#> 1 -4.86 -101.6
-#> 2 40.12  -45.9
 ```
 
 See more in the [Introduction to the `parzer` package
