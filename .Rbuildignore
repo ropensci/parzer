@@ -3,7 +3,7 @@
 ^CODE_OF_CONDUCT\.md$
 CONTRIBUTING.md
 README.Rmd
-cran-comments.md
+^cran-comments\.md$
 man-roxygen
 notes.md
 Makefile
@@ -18,4 +18,3 @@ reviewer_replies.md
 ^\.github$
 ^\.git$
 ^vignettes/*_files$
-^doc$

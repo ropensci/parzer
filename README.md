@@ -23,25 +23,29 @@ You may get data from a published study or a colleague where the
 coordinates are in some messy character format that you’d like to clean
 up to get all decimal degree numeric data.
 
-`parzer` API:
-
-## Usage
+## `parzer` usage
 
 For example, parse latitude and longitude from messy character vectors.
 
 ``` r
 parse_lat(c("45N54.2356", "-45.98739874", "40.123°"))
+#> [1]  45.90 -45.99  40.12
 ```
 
 ``` r
 parse_lon(c("45W54.2356", "-45.98739874", "40.123°"))
+#> [1] -45.90 -45.99  40.12
 ```
 
 And you can even split and parse strings that contain latitude and
 longitude together.
 
 ``` r
-parse_llstr(c("4 51'36\"S, 101 34'7\"W", "40.123°; 45W54.2356"))
+parse_llstr(c("4 51'36\"S, 101 34'7\"W",
+              "40.123°; 45W54.2356"))
+#>     lat    lon
+#> 1 -4.86 -101.6
+#> 2 40.12  -45.9
 ```
 
 See more in the [Introduction to the `parzer` package
@@ -49,21 +53,33 @@ vignette](https://docs.ropensci.org/parzer/articles/parzer.html).
 
 ## Installation
 
-Stable version
+### Stable version:
 
 ``` r
 install.packages("parzer")
 ```
 
-Development version
+### Development version:
 
 ``` r
 remotes::install_github("ropensci/parzer")
 ```
 
-``` r
-library("parzer")
-```
+## List of functions:
+
+- `parse_hemisphere`
+- `parse_lat`
+- `parse_llstr`
+- `parse_lon`
+- `parse_lon_lat`
+- `parse_parts_lat`
+- `parse_parts_lon`
+- `pz_d`
+- `pz_degree`
+- `pz_m`
+- `pz_minute`
+- `pz_s`
+- `pz_second`
 
 ## Similar art
 
@@ -74,7 +90,7 @@ library("parzer")
 - `biogeo::dms2dd`: very unlike functions in this package. You must pass
   separate degrees, minutes, seconds and direction to `dms2dd`. No exact
   analog is found in `parzer`, whose main focus is parsing messy
-  geographic coordinates in strings to a more machine readable version
+  geographic coordinates in strings to a more machine readable version.
 
 ## Meta
 
