@@ -8,7 +8,7 @@ Description: Parse messy geographic coordinates from various character formats
     minutes, or seconds; add and subtract degrees, minutes,
     and seconds. C++ code herein originally inspired from code
     written by Jeffrey D. Bogan, but then completely re-written.
-Version: 0.4.1.9013
+Version: 0.4.1.9014
 Authors@R: c(
     person("Scott", "Chamberlain", role = "aut",
         email = "sckott@protonmail.com",
@@ -46,8 +46,10 @@ Imports:
     withr
 Suggests:
     testthat (>= 3.0.0),
-    knitr,
-    rmarkdown,
+    quarto,
+    sf,
+    leaflet,
+    tibble,
     callr,
     pkgbuild,
     pkgload
@@ -55,7 +57,7 @@ Config/testthat/edition: 3
 Config/testthat/parallel: false
 Config/testthat/start-first: *utils*, *parse_parts*, *dms*
 LinkingTo: Rcpp
-VignetteBuilder: knitr
+VignetteBuilder: quarto
 Roxygen: list(markdown = TRUE)
 Encoding: UTF-8
 Language: en-US

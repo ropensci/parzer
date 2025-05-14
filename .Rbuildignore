@@ -8,9 +8,8 @@ man-roxygen
 notes.md
 Makefile
 ^docs$
+^Meta$
 reviewer_replies.md
-vignettes/use_cases.Rmd
-vignettes/use_cases.html
 ^codemeta\.json$
 ^revdep$
 ^LICENSE\.md$
@@ -18,5 +17,5 @@ vignettes/use_cases.html
 ^\.vscode$
 ^\.github$
 ^\.git$
+^vignettes/*_files$
 ^doc$
-^Meta$
