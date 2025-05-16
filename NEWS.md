@@ -3,14 +3,16 @@ parzer 0.4.2
 
 ### MINOR IMPROVEMENTS
 
-* C++ code was slightly improved by replacing push.backs with direct assignations in  vectors and also by passing many arguments by reference.
+* C++ code was improved by replacing push.backs with direct assignations
+in vectors and also by passing arguments by reference where possible.
+* Dependence on Rcpp was reduced
 
 parzer 0.4.1
 ============
 
 ### MINOR IMPROVEMENTS
 
-* documentation and package description describe more clearly `parzer` core objective of parsing messy coordinates in 
+* documentation and package description describe more clearly `parzer` core objective of parsing messy coordinates in
 character strings to convert them to decimal numeric values. Suggestion and work by @robitalec
 
 ### ACKNOWLEDGEMENTS CHANGES
