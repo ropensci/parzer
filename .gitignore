@@ -12,3 +12,4 @@ src/desktop.ini
 /doc/
 /Meta/
 .DS_Store
+*.html
