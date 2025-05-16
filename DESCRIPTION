@@ -14,7 +14,7 @@ Authors@R: c(
         email = "sckott@protonmail.com",
         comment = c(ORCID = "0000-0003-1444-9135")),
     person("Alban", "Sagouis", role = c("aut","cre"),
-        email = "alban.sagouis@idiv.de",
+        email = "sagouis@pm.me",
         comment = c(ORCID = "0000-0002-3827-1063")),
     person("Alec L.", "Robitaille", role = "ctb",
         comment = c(ORCID = "0000-0002-4706-1762")),

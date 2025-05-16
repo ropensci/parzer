@@ -19,3 +19,4 @@ reviewer_replies.md
 ^\.github$
 ^\.git$
 ^vignettes/*_files$
+^.*\.html$

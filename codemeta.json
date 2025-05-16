@@ -33,7 +33,7 @@
       "@type": "Person",
       "givenName": "Alban",
       "familyName": "Sagouis",
-      "email": "alban.sagouis@idiv.de",
+      "email": "sagouis@pm.me",
       "@id": "https://orcid.org/0000-0002-3827-1063"
     }
   ],
@@ -76,7 +76,7 @@
       "@type": "Person",
       "givenName": "Alban",
       "familyName": "Sagouis",
-      "email": "alban.sagouis@idiv.de",
+      "email": "sagouis@pm.me",
       "@id": "https://orcid.org/0000-0002-3827-1063"
     }
   ],
@@ -198,7 +198,7 @@
   "applicationCategory": "Geospatial",
   "isPartOf": "https://ropensci.org",
   "keywords": ["geospatial", "data", "latitude", "longitude", "parser", "coordinates", "r", "rstats", "geo", "r-package"],
-  "fileSize": "4823.125KB",
+  "fileSize": "4748.369KB",
   "releaseNotes": "https://github.com/ropensci/parzer/blob/main/NEWS.md",
   "readme": "https://github.com/ropensci/parzer/blob/main/README.md",
   "contIntegration": ["https://github.com/ropensci/parzer/actions/", "https://app.codecov.io/github/ropensci/parzer?branch=main"],
