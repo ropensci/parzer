@@ -7,6 +7,9 @@ parzer 0.4.2
 in vectors and also by passing arguments by reference where possible.
 * Dependence on Rcpp was reduced
 
+### BUG FIX
+* having spaces at the beginning of a string could lead to the disappearing of the negative sign
+
 parzer 0.4.1
 ============
 
