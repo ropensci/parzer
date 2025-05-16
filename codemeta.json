@@ -198,10 +198,10 @@
   "applicationCategory": "Geospatial",
   "isPartOf": "https://ropensci.org",
   "keywords": ["geospatial", "data", "latitude", "longitude", "parser", "coordinates", "r", "rstats", "geo", "r-package"],
-  "fileSize": "5352.891KB",
+  "fileSize": "4823.125KB",
   "releaseNotes": "https://github.com/ropensci/parzer/blob/main/NEWS.md",
   "readme": "https://github.com/ropensci/parzer/blob/main/README.md",
-  "contIntegration": ["https://github.com/ropensci/parzer/actions/", "https://codecov.io/github/ropensci/parzer?branch=main"],
+  "contIntegration": ["https://github.com/ropensci/parzer/actions/", "https://app.codecov.io/github/ropensci/parzer?branch=main"],
   "developmentStatus": "https://www.repostatus.org/#active",
   "review": {
     "@type": "Review",

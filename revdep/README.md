@@ -11,7 +11,7 @@
 |ctype    |en_US.UTF-8                                                                  |
 |tz       |Europe/Berlin                                                                |
 |date     |2025-05-16                                                                   |
-|pandoc   |3.6.4 @ /opt/homebrew/bin/pandoc                                             |
+|pandoc   |3.6.4 @ /opt/homebrew/bin/ (via rmarkdown)                                   |
 |quarto   |1.6.40 @ /Applications/Positron.app/Contents/Resources/app/quarto/bin/quarto |
 
 # Dependencies

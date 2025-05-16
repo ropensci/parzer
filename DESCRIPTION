@@ -36,7 +36,7 @@ Authors@R: c(
     person("German Centre for Integrative Biodiversity Research (iDiv) Halle-Jena-Leipzig",
         role = "fnd", comment = c(ROR = "01jty7g66"))
 	)
-Maintainer: Alban Sagouis <alban.sagouis@idiv.de>
+Maintainer: Alban Sagouis <sagouis@pm.me>
 License: MIT + file LICENSE
 URL: https://github.com/ropensci/parzer (devel)
   https://docs.ropensci.org/parzer/ (docs)
