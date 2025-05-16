@@ -15,7 +15,7 @@ lint_inputs <- function(lon = NULL, lat = NULL, format) {
   assert(format, "character")
 }
 
-scrub <- function(x) gsub("[^A-Za-z0-9\\.\\ ,'-]|d|g", "'", x)
+scrub <- function(x) trimws(gsub("[^A-Za-z0-9\\.\\ ,'-]|d|g", "'", x))
 
 stop_form <- function() stop("format handling not ready yet")
 

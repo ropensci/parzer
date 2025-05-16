@@ -1,8 +1,8 @@
 #' Parse longitude values
 #'
 #' @export
-#' @param lon (numeric/integer/character) one or more longitude values
-#' @param format (character) format, default often works
+#' @param lon (numeric/integer/character) one or more longitude values.
+#' @param format (character) format, not implemented yet.
 #' @return numeric vector
 #' @section Errors:
 #' Throws warnings on parsing errors, and returns `NaN` in each case

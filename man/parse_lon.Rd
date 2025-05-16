@@ -7,9 +7,9 @@
 parse_lon(lon, format = NULL)
 }
 \arguments{
-\item{lon}{(numeric/integer/character) one or more longitude values}
+\item{lon}{(numeric/integer/character) one or more longitude values.}
 
-\item{format}{(character) format, default often works}
+\item{format}{(character) format, not implemented yet.}
 }
 \value{
 numeric vector
