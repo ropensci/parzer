@@ -8,6 +8,7 @@ man-roxygen
 notes.md
 Makefile
 ^docs$
+^doc$
 ^Meta$
 reviewer_replies.md
 ^codemeta\.json$

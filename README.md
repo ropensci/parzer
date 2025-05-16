@@ -12,7 +12,7 @@ downloads](https://cranlogs.r-pkg.org/badges/parzer)](https://github.com/r-hub/c
 [![cran
 version](https://www.r-pkg.org/badges/version/parzer)](https://cran.r-project.org/package=parzer)
 
-[![codecov.io](https://codecov.io/github/ropensci/parzer/coverage.svg?branch=master)](https://codecov.io/github/ropensci/parzer?branch=master)
+[![codecov.io](https://codecov.io/github/ropensci/parzer/coverage.svg?branch=main)](https://codecov.io/github/ropensci/parzer?branch=main)
 [![](https://badges.ropensci.org/341_status.svg)](https://github.com/ropensci/software-review/issues/341)
 
 `parzer` parses messy geographic coordinates
@@ -29,12 +29,12 @@ For example, parse latitude and longitude from messy character vectors.
 
 ``` r
 parse_lat(c("45N54.2356", "-45.98739874", "40.123°"))
-#> [1]  45.90 -45.99  40.12
+R> [1]  45.90 -45.99  40.12
 ```
 
 ``` r
 parse_lon(c("45W54.2356", "-45.98739874", "40.123°"))
-#> [1] -45.90 -45.99  40.12
+R> [1] -45.90 -45.99  40.12
 ```
 
 And you can even split and parse strings that contain latitude and
@@ -43,9 +43,9 @@ longitude together.
 ``` r
 parse_llstr(c("4 51'36\"S, 101 34'7\"W",
               "40.123°; 45W54.2356"))
-#>     lat    lon
-#> 1 -4.86 -101.6
-#> 2 40.12  -45.9
+R>     lat    lon
+R> 1 -4.86 -101.6
+R> 2 40.12  -45.9
 ```
 
 See more in the [Introduction to the `parzer` package
