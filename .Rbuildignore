@@ -20,3 +20,4 @@ reviewer_replies.md
 ^\.git$
 ^vignettes/*_files$
 ^README.html$
+^CRAN-SUBMISSION$
