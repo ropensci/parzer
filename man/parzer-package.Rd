@@ -16,7 +16,8 @@ parse geographic coordinates
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://github.com/ropensci/parzer (devel) https://docs.ropensci.org/parzer/ (docs)}
+  \item \url{https://github.com/ropensci/parzer}
+  \item \url{https://docs.ropensci.org/parzer/}
   \item Report bugs at \url{https://github.com/ropensci/parzer/issues}
 }
 
