@@ -5,8 +5,8 @@
 * NOTE: unable to verify current time
 
 * This is a new release.
-* `revdep` passed locally
-* Local and GitHub Actions R CMD check passed
+* `revdepcheck` passed
+* Local and GHA and win_devel R CMD check passed
 
 ## Changes not listed in NEWS
 

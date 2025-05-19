@@ -22,7 +22,7 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Alban Sagouis \email{alban.sagouis@idiv.de} (\href{https://orcid.org/0000-0002-3827-1063}{ORCID})
+\strong{Maintainer}: Alban Sagouis \email{sagouis@pm.me} (\href{https://orcid.org/0000-0002-3827-1063}{ORCID})
 
 Authors:
 \itemize{

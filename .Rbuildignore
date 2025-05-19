@@ -8,6 +8,7 @@ man-roxygen
 notes.md
 Makefile
 ^docs$
+^doc$
 ^Meta$
 reviewer_replies.md
 ^codemeta\.json$
@@ -18,3 +19,4 @@ reviewer_replies.md
 ^\.github$
 ^\.git$
 ^vignettes/*_files$
+^README.html$
