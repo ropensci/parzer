@@ -13,3 +13,4 @@ src/desktop.ini
 /Meta/
 .DS_Store
 *.html
+vignettes/*.R

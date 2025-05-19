@@ -14,7 +14,7 @@
     "name": "R",
     "url": "https://r-project.org"
   },
-  "runtimePlatform": "R version 4.4.3 (2025-02-28)",
+  "runtimePlatform": "R version 4.5.0 (2025-04-11)",
   "provider": {
     "@id": "https://cran.r-project.org",
     "@type": "Organization",
@@ -198,8 +198,8 @@
   "applicationCategory": "Geospatial",
   "isPartOf": "https://ropensci.org",
   "keywords": ["geospatial", "data", "latitude", "longitude", "parser", "coordinates", "r", "rstats", "geo", "r-package"],
-  "fileSize": "4748.369KB",
-  "releaseNotes": "https://github.com/ropensci/parzer/blob/main/NEWS.md",
+  "fileSize": "4752.179KB",
+  "releaseNotes": "https://github.com/ropensci/parzer/blob/master/NEWS.md",
   "readme": "https://github.com/ropensci/parzer/blob/main/README.md",
   "contIntegration": ["https://github.com/ropensci/parzer/actions/", "https://app.codecov.io/github/ropensci/parzer?branch=main"],
   "developmentStatus": "https://www.repostatus.org/#active",
