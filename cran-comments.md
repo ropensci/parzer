@@ -10,11 +10,7 @@
 
 ## Changes not listed in NEWS
 
-* C++ requirement was removed from DESCRIPTION
-* R/parzer-package.R was updated to the new `"_PACKAGE"` structure
-* Removed dependencies in Suggest (randgeo, tibble)
-* Vignette builder is now Quarto
-* iDIv and Ropensci RORs added in DESCRIPTION
+* Removed the README file from the package directory as requested by Professor Ripley.
 
 Dear CRAN reviewer,
 

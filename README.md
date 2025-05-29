@@ -13,8 +13,12 @@ downloads](https://cranlogs.r-pkg.org/badges/parzer)](https://github.com/r-hub/c
 version](https://www.r-pkg.org/badges/version/parzer)](https://cran.r-project.org/package=parzer)
 
 [![codecov.io](https://codecov.io/github/ropensci/parzer/coverage.svg?branch=main)](https://app.codecov.io/github/ropensci/parzer?branch=main)
+
 [![Ropensci Peer
 Reviewed](https://badges.ropensci.org/341_status.svg)](https://github.com/ropensci/software-review/issues/341)
+
+[![CRAN
+DOI](https://img.shields.io/badge/DOI-10.32614%2FCRAN.package.parzer-blue)](https://doi.org/10.32614/CRAN.package.parzer)
 
 `parzer` parses messy geographic coordinates
 
