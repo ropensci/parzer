@@ -24,9 +24,9 @@ Throws warnings on parsing errors, and returns \code{NaN} in each case
 Types of errors:
 \itemize{
 \item invalid argument: e.g., letters passed instead of numbers,
-see \url{https://en.cppreference.com/w/cpp/error/invalid_argument}
+see \url{https://en.cppreference.com/w/cpp/error/invalid_argument.html}
 \item out of range: numbers of out acceptable range, see
-\url{https://en.cppreference.com/w/cpp/error/out_of_range}
+\url{https://en.cppreference.com/w/cpp/error/out_of_range.html}
 \item out of longitude range: not within -180/360 range
 }
 }

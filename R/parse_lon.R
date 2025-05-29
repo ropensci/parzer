@@ -10,9 +10,9 @@
 #' Types of errors:
 #'
 #' - invalid argument: e.g., letters passed instead of numbers,
-#' see <https://en.cppreference.com/w/cpp/error/invalid_argument>
+#' see <https://en.cppreference.com/w/cpp/error/invalid_argument.html>
 #' - out of range: numbers of out acceptable range, see
-#' <https://en.cppreference.com/w/cpp/error/out_of_range>
+#' <https://en.cppreference.com/w/cpp/error/out_of_range.html>
 #' - out of longitude range: not within -180/360 range
 #'
 #' @examples

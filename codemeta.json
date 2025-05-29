@@ -8,7 +8,7 @@
   "codeRepository": "https://github.com/ropensci/parzer",
   "issueTracker": "https://github.com/ropensci/parzer/issues",
   "license": "https://spdx.org/licenses/MIT",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "programmingLanguage": {
     "@type": "ComputerLanguage",
     "name": "R",
@@ -198,7 +198,7 @@
   "applicationCategory": "Geospatial",
   "isPartOf": "https://ropensci.org",
   "keywords": ["geospatial", "data", "latitude", "longitude", "parser", "coordinates", "r", "rstats", "geo", "r-package"],
-  "fileSize": "4748.996KB",
+  "fileSize": "4749.036KB",
   "releaseNotes": "https://github.com/ropensci/parzer/blob/master/NEWS.md",
   "readme": "https://github.com/ropensci/parzer/blob/main/README.md",
   "contIntegration": ["https://github.com/ropensci/parzer/actions/", "https://app.codecov.io/github/ropensci/parzer?branch=main"],
