@@ -82,7 +82,8 @@ invalid_formats <- c(
 
 test_that("dms fxns fail as expected", {
   out <- data.frame(
-    input = invalid_formats, res = NA_real_,
+    input = invalid_formats,
+    res = NA_real_,
     stringsAsFactors = FALSE
   )
   for (i in seq_along(invalid_formats)) {

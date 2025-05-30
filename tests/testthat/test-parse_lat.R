@@ -35,7 +35,8 @@ test_lats <- c(
 
 test_that("parse_lat works: run through test_lats", {
   out <- data.frame(
-    input = test_lats, res = NA_real_,
+    input = test_lats,
+    res = NA_real_,
     stringsAsFactors = FALSE
   )
   for (i in seq_along(test_lats)) {
@@ -77,12 +78,17 @@ invalid_formats <- c(
 # res column should all give NaN
 test_that("parse_lat works: invalid formats fail as expected", {
   out <- data.frame(
-    input = invalid_formats, res = NA_real_,
+    input = invalid_formats,
+    res = NA_real_,
     stringsAsFactors = FALSE
   )
   for (i in seq_along(invalid_formats)) {
-    out[i, "res"] <- suppressWarnings({parse_lat(invalid_formats[i])})
-    expect_warning({aa <- parse_lat(invalid_formats[i])})
+    out[i, "res"] <- suppressWarnings({
+      parse_lat(invalid_formats[i])
+    })
+    expect_warning({
+      aa <- parse_lat(invalid_formats[i])
+    })
     expect_type(aa, "double")
     expect_equal(aa, NaN)
   }
