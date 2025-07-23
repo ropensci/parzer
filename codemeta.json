@@ -4,23 +4,17 @@
   "identifier": "parzer",
   "description": "Parse messy geographic coordinates from various character formats to decimal degree numeric values. Parse coordinates into their parts (degree, minutes, seconds); calculate hemisphere from coordinates; pull out individually degrees, minutes, or seconds; add and subtract degrees, minutes, and seconds. C++ code herein originally inspired from code written by Jeffrey D. Bogan, but then completely re-written.",
   "name": "parzer: Parse Messy Geographic Coordinates",
-  "relatedLink": ["https://docs.ropensci.org/parzer/", "https://CRAN.R-project.org/package=parzer"],
+  "relatedLink": "https://docs.ropensci.org/parzer/",
   "codeRepository": "https://github.com/ropensci/parzer",
   "issueTracker": "https://github.com/ropensci/parzer/issues",
   "license": "https://spdx.org/licenses/MIT",
-  "version": "0.4.3",
+  "version": "0.4.4",
   "programmingLanguage": {
     "@type": "ComputerLanguage",
     "name": "R",
     "url": "https://r-project.org"
   },
   "runtimePlatform": "R version 4.5.0 (2025-04-11)",
-  "provider": {
-    "@id": "https://cran.r-project.org",
-    "@type": "Organization",
-    "name": "Comprehensive R Archive Network (CRAN)",
-    "url": "https://cran.r-project.org"
-  },
   "author": [
     {
       "@type": "Person",
@@ -198,7 +192,7 @@
   "applicationCategory": "Geospatial",
   "isPartOf": "https://ropensci.org",
   "keywords": ["geospatial", "data", "latitude", "longitude", "parser", "coordinates", "r", "rstats", "geo", "r-package"],
-  "fileSize": "4749.036KB",
+  "fileSize": "6119.85KB",
   "releaseNotes": "https://github.com/ropensci/parzer/blob/master/NEWS.md",
   "readme": "https://github.com/ropensci/parzer/blob/main/README.md",
   "contIntegration": ["https://github.com/ropensci/parzer/actions/", "https://app.codecov.io/github/ropensci/parzer?branch=main"],

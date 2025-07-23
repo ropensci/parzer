@@ -95,3 +95,12 @@ test_that("parse_lon works: invalid formats fail as expected", {
     expect_equal(aa, NaN)
   }
 })
+
+test_that("parse_lon correctly processes NA values", {
+  expect_equal(
+    suppressWarnings(
+      parse_lon(c("S60.1", NA, NA_character_, "12' 30'"))
+    ),
+    c(NA_real_, NA_real_, NA_real_, 12.5)
+  )
+})

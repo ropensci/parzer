@@ -20,6 +20,19 @@ test_that("parse_parts_lat - fails well", {
   expect_error(parse_parts_lat(mtcars), "str must be of class")
 })
 
+test_that("parse_parts_lat correctly processes NA values", {
+  expect_equal(
+    suppressWarnings(
+      parse_parts_lat(c("45N54.30", NA_character_, "45N54.30"))
+    ),
+    data.frame(
+      deg = c(45, NA_integer_, 45),
+      min = c(54, NA_integer_, 54),
+      sec = c(18, NA_real_, 18)
+    )
+  )
+})
+
 
 test_that("parse_parts_lon works", {
   aa <- parse_parts_lon("45W54.2356")
@@ -39,4 +52,17 @@ test_that("parse_parts_lon works", {
 test_that("parse_parts_lon - fails well", {
   expect_error(parse_parts_lon(), "argument \"str\" is missing")
   expect_error(parse_parts_lon(mtcars), "str must be of class")
+})
+
+test_that("parse_parts_lon correctly processes NA values", {
+  expect_equal(
+    suppressWarnings(
+      parse_parts_lon(c("45W54.30", NA_character_, "45W54.30"))
+    ),
+    data.frame(
+      deg = c(-45, NA_integer_, -45),
+      min = c(54, NA_integer_, 54),
+      sec = c(18, NA_real_, 18)
+    )
+  )
 })

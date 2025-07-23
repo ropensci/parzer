@@ -93,3 +93,13 @@ test_that("parse_lat works: invalid formats fail as expected", {
     expect_equal(aa, NaN)
   }
 })
+
+
+test_that("parse_lat correctly processes NA values", {
+  expect_equal(
+    suppressWarnings(
+      parse_lat(c("W60.1", NA, NA_character_, "12' 30'"))
+    ),
+    c(NA_real_, NA_real_, NA_real_, 12.5)
+  )
+})
