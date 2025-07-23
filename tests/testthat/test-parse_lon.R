@@ -43,6 +43,17 @@ test_that("parse_lon works: run through test_lons", {
   }
 })
 
+test_that("parse_lon works with cardinal letters among the numbers", {
+  expect_equal(
+    parse_lon(c("74W30'45\"", "74E30'45\"")),
+    c(-74.5125, 74.5125)
+  )
+  expect_equal(
+    parse_lon(c("74  E30'45\"", "74E   30'45\"")),
+    c(74.5125, 74.5125)
+  )
+})
+
 test_that("parse_lon - fails well", {
   expect_error(parse_lon(), "argument \"lon\" is missing")
   expect_error(parse_lon(mtcars), "lon must be of class")
