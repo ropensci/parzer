@@ -39,3 +39,12 @@ test_that("parse_llstr - fails well", {
   expect_warning(parse_llstr("190, 45"), "not within -90")
   expect_warning(parse_llstr("190, 45"), "check that you did not invert")
 })
+
+test_that("parse_llstr correctly processes NA values", {
+  expect_equal(
+    suppressWarnings(
+      parse_llstr(c(NA_character_, "12' 30', 12' 30'"))
+    ),
+    data.frame(lat = c(NA_real_, 12.5), lon = c(NA_real_, 12.5))
+  )
+})

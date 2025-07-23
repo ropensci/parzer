@@ -67,7 +67,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // split_decimal_degree
-std::vector<double> split_decimal_degree(const double& x, const std::string& fmt);
+Rcpp::List split_decimal_degree(const double& x, const std::string& fmt);
 RcppExport SEXP _parzer_split_decimal_degree(SEXP xSEXP, SEXP fmtSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;

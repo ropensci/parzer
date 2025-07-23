@@ -16,12 +16,18 @@ test_that("parse_hemisphere works", {
   # bad values
   ## one
   expect_equal(
-    suppressWarnings(parse_hemisphere("120", "-240.4183318")), "E")
+    suppressWarnings(parse_hemisphere("120", "-240.4183318")),
+    "E"
+  )
   expect_equal(
-    suppressWarnings(parse_hemisphere("420", "-40.4183318")), "S")
+    suppressWarnings(parse_hemisphere("420", "-40.4183318")),
+    "S"
+  )
   ## both
   expect_equal(
-    suppressWarnings(parse_hemisphere("-200", "-240.4183318")), "")
+    suppressWarnings(parse_hemisphere("-200", "-240.4183318")),
+    ""
+  )
 })
 
 test_that("parse_hemisphere - fails well", {
@@ -32,5 +38,8 @@ test_that("parse_hemisphere - fails well", {
 
   expect_warning(parse_hemisphere("45", "190"), "not within -90")
   expect_warning(parse_hemisphere("45", "190"), "check that you did not invert")
-  expect_warning(parse_hemisphere("190", "45"), "longitude value within 180/360 range, got: 190")
+  expect_warning(
+    parse_hemisphere("190", "45"),
+    "longitude value within 180/360 range, got: 190"
+  )
 })

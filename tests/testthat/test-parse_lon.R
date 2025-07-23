@@ -34,12 +34,24 @@ test_lons <- c(
 
 test_that("parse_lon works: run through test_lons", {
   out <- data.frame(
-    input = test_lons, res = NA_real_,
+    input = test_lons,
+    res = NA_real_,
     stringsAsFactors = FALSE
   )
   for (i in seq_along(test_lons)) {
     expect_equal(round(parse_lon(test_lons[i]), 5), -74.64111)
   }
+})
+
+test_that("parse_lon works with cardinal letters among the numbers", {
+  expect_equal(
+    parse_lon(c("74W30'45\"", "74E30'45\"")),
+    c(-74.5125, 74.5125)
+  )
+  expect_equal(
+    parse_lon(c("74  E30'45\"", "74E   30'45\"")),
+    c(74.5125, 74.5125)
+  )
 })
 
 test_that("parse_lon - fails well", {
@@ -79,13 +91,27 @@ invalid_formats <- c(
 # res column should all give NaN
 test_that("parse_lon works: invalid formats fail as expected", {
   out <- data.frame(
-    input = invalid_formats, res = NA_real_,
+    input = invalid_formats,
+    res = NA_real_,
     stringsAsFactors = FALSE
   )
   for (i in seq_along(invalid_formats)) {
-    out[i, "res"] <- suppressWarnings({parse_lon(invalid_formats[i])})
-    expect_warning({aa <- parse_lon(invalid_formats[i])})
+    out[i, "res"] <- suppressWarnings({
+      parse_lon(invalid_formats[i])
+    })
+    expect_warning({
+      aa <- parse_lon(invalid_formats[i])
+    })
     expect_type(aa, "double")
     expect_equal(aa, NaN)
   }
+})
+
+test_that("parse_lon correctly processes NA values", {
+  expect_equal(
+    suppressWarnings(
+      parse_lon(c("S60.1", NA, NA_character_, "12' 30'"))
+    ),
+    c(NA_real_, NA_real_, NA_real_, 12.5)
+  )
 })

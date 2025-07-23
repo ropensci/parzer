@@ -1,3 +1,11 @@
+parzer 0.4.4
+============
+
+### BUG FIX
+
+* Fixed a bug in longitude conversion where "74E5423" would be converted to NA while "74W5423" was correctly converted.
+* Improved C++ management of NA values.
+
 parzer 0.4.3
 ============
 
