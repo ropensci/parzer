@@ -10,15 +10,16 @@
 |collate  |en_US.UTF-8                                                                  |
 |ctype    |en_US.UTF-8                                                                  |
 |tz       |Europe/Berlin                                                                |
-|date     |2025-05-19                                                                   |
+|date     |2025-07-22                                                                   |
 |pandoc   |3.6.4 @ /opt/homebrew/bin/pandoc                                             |
-|quarto   |1.6.40 @ /Applications/Positron.app/Contents/Resources/app/quarto/bin/quarto |
+|quarto   |1.7.31 @ /Applications/Positron.app/Contents/Resources/app/quarto/bin/quarto |
 
 # Dependencies
 
-|package |old   |new   |Δ  |
-|:-------|:-----|:-----|:--|
-|parzer  |0.4.1 |0.4.2 |*  |
+|package |old |new   |Δ  |
+|:-------|:---|:-----|:--|
+|parzer  |NA  |0.4.4 |*  |
+|Rcpp    |NA  |1.1.0 |*  |
 
 # Revdeps
 

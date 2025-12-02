@@ -132,10 +132,11 @@ bool has_non_direction_letters(std::string& s, const std::string& reggex) {
   return z;
 }
 
+// useful to NA on "-45.23232e24"
 bool has_e_with_trailing_numbers(const std::string& s) {
   bool res = false;
   // s = str_tolower(s);
-  std::regex reg("[0-9]+e[0-9]+");
+  std::regex reg("[0-9]+e[0-9]+$");
   std::smatch match;
   if (std::regex_search(s, match, reg)) {
     res = true;
@@ -243,7 +244,7 @@ double convert_lon(std::string& str) {
   if (
       str.size() == 0 ||
         !any_digits(str) ||
-        has_non_direction_letters(str, "abcfghijklmnopqrstuvxyz") ||
+        has_non_direction_letters(str, "abcfghijklmnopqrstuvxyz")  ||
         has_e_with_trailing_numbers(str)
   ) {
     ret = NA_REAL;
@@ -294,4 +295,3 @@ double convert_lon(std::string& str) {
   }
   return ret;
 }
-

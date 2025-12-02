@@ -21,3 +21,25 @@ test_that("parse_lon_lat - fails well", {
   expect_warning(parse_lon_lat("45", "190"), "not within -90")
   expect_warning(parse_lon_lat("45", "190"), "check that you did not invert")
 })
+
+
+test_that("parse_lon_lat correctly processes NA values", {
+  expect_equal(
+    suppressWarnings(
+      parse_lon_lat("S60.1", NA_character_)
+    ),
+    data.frame(lon = NA_real_, lat = NA_real_)
+  )
+  expect_equal(
+    suppressWarnings(
+      parse_lon_lat("12' 30'", NA_character_)
+    ),
+    data.frame(lon = 12.5, lat = NA_real_)
+  )
+  expect_equal(
+    suppressWarnings(
+      parse_lon_lat(NA_character_, "12' 30'")
+    ),
+    data.frame(lon = NA_real_, lat = 12.5)
+  )
+})
