@@ -50,18 +50,13 @@ std::vector<double> extract_floats_from_string(std::string& str) {
   digits_only(str);
   remove_internal_dashes(str);
   // Rprintf("within extract_floats_from_string: %s \n", str.c_str());
-  std::stringstream ss(str);
+  std::istringstream ss(str);
   std::string temp;
-  double found;
   std::vector<double> y;
-  while (!ss.eof()) {
-    /* extracting chunk by chunk from stream */
-    ss >> temp;
-    /* Checking the given word is integer or not */
-    if (std::stringstream(temp) >> found)
-      y.push_back(found);
-    /* To save from space at the end of string */
-    temp = "";
+  while (ss >> temp) {
+    try {
+      y.push_back(std::stod(temp));
+    } catch (...) {}
   }
   return y;
 }
