@@ -12,10 +12,9 @@ std::vector<std::string> pz_hemisphere(std::vector<std::string> lon, std::vector
     if (R_IsNA(lon_f)) {
       londir = "";
     } else {
-      std::string lon1 = std::to_string(lon_f);
-      londir = is_negative(lon1) ? "W" : "E";
+      londir = std::signbit(lon_f) ? "W" : "E";
       if (lon_f > 180) {
-        Rcpp::warning("longitude value within 180/360 range, got: " + lon1);
+        Rcpp::warning("longitude value within 180/360 range, got: " + std::to_string(lon_f));
       }
     }
 
@@ -24,8 +23,7 @@ std::vector<std::string> pz_hemisphere(std::vector<std::string> lon, std::vector
     if (R_IsNA(lat_f)) {
       latdir = "";
     } else {
-      std::string lat1 = std::to_string(lat_f);
-      latdir = is_negative(lat1) ? "S" : "N";
+      latdir = std::signbit(lat_f) ? "S" : "N";
     }
 
     std::string ss = latdir + londir;
