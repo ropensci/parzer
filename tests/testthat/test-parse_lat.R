@@ -95,6 +95,22 @@ test_that("parse_lat works: invalid formats fail as expected", {
 })
 
 
+test_that("parse_lat with >3 numeric tokens emits only the format warning", {
+  # Previously the if-chain let ret = NA_REAL fall through to ret * dir_val,
+  # potentially breaking the NA bit pattern so the range check also fired,
+  # producing a spurious second warning.
+  warns <- character(0)
+  withCallingHandlers(
+    parse_lat("40 25 6 7"),
+    warning = function(w) {
+      warns <<- c(warns, conditionMessage(w))
+      invokeRestart("muffleWarning")
+    }
+  )
+  expect_length(warns, 1)
+  expect_match(warns, "invalid format, more than 3 numeric slots")
+})
+
 test_that("parse_lat correctly processes NA values", {
   expect_equal(
     suppressWarnings(

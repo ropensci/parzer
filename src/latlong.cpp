@@ -178,7 +178,7 @@ bool is_negative(const std::string& s) {
 
 // [[Rcpp::export]]
 double convert_lat(std::string& str) {
-  double ret;
+  double ret = NA_REAL;
   str_tolower(str);
   if (
       str.size() == 0 ||
@@ -193,7 +193,7 @@ double convert_lat(std::string& str) {
   } else if (invalid_degree_letter(str, "[nsd]")) {
     // to support e.g.: 40d 25’ 6\" N
     ret = NA_REAL;
-    Rcpp::warning("expected single 'N|S|d' after degrees, got: " + str);
+    Rcpp::warning("expected single ‘N|S|d’ after degrees, got: " + str);
   } else {
     std::string dir = extract_nsew(str, "[ns]");
     double dir_val = 1.0;
@@ -207,23 +207,16 @@ double convert_lat(std::string& str) {
     std::vector<double> nums = extract_floats_from_string(str);
     if (nums.size() == 0) {
       ret = NA_REAL;
-    }
-    if (nums.size() == 1) {
-      ret = fabs(nums[0]);
-    }
-    if (nums.size() == 2) {
-      ret = fabs(nums[0]) + decimal_minute(nums[1]);
-    }
-    if (nums.size() == 3) {
-      ret = fabs(nums[0]) + decimal_minute(nums[1]) + decimal_second(nums[2]);
-    }
-    if (nums.size() > 3) {
+    } else if (nums.size() == 1) {
+      ret = fabs(nums[0]) * dir_val;
+    } else if (nums.size() == 2) {
+      ret = (fabs(nums[0]) + decimal_minute(nums[1])) * dir_val;
+    } else if (nums.size() == 3) {
+      ret = (fabs(nums[0]) + decimal_minute(nums[1]) + decimal_second(nums[2])) * dir_val;
+    } else {
       Rcpp::warning("invalid format, more than 3 numeric slots, got: " + str);
       ret = NA_REAL;
     }
-
-    // apply direction
-    ret = ret * dir_val;
 
     if (!Rcpp::NumericVector::is_na(ret)) {
       if (!check_lat(ret)) {
@@ -239,7 +232,7 @@ double convert_lat(std::string& str) {
 
 // [[Rcpp::export]]
 double convert_lon(std::string& str) {
-  double ret;
+  double ret = NA_REAL;
   str_tolower(str);
   if (
       str.size() == 0 ||
@@ -254,7 +247,7 @@ double convert_lon(std::string& str) {
   } else if (invalid_degree_letter(str, "[ewd]")) {
     // to support e.g.: 40d 25’ 6\" E
     ret = NA_REAL;
-    Rcpp::warning("expected single 'E|W|d' after degrees, got: " + str);
+    Rcpp::warning("expected single ‘E|W|d’ after degrees, got: " + str);
   } else {
     std::string dir = extract_nsew(str, "[ew]");
     double dir_val = 1.0;
@@ -268,23 +261,16 @@ double convert_lon(std::string& str) {
     std::vector<double> nums = extract_floats_from_string(str);
     if (nums.size() == 0) {
       ret = NA_REAL;
-    }
-    if (nums.size() == 1) {
-      ret = fabs(nums[0]);
-    }
-    if (nums.size() == 2) {
-      ret = fabs(nums[0]) + decimal_minute(nums[1]);
-    }
-    if (nums.size() == 3) {
-      ret = fabs(nums[0]) + decimal_minute(nums[1]) + decimal_second(nums[2]);
-    }
-    if (nums.size() > 3) {
+    } else if (nums.size() == 1) {
+      ret = fabs(nums[0]) * dir_val;
+    } else if (nums.size() == 2) {
+      ret = (fabs(nums[0]) + decimal_minute(nums[1])) * dir_val;
+    } else if (nums.size() == 3) {
+      ret = (fabs(nums[0]) + decimal_minute(nums[1]) + decimal_second(nums[2])) * dir_val;
+    } else {
       Rcpp::warning("invalid format, more than 3 numeric slots, got: " + str);
       ret = NA_REAL;
     }
-
-    // apply direction
-    ret = ret * dir_val;
 
     if (!Rcpp::NumericVector::is_na(ret)) {
       if (!check_lon(ret)) {

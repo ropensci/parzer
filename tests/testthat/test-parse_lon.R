@@ -107,6 +107,21 @@ test_that("parse_lon works: invalid formats fail as expected", {
   }
 })
 
+test_that("parse_lon with >3 numeric tokens emits only the format warning", {
+  # Mirror of the parse_lat equivalent: ensure the if-else-if chain prevents
+  # a spurious range warning from firing after the "invalid format" warning.
+  warns <- character(0)
+  withCallingHandlers(
+    parse_lon("40 25 6 7"),
+    warning = function(w) {
+      warns <<- c(warns, conditionMessage(w))
+      invokeRestart("muffleWarning")
+    }
+  )
+  expect_length(warns, 1)
+  expect_match(warns, "invalid format, more than 3 numeric slots")
+})
+
 test_that("parse_lon correctly processes NA values", {
   expect_equal(
     suppressWarnings(
