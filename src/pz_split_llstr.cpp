@@ -26,7 +26,8 @@ std::vector<std::string> pz_split_llstr_string (std::string x) {
     splitstr[0] = std::regex_replace(x, std::regex("\\..*$"), "$1");
     splitstr[1] = std::regex_replace(x, std::regex("^.*\\."), "$1");
   } else {
-    std::vector<std::string> splitstr(2, "NA_STRING");
+    splitstr[0] = "NA_STRING";
+    splitstr[1] = "NA_STRING";
   }
   return splitstr;
 }

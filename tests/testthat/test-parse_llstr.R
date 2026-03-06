@@ -48,3 +48,18 @@ test_that("parse_llstr correctly processes NA values", {
     data.frame(lat = c(NA_real_, 12.5), lon = c(NA_real_, 12.5))
   )
 })
+
+test_that("pz_split_llstr_string returns NA_STRING markers for unrecognized formats", {
+  # no separator at all: else branch previously returned {"",""} due to
+  # a shadowed local variable; now correctly returns {"NA_STRING","NA_STRING"}
+  expect_equal(pz_split_llstr_string("4545"), c("NA_STRING", "NA_STRING"))
+  # multiple commas also fall through to else branch
+  expect_equal(pz_split_llstr_string("45, 45, 45"), c("NA_STRING", "NA_STRING"))
+})
+
+test_that("parse_llstr returns NA for unrecognized formats", {
+  expect_equal(
+    suppressWarnings(parse_llstr("4545")),
+    data.frame(lat = NA_real_, lon = NA_real_)
+  )
+})
