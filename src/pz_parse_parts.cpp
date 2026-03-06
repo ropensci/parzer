@@ -37,11 +37,16 @@ Rcpp::DataFrame pz_parse_parts_lat(std::vector<std::string>& x) {
 
   for (int i=0; i < n; ++i) {
     double out = convert_lat(x[i]); // passed as a reference.
-    //std::vector<double>  = split_decimal_degree(out); // passed as a const reference.
-    Rcpp::List parts = split_decimal_degree(out); // passed as a const reference.
-    deg[i] = parts[0];
-    min[i] = parts[1];
-    sec[i] = parts[2];
+    if (R_IsNA(out)) {
+      deg[i] = NA_INTEGER;
+      min[i] = NA_INTEGER;
+      sec[i] = NA_REAL;
+    } else {
+      Rcpp::List parts = split_decimal_degree(out); // passed as a const reference.
+      deg[i] = parts[0];
+      min[i] = parts[1];
+      sec[i] = parts[2];
+    }
   }
   return Rcpp::DataFrame::create(Rcpp::_["deg"] = deg,
                                  Rcpp::_["min"] = min,
@@ -58,11 +63,16 @@ Rcpp::DataFrame pz_parse_parts_lon(std::vector<std::string>& x) {
 
   for (int i=0; i < n; ++i) {
     double out = convert_lon(x[i]); // passed as a reference.
-    //std::vector<double> parts = split_decimal_degree(out); // passed as a const reference.
-    Rcpp::List parts = split_decimal_degree(out); // passed as a const reference.
-    deg[i] = parts[0];
-    min[i] = parts[1];
-    sec[i] = parts[2];
+    if (R_IsNA(out)) {
+      deg[i] = NA_INTEGER;
+      min[i] = NA_INTEGER;
+      sec[i] = NA_REAL;
+    } else {
+      Rcpp::List parts = split_decimal_degree(out); // passed as a const reference.
+      deg[i] = parts[0];
+      min[i] = parts[1];
+      sec[i] = parts[2];
+    }
   }
   return Rcpp::DataFrame::create(Rcpp::_["deg"] = deg,
                                  Rcpp::_["min"] = min,

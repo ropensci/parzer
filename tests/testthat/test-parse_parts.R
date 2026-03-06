@@ -66,3 +66,18 @@ test_that("parse_parts_lon correctly processes NA values", {
     )
   )
 })
+
+test_that("parse_parts_lat/lon return NA_integer_ in deg/min for invalid inputs", {
+  # Previously, convert_lat/lon returning NA_REAL was passed to split_decimal_degree
+  # which returned NA_REAL, then cast to int (UB). Now NA is detected first and
+  # NA_INTEGER is set directly.
+  lat_na <- suppressWarnings(parse_parts_lat(c("blablabla", "W60.1")))
+  expect_equal(lat_na$deg, c(NA_integer_, NA_integer_))
+  expect_equal(lat_na$min, c(NA_integer_, NA_integer_))
+  expect_equal(lat_na$sec, c(NA_real_, NA_real_))
+
+  lon_na <- suppressWarnings(parse_parts_lon(c("blablabla", "N60.1")))
+  expect_equal(lon_na$deg, c(NA_integer_, NA_integer_))
+  expect_equal(lon_na$min, c(NA_integer_, NA_integer_))
+  expect_equal(lon_na$sec, c(NA_real_, NA_real_))
+})
