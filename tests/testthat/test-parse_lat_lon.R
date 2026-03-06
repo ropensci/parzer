@@ -23,6 +23,11 @@ test_that("parse_lon_lat - fails well", {
 })
 
 
+test_that("parse_lon_lat accepts numeric and integer inputs", {
+  expect_equal(parse_lon_lat(-120, 45), parse_lon_lat("-120", "45"))
+  expect_equal(parse_lon_lat(-120L, 45L), parse_lon_lat("-120", "45"))
+})
+
 test_that("parse_lon_lat correctly processes NA values", {
   expect_equal(
     suppressWarnings(

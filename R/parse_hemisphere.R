@@ -31,5 +31,5 @@
 parse_hemisphere <- function(lon, lat) {
   lint_inputs(lon, lat, "")
   stopifnot(length(lon) == length(lat))
-  pz_hemisphere(lon, lat)
+  pz_hemisphere(as.character(lon), as.character(lat))
 }

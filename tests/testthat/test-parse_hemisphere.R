@@ -30,6 +30,11 @@ test_that("parse_hemisphere works", {
   )
 })
 
+test_that("parse_hemisphere accepts numeric and integer inputs", {
+  expect_equal(parse_hemisphere(-120, 40.4183318), parse_hemisphere("-120", "40.4183318"))
+  expect_equal(parse_hemisphere(-120L, 40L), parse_hemisphere("-120", "40"))
+})
+
 test_that("parse_hemisphere - fails well", {
   expect_error(parse_hemisphere(), "argument \"lon\" is missing")
   expect_error(parse_hemisphere(""), "argument \"lat\" is missing")
