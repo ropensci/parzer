@@ -1,31 +1,23 @@
 #include <Rcpp.h>
 #include "latlong.h"
 
+struct DMS { int deg; int min; double sec; };
+
+static DMS split_dms(double x) {
+  double x_abs = std::fabs(x);
+  int d = static_cast<int>(x_abs);
+  int m = static_cast<int>((x_abs - d) * 60.0);
+  double s = ((x_abs - d) - (m / 60.0)) * 3600.0;
+  return {(x < 0.) ? -d : d, m, s};
+}
+
 // [[Rcpp::export]]
 Rcpp::List split_decimal_degree(const double& x, const std::string& fmt = "dms") {
-  //std::vector<double> split_decimal_degree(const double& x, const std::string& fmt = "dms") {
-  const double sixty = 60;
-  const double thirtysixh = 3600;
-  double dir_val = 1.0;
-
   if (std::isnan(x)) {
-    //std::vector<double>{0, 0, 0}; // this has to be updated
     return Rcpp::List::create(NA_REAL, NA_REAL, NA_REAL);
   }
-  // auto x_str = Rcpp::toString(x); // Rcpp should be replaced here
-  // if (is_negative(x)) { // does not use Rcpp but uses regex
-  if (x < 0.) {
-    dir_val = -1.0;
-  }
-  double x_abs = std::fabs(x);
-
-  double d = static_cast<int>(x_abs); // is this : "double X = static_cast<int>(Y);" OK? it works...
-  double m = static_cast<int>((x_abs - d) * sixty);
-  double s = ((x_abs - d) - (m/sixty)) * thirtysixh;
-  d = d * dir_val;
-
-  return Rcpp::List::create(d, m, s);
-  // return std::vector<double>{d, m, s};
+  DMS dms = split_dms(x);
+  return Rcpp::List::create(dms.deg, dms.min, dms.sec);
 }
 
 // [[Rcpp::export]]
@@ -42,10 +34,10 @@ Rcpp::DataFrame pz_parse_parts_lat(std::vector<std::string>& x) {
       min[i] = NA_INTEGER;
       sec[i] = NA_REAL;
     } else {
-      Rcpp::List parts = split_decimal_degree(out); // passed as a const reference.
-      deg[i] = parts[0];
-      min[i] = parts[1];
-      sec[i] = parts[2];
+      DMS parts = split_dms(out);
+      deg[i] = parts.deg;
+      min[i] = parts.min;
+      sec[i] = parts.sec;
     }
   }
   return Rcpp::DataFrame::create(Rcpp::_["deg"] = deg,
@@ -68,10 +60,10 @@ Rcpp::DataFrame pz_parse_parts_lon(std::vector<std::string>& x) {
       min[i] = NA_INTEGER;
       sec[i] = NA_REAL;
     } else {
-      Rcpp::List parts = split_decimal_degree(out); // passed as a const reference.
-      deg[i] = parts[0];
-      min[i] = parts[1];
-      sec[i] = parts[2];
+      DMS parts = split_dms(out);
+      deg[i] = parts.deg;
+      min[i] = parts.min;
+      sec[i] = parts.sec;
     }
   }
   return Rcpp::DataFrame::create(Rcpp::_["deg"] = deg,
