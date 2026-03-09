@@ -9,6 +9,7 @@ reviewer_replies.md
 R/sourcing testing.r
 src/desktop.ini
 .vscode/
+/.claude/
 /doc/
 /Meta/
 .DS_Store

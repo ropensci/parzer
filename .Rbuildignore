@@ -22,4 +22,6 @@ Makefile
 ^\.vscode$
 ^\.github$
 ^\.git$
+^\.claude$
 ^vignettes/*_files$
+^benchmarks$
