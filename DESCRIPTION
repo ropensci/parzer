@@ -44,6 +44,7 @@ Imports:
     Rcpp (>= 1.0.2),
     withr
 Suggests:
+    bench,
     testthat (>= 3.0.0),
     quarto,
     sf,
@@ -53,7 +54,7 @@ Suggests:
     pkgload
 Config/testthat/edition: 3
 Config/testthat/parallel: false
-Config/testthat/start-first: *utils*, *parse_parts*, *dms*
+Config/testthat/start-first: *utils*, *parse_parts*, *parse*, *dms*, *benchmarks*
 LinkingTo: Rcpp
 VignetteBuilder: quarto
 Roxygen: list(markdown = TRUE)
