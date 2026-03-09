@@ -130,3 +130,20 @@ test_that("parse_lon correctly processes NA values", {
     c(NA_real_, NA_real_, NA_real_, 12.5)
   )
 })
+
+test_that("parse_lon errors with 'format handling not ready yet' when format is supplied", {
+  # Covers the stop_form() else-branch at parse_lon.R:64 and zzz.R:22
+  expect_error(parse_lon("74E", format = "dms"), "format handling not ready yet")
+  expect_error(parse_lon("-74.64111", format = "decimal"), "format handling not ready yet")
+})
+
+test_that("parse_lon accepts numeric and integer inputs", {
+  # scrub() coerces numeric/integer to character internally
+  expect_equal(parse_lon(74.5), 74.5)
+  expect_equal(parse_lon(180L), 180)
+  expect_equal(parse_lon(-74.5), -74.5)
+  # vector: 355:360 valid (<=360), 361:365 out of range -> NA_real_
+  result <- suppressWarnings(parse_lon(355:365))
+  expect_equal(result[1:6], as.double(355:360))
+  expect_true(all(is.na(result[7:11])))
+})

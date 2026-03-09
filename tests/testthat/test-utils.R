@@ -1,3 +1,18 @@
+test_that(".Call takes the Windows withr::with_locale path when sysname is 'windows'", {
+  # Covers zzz.R lines 30-33: the Windows branch that wraps base::.Call with
+  # withr::with_locale(c(LC_COLLATE = "C"), ...) to work around a std::regex
+  # MBCS bug. We simulate Windows by mocking Sys.info in the base namespace.
+  skip_if_not_installed("withr")
+  with_mocked_bindings(
+    Sys.info = function(...) c(sysname = "Windows"),
+    .package = "base",
+    {
+      expect_equal(parse_lat("45.5"), 45.5)
+      expect_equal(parse_lon("-74.5"), -74.5)
+    }
+  )
+})
+
 test_that("scrub", {
   expect_type(scrub, "closure")
 

@@ -81,3 +81,28 @@ test_that("parse_parts_lat/lon return NA_integer_ in deg/min for invalid inputs"
   expect_equal(lon_na$min, c(NA_integer_, NA_integer_))
   expect_equal(lon_na$sec, c(NA_real_, NA_real_))
 })
+
+# split_decimal_degree is [[Rcpp::export]]-ed but not called by any R-level wrapper;
+# these tests exercise it directly (covers pz_parse_parts.cpp lines 15-21).
+test_that("split_decimal_degree returns all-NA list for NaN input", {
+  result <- split_decimal_degree(NaN)
+  expect_length(result, 3)
+  expect_true(all(vapply(result, is.na, logical(1))))
+})
+
+test_that("split_decimal_degree returns correct integer deg/min and double sec for a positive value", {
+  result <- split_decimal_degree(40.41833)
+  expect_type(result[[1]], "integer")
+  expect_type(result[[2]], "integer")
+  expect_type(result[[3]], "double")
+  expect_equal(result[[1]], 40L)
+  expect_equal(result[[2]], 25L)
+  expect_true(result[[3]] >= 0 && result[[3]] < 60)
+})
+
+test_that("split_decimal_degree returns negative degree for a negative value", {
+  result <- split_decimal_degree(-74.64111)
+  expect_equal(result[[1]], -74L)
+  expect_equal(result[[2]], 38L)
+  expect_true(result[[3]] >= 0 && result[[3]] < 60)
+})

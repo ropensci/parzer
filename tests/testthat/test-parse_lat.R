@@ -119,3 +119,20 @@ test_that("parse_lat correctly processes NA values", {
     c(NA_real_, NA_real_, NA_real_, 12.5)
   )
 })
+
+test_that("parse_lat errors with 'format handling not ready yet' when format is supplied", {
+  # Covers the stop_form() else-branch at parse_lat.R:60 and zzz.R:22
+  expect_error(parse_lat("45N", format = "dms"), "format handling not ready yet")
+  expect_error(parse_lat("40.41833", format = "decimal"), "format handling not ready yet")
+})
+
+test_that("parse_lat accepts numeric and integer inputs", {
+  # scrub() coerces numeric/integer to character internally
+  expect_equal(parse_lat(45.5), 45.5)
+  expect_equal(parse_lat(45L), 45)
+  expect_equal(parse_lat(-45.0), -45.0)
+  # vector input: 85:90 are valid, 91:95 are out of range -> NA_real_
+  result <- suppressWarnings(parse_lat(85:95))
+  expect_equal(result[1:6], as.double(85:90))
+  expect_true(all(is.na(result[7:11])))
+})

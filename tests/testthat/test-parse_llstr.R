@@ -63,3 +63,27 @@ test_that("parse_llstr returns NA for unrecognized formats", {
     data.frame(lat = NA_real_, lon = NA_real_)
   )
 })
+
+# pz_split_llstr_string semicolon branch (pz_split_llstr.cpp:23-24).
+# Note: scrub() replaces ';' with "'" so this branch is only reachable by
+# calling the internal C++ function directly.
+test_that("pz_split_llstr_string splits on a semicolon separator", {
+  expect_equal(pz_split_llstr_string("45.5;-74.5"), c("45.5", "-74.5"))
+  expect_equal(pz_split_llstr_string("N45.5;W74.5"), c("N45.5", "W74.5"))
+})
+
+# pz_split_llstr_string dot branch (pz_split_llstr.cpp:26-28).
+# The dot branch fires when: 0 commas, the single-space condition does not
+# match (requires 0 or 2 dots), 0 semicolons, and exactly 1 dot.
+test_that("pz_split_llstr_string splits on a dot when it is the sole separator", {
+  # "4574.5": 0 commas, 0 spaces, 0 semicolons, 1 dot -> dot branch
+  expect_equal(pz_split_llstr_string("4574.5"), c("4574", "5"))
+})
+
+test_that("parse_llstr uses the dot branch when a dot is the only separator", {
+  # "45.74" -> scrub() preserves the dot -> pz_split_llstr_string uses dot
+  # branch -> lat token = "45", lon token = "74"
+  result <- parse_llstr("45.74")
+  expect_equal(result$lat, 45)
+  expect_equal(result$lon, 74)
+})
