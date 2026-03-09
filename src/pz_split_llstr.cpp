@@ -45,8 +45,8 @@ Rcpp::DataFrame pz_split_llstr (std::vector<std::string> x) {
   // Rcpp::StringMatrix::Column lon = stringmat( Rcpp::_, 1);
   // Rcpp::StringMatrix::Column lat = stringmat( Rcpp::_, 0);
 
-  std::vector<std::string> lat{x.size()};
-  std::vector<std::string> lon{x.size()};
+  std::vector<std::string> lat(x.size());
+  std::vector<std::string> lon(x.size());
 
   for(int i=0; i < x.size(); i++) {
     std::vector<std::string> temp = pz_split_llstr_string (x[i]);
