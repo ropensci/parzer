@@ -12,6 +12,24 @@ knitr::opts_chunk$set(
   eval = TRUE,
   warning = FALSE
 )
+
+library(covr)
+coverage <- floor(percent_coverage(package_coverage()))
+
+# Create badge colour based on coverage
+if (coverage >= 90) {
+  colour <- "brightgreen"
+} else if (coverage >= 80) {
+  colour <- "green"
+} else if (coverage >= 70) {
+  colour <- "yellowgreen"
+} else if (coverage >= 60) {
+  colour <- "yellow"
+} else if (coverage >= 50) {
+  colour <- "orange"
+} else {
+  colour <- "red"
+}
 ```
 
 [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
@@ -20,7 +38,7 @@ knitr::opts_chunk$set(
 [![rstudio mirror downloads](https://cranlogs.r-pkg.org/badges/parzer)](https://github.com/r-hub/cranlogs.app)
 [![cran version](https://www.r-pkg.org/badges/version/parzer)](https://cran.r-project.org/package=parzer)
 
-[![codecov.io](https://codecov.io/github/ropensci/parzer/coverage.svg?branch=main)](https://app.codecov.io/github/ropensci/parzer?branch=main)
+[![Code Coverage: `r coverage`%](https://img.shields.io/badge/code_coverage-`r coverage`%25-`r colour`)](#code-coverage)
 
 [![Ropensci Peer Reviewed](https://badges.ropensci.org/341_status.svg)](https://github.com/ropensci/software-review/issues/341)
 
@@ -70,7 +88,7 @@ install.packages("parzer")
 ### Development version:
 
 ```{r echo = TRUE, eval=FALSE}
-remotes::install_github("ropensci/parzer")
+pak::pkg_install("ropensci/parzer")
 ```
 
 ## List of functions:
@@ -90,6 +108,11 @@ degrees, minutes, seconds and direction to `dms2dd`. No exact analog is found in
 `parzer`, whose main focus is parsing messy geographic coordinates in strings to
 a more machine readable version.
 
+## Code Coverage
+
+```{r codecov, echo=FALSE}
+covr::package_coverage()
+```
 ## Meta
 
 * Please [report any issues or bugs](https://github.com/ropensci/parzer/issues).
