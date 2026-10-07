@@ -10,8 +10,12 @@ test_that("parse_hemisphere works", {
   # SE
   se <- parse_hemisphere("120", "-40.4183318")
 
-  for (i in c(ne, nw, sw, se)) expect_type(i, "character")
-  for (i in c(ne, nw, sw, se)) expect_equal(nchar(i), 2)
+  for (i in c(ne, nw, sw, se)) {
+    expect_type(i, "character")
+  }
+  for (i in c(ne, nw, sw, se)) {
+    expect_equal(nchar(i), 2)
+  }
 
   # bad values
   ## one
@@ -31,7 +35,10 @@ test_that("parse_hemisphere works", {
 })
 
 test_that("parse_hemisphere accepts numeric and integer inputs", {
-  expect_equal(parse_hemisphere(-120, 40.4183318), parse_hemisphere("-120", "40.4183318"))
+  expect_equal(
+    parse_hemisphere(-120, 40.4183318),
+    parse_hemisphere("-120", "40.4183318")
+  )
   expect_equal(parse_hemisphere(-120L, 40L), parse_hemisphere("-120", "40"))
 })
 
