@@ -52,9 +52,11 @@ find_pkg_root <- function() {
 # Main comparison function
 # ---------------------------------------------------------------------------
 
-compare_with_ref <- function(ref_sha,
-                             n_iter = 30L,
-                             pkg_root = find_pkg_root()) {
+compare_with_ref <- function(
+  ref_sha,
+  n_iter = 30L,
+  pkg_root = find_pkg_root()
+) {
   # 0. Validate inputs
   if (missing(ref_sha) || !nzchar(trimws(ref_sha))) {
     stop("'ref_sha' must be a non-empty git SHA string.", call. = FALSE)
@@ -66,7 +68,8 @@ compare_with_ref <- function(ref_sha,
       stop(
         sprintf(
           "Package '%s' is required. Install it with: install.packages('%s')",
-          pkg, pkg
+          pkg,
+          pkg
         ),
         call. = FALSE
       )
@@ -85,7 +88,8 @@ compare_with_ref <- function(ref_sha,
       system2(
         "git",
         c("worktree", "remove", "--force", worktree_dir),
-        stdout = FALSE, stderr = FALSE
+        stdout = FALSE,
+        stderr = FALSE
       )
       unlink(worktree_dir, recursive = TRUE)
     },
@@ -95,15 +99,24 @@ compare_with_ref <- function(ref_sha,
   cat("Creating git worktree at", worktree_dir, "...\n")
   ret <- system2(
     "git",
-    c("-C", shQuote(pkg_root), "worktree", "add", "--detach",
-      shQuote(worktree_dir), ref_sha),
-    stdout = "", stderr = ""
+    c(
+      "-C",
+      shQuote(pkg_root),
+      "worktree",
+      "add",
+      "--detach",
+      shQuote(worktree_dir),
+      ref_sha
+    ),
+    stdout = "",
+    stderr = ""
   )
   if (ret != 0L) {
     stop(
       sprintf(
         "git worktree add failed (exit code %d). Is '%s' a valid SHA?",
-        ret, ref_sha
+        ret,
+        ref_sha
       ),
       call. = FALSE
     )
@@ -113,7 +126,11 @@ compare_with_ref <- function(ref_sha,
   install_pkg <- function(src_dir, label) {
     lib <- file.path(tempdir(), paste0("parzer_lib_", label))
     dir.create(lib, showWarnings = FALSE)
-    cat(sprintf("Building & installing %s version from %s ...\n", label, src_dir))
+    cat(sprintf(
+      "Building & installing %s version from %s ...\n",
+      label,
+      src_dir
+    ))
     pkg_file <- pkgbuild::build(
       src_dir,
       dest_path = tempdir(),
@@ -139,29 +156,45 @@ compare_with_ref <- function(ref_sha,
   bench_fixtures <- list(
     lats_96 = rep(
       c(
-        "40.4183318N", "-45.23323", "N40 25 5.994",
-        "40:25:5.994N", "40d 25' 6\" N", "45N54.2356"
+        "40.4183318N",
+        "-45.23323",
+        "N40 25 5.994",
+        "40:25:5.994N",
+        "40d 25' 6\" N",
+        "45N54.2356"
       ),
       16L
     ),
     lats_960 = rep(
       c(
-        "40.4183318N", "-45.23323", "N40 25 5.994",
-        "40:25:5.994N", "40d 25' 6\" N", "45N54.2356"
+        "40.4183318N",
+        "-45.23323",
+        "N40 25 5.994",
+        "40:25:5.994N",
+        "40d 25' 6\" N",
+        "45N54.2356"
       ),
       160L
     ),
     lons_96 = rep(
       c(
-        "74.6411133W", "-120.5", "E74 38 28.008",
-        "74:38:28W", "74d 38' 28\" W", "45W54.2356"
+        "74.6411133W",
+        "-120.5",
+        "E74 38 28.008",
+        "74:38:28W",
+        "74d 38' 28\" W",
+        "45W54.2356"
       ),
       16L
     ),
     lons_960 = rep(
       c(
-        "74.6411133W", "-120.5", "E74 38 28.008",
-        "74:38:28W", "74d 38' 28\" W", "45W54.2356"
+        "74.6411133W",
+        "-120.5",
+        "E74 38 28.008",
+        "74:38:28W",
+        "74d 38' 28\" W",
+        "45W54.2356"
       ),
       160L
     )
@@ -175,27 +208,33 @@ compare_with_ref <- function(ref_sha,
         list(
           parse_lat_96 = bench::mark(
             parse_lat(fx$lats_96),
-            iterations = n_iter, check = FALSE
+            iterations = n_iter,
+            check = FALSE
           ),
           parse_lon_96 = bench::mark(
             parse_lon(fx$lons_96),
-            iterations = n_iter, check = FALSE
+            iterations = n_iter,
+            check = FALSE
           ),
           parse_parts_96 = bench::mark(
             parse_parts_lat(fx$lats_96),
-            iterations = n_iter, check = FALSE
+            iterations = n_iter,
+            check = FALSE
           ),
           parse_lat_960 = bench::mark(
             parse_lat(fx$lats_960),
-            iterations = n_iter, check = FALSE
+            iterations = n_iter,
+            check = FALSE
           ),
           parse_lon_960 = bench::mark(
             parse_lon(fx$lons_960),
-            iterations = n_iter, check = FALSE
+            iterations = n_iter,
+            check = FALSE
           ),
           parse_parts_960 = bench::mark(
             parse_parts_lat(fx$lats_960),
-            iterations = n_iter, check = FALSE
+            iterations = n_iter,
+            check = FALSE
           )
         )
       },
@@ -217,29 +256,65 @@ compare_with_ref <- function(ref_sha,
     as.numeric(bm_list[[key]]$mem_alloc[[1L]]) # bytes
   }
   format_time <- function(s) {
-    if (s >= 1) sprintf("%.3f s", s)
-    else if (s >= 1e-3) sprintf("%.2f ms", s * 1e3)
-    else sprintf("%.1f \u00b5s", s * 1e6)
+    if (s >= 1) {
+      sprintf("%.3f s", s)
+    } else if (s >= 1e-3) {
+      sprintf("%.2f ms", s * 1e3)
+    } else {
+      sprintf("%.1f \u00b5s", s * 1e6)
+    }
   }
   format_mem <- function(b) {
-    if (b >= 1e6) sprintf("%.2f MB", b / 1e6)
-    else if (b >= 1e3) sprintf("%.1f kB", b / 1e3)
-    else sprintf("%.0f B", b)
+    if (b >= 1e6) {
+      sprintf("%.2f MB", b / 1e6)
+    } else if (b >= 1e3) {
+      sprintf("%.1f kB", b / 1e3)
+    } else {
+      sprintf("%.0f B", b)
+    }
   }
 
   benchmarks <- c(
-    "parse_lat_96", "parse_lon_96", "parse_parts_96",
-    "parse_lat_960", "parse_lon_960", "parse_parts_960"
+    "parse_lat_96",
+    "parse_lon_96",
+    "parse_parts_96",
+    "parse_lat_960",
+    "parse_lon_960",
+    "parse_parts_960"
   )
   labels <- c(
-    "parse_lat(n=96)", "parse_lon(n=96)", "parse_parts_lat(n=96)",
-    "parse_lat(n=960)", "parse_lon(n=960)", "parse_parts_lat(n=960)"
+    "parse_lat(n=96)",
+    "parse_lon(n=96)",
+    "parse_parts_lat(n=96)",
+    "parse_lat(n=960)",
+    "parse_lon(n=960)",
+    "parse_parts_lat(n=960)"
   )
 
-  ref_times <- vapply(benchmarks, extract_median_s, numeric(1L), bm_list = ref_bm)
-  cur_times <- vapply(benchmarks, extract_median_s, numeric(1L), bm_list = cur_bm)
-  ref_mems <- vapply(benchmarks, extract_mem_bytes, numeric(1L), bm_list = ref_bm)
-  cur_mems <- vapply(benchmarks, extract_mem_bytes, numeric(1L), bm_list = cur_bm)
+  ref_times <- vapply(
+    benchmarks,
+    extract_median_s,
+    numeric(1L),
+    bm_list = ref_bm
+  )
+  cur_times <- vapply(
+    benchmarks,
+    extract_median_s,
+    numeric(1L),
+    bm_list = cur_bm
+  )
+  ref_mems <- vapply(
+    benchmarks,
+    extract_mem_bytes,
+    numeric(1L),
+    bm_list = ref_bm
+  )
+  cur_mems <- vapply(
+    benchmarks,
+    extract_mem_bytes,
+    numeric(1L),
+    bm_list = cur_bm
+  )
 
   time_ratio <- cur_times / ref_times # > 1  -> current is SLOWER
   mem_ratio <- cur_mems / ref_mems # > 1  -> current uses MORE memory
@@ -256,9 +331,13 @@ compare_with_ref <- function(ref_sha,
     strrep("-", 70)
   ))
   for (i in seq_along(benchmarks)) {
-    verdict <- if (time_ratio[i] > 1.20) "\u26a0\ufe0f  SLOWER"
-    else if (time_ratio[i] < 0.80) "\u2705  faster"
-    else "  \u2248 same"
+    verdict <- if (time_ratio[i] > 1.20) {
+      "\u26a0\ufe0f  SLOWER"
+    } else if (time_ratio[i] < 0.80) {
+      "\u2705  faster"
+    } else {
+      "  \u2248 same"
+    }
     cat(sprintf(
       "%-26s  %10s  %10s  %8.3f  %s\n",
       labels[i],
@@ -269,7 +348,9 @@ compare_with_ref <- function(ref_sha,
     ))
   }
   cat(strrep("=", 70), "\n")
-  cat("  ratio = current / reference  |  > 1.20 flagged as slower  |  < 0.80 as faster\n")
+  cat(
+    "  ratio = current / reference  |  > 1.20 flagged as slower  |  < 0.80 as faster\n"
+  )
 
   # -- memory table
   cat(sprintf(

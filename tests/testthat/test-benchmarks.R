@@ -18,18 +18,26 @@
 # ---------------------------------------------------------------------------
 
 bench_lats <- c(
-  "40.4183318N", "-45.23323",   "N40 25 5.994",
-  "40:25:5.994N", "40d 25' 6\" N", "45N54.2356"
+  "40.4183318N",
+  "-45.23323",
+  "N40 25 5.994",
+  "40:25:5.994N",
+  "40d 25' 6\" N",
+  "45N54.2356"
 )
 bench_lons <- c(
-  "74.6411133W", "-120.5",       "E74 38 28.008",
-  "74:38:28W",   "74d 38' 28\" W", "45W54.2356"
+  "74.6411133W",
+  "-120.5",
+  "E74 38 28.008",
+  "74:38:28W",
+  "74d 38' 28\" W",
+  "45W54.2356"
 )
 
 # n=96 (6 patterns × 16) and n=960 (6 patterns × 160) for 10× ratio
-lats_96  <- rep(bench_lats, 16L)
+lats_96 <- rep(bench_lats, 16L)
 lats_960 <- rep(bench_lats, 160L)
-lons_96  <- rep(bench_lons, 16L)
+lons_96 <- rep(bench_lons, 16L)
 lons_960 <- rep(bench_lons, 160L)
 
 # ---------------------------------------------------------------------------
@@ -79,7 +87,8 @@ test_that("parse_llstr absolute floor: 96 strings in < 2 s", {
   llstrs_96 <- paste(lats_96, lons_96, sep = ", ")
   bm <- bench::mark(
     suppressWarnings(parse_llstr(llstrs_96)),
-    iterations = 10L, check = FALSE
+    iterations = 10L,
+    check = FALSE
   )
   expect_lt(
     as.numeric(median(bm$time[[1L]])),
@@ -109,14 +118,19 @@ test_that("parse_lat scales near-linearly (n=96 to n=960)", {
   skip_if_not_installed("bench")
 
   bm <- bench::mark(
-    n96  = parse_lat(lats_96),
+    n96 = parse_lat(lats_96),
     n960 = parse_lat(lats_960),
-    iterations = 10L, check = FALSE
+    iterations = 10L,
+    check = FALSE
   )
   ratio <- .scaling_ratio(bm)
   expect_lt(
-    ratio, 3,
-    label = sprintf("parse_lat per-item scaling ratio = %.2f (must be < 3)", ratio)
+    ratio,
+    3,
+    label = sprintf(
+      "parse_lat per-item scaling ratio = %.2f (must be < 3)",
+      ratio
+    )
   )
 })
 
@@ -125,14 +139,19 @@ test_that("parse_lon scales near-linearly (n=96 to n=960)", {
   skip_if_not_installed("bench")
 
   bm <- bench::mark(
-    n96  = parse_lon(lons_96),
+    n96 = parse_lon(lons_96),
     n960 = parse_lon(lons_960),
-    iterations = 10L, check = FALSE
+    iterations = 10L,
+    check = FALSE
   )
   ratio <- .scaling_ratio(bm)
   expect_lt(
-    ratio, 3,
-    label = sprintf("parse_lon per-item scaling ratio = %.2f (must be < 3)", ratio)
+    ratio,
+    3,
+    label = sprintf(
+      "parse_lon per-item scaling ratio = %.2f (must be < 3)",
+      ratio
+    )
   )
 })
 
@@ -141,14 +160,19 @@ test_that("parse_parts_lat scales near-linearly (n=96 to n=960)", {
   skip_if_not_installed("bench")
 
   bm <- bench::mark(
-    n96  = parse_parts_lat(lats_96),
+    n96 = parse_parts_lat(lats_96),
     n960 = parse_parts_lat(lats_960),
-    iterations = 10L, check = FALSE
+    iterations = 10L,
+    check = FALSE
   )
   ratio <- .scaling_ratio(bm)
   expect_lt(
-    ratio, 3,
-    label = sprintf("parse_parts_lat per-item scaling ratio = %.2f (must be < 3)", ratio)
+    ratio,
+    3,
+    label = sprintf(
+      "parse_parts_lat per-item scaling ratio = %.2f (must be < 3)",
+      ratio
+    )
   )
 })
 
@@ -168,8 +192,12 @@ test_that("parse_lat allocates < 10 kB per item (960 items)", {
   bm <- bench::mark(parse_lat(lats_960), iterations = 5L, check = FALSE)
   bytes_per_item <- as.numeric(bm$mem_alloc[[1L]]) / 960
   expect_lt(
-    bytes_per_item, 10000,
-    label = sprintf("parse_lat bytes/item = %.1f (must be < 10 000)", bytes_per_item)
+    bytes_per_item,
+    10000,
+    label = sprintf(
+      "parse_lat bytes/item = %.1f (must be < 10 000)",
+      bytes_per_item
+    )
   )
 })
 
@@ -180,8 +208,12 @@ test_that("parse_lon allocates < 10 kB per item (960 items)", {
   bm <- bench::mark(parse_lon(lons_960), iterations = 5L, check = FALSE)
   bytes_per_item <- as.numeric(bm$mem_alloc[[1L]]) / 960
   expect_lt(
-    bytes_per_item, 10000,
-    label = sprintf("parse_lon bytes/item = %.1f (must be < 10 000)", bytes_per_item)
+    bytes_per_item,
+    10000,
+    label = sprintf(
+      "parse_lon bytes/item = %.1f (must be < 10 000)",
+      bytes_per_item
+    )
   )
 })
 
@@ -192,7 +224,11 @@ test_that("parse_parts_lat allocates < 10 kB per item (960 items)", {
   bm <- bench::mark(parse_parts_lat(lats_960), iterations = 5L, check = FALSE)
   bytes_per_item <- as.numeric(bm$mem_alloc[[1L]]) / 960
   expect_lt(
-    bytes_per_item, 10000,
-    label = sprintf("parse_parts_lat bytes/item = %.1f (must be < 10 000)", bytes_per_item)
+    bytes_per_item,
+    10000,
+    label = sprintf(
+      "parse_parts_lat bytes/item = %.1f (must be < 10 000)",
+      bytes_per_item
+    )
   )
 })

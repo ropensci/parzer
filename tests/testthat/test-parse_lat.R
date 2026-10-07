@@ -122,8 +122,14 @@ test_that("parse_lat correctly processes NA values", {
 
 test_that("parse_lat errors with 'format handling not ready yet' when format is supplied", {
   # Covers the stop_form() else-branch at parse_lat.R:60 and zzz.R:22
-  expect_error(parse_lat("45N", format = "dms"), "format handling not ready yet")
-  expect_error(parse_lat("40.41833", format = "decimal"), "format handling not ready yet")
+  expect_error(
+    parse_lat("45N", format = "dms"),
+    "format handling not ready yet"
+  )
+  expect_error(
+    parse_lat("40.41833", format = "decimal"),
+    "format handling not ready yet"
+  )
 })
 
 test_that("parse_lat accepts numeric and integer inputs", {
