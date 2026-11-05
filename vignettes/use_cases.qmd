@@ -25,6 +25,13 @@ if (!requireNamespace("leaflet")) install.packages("leaflet")
 #| eval: true
 library(parzer)
 ```
+```{r}
+#| label: has_spatial
+#| include: false
+# The sf and leaflet chunks only run when both suggested packages are installed
+has_spatial <- requireNamespace("sf", quietly = TRUE) &&
+  requireNamespace("leaflet", quietly = TRUE)
+```
 
 One may find themselves having to clean up messy coordinates as part of
 their project/work/etc. How does this look when fit into a workflow going
@@ -81,6 +88,7 @@ Coerce to an `sf` object
 
 ```{r}
 #| label: converting_dat_to_sf
+#| eval: !expr has_spatial
 #| warning: false
 #| collapse: true
 datsf <- sf::st_as_sf(dat, coords = c("longitude", "latitude"))
@@ -99,6 +107,7 @@ Plot data using the `leaflet` package
 
 ```{r out.with="100%"}
 #| label: fig-leaflet_1
+#| eval: !expr has_spatial
 #| warning: false
 #| collapse: true
 library("leaflet")
@@ -115,6 +124,7 @@ First, define the bounding box, and visualize:
 
 ```{r}
 #| label: fig-leaflet_2
+#| eval: !expr has_spatial
 #| warning: false
 bbox <- c(
   xmin = 25.42813, ymin = 46.39455,
@@ -130,6 +140,7 @@ Crop the data to the bounding box:
 
 ```{r}
 #| label: cropping_dat
+#| eval: !expr has_spatial
 datsf_c <- sf::st_crop(datsf, bbox)
 ```
 
@@ -137,6 +148,7 @@ Plot the new data:
 
 ```{r out.with="100%"}
 #| label: fig-leaflet_3
+#| eval: !expr has_spatial
 #| warning: false
 leaflet() |>
   addTiles() |>
