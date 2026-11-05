@@ -152,6 +152,17 @@ bool invalid_degree_letter(const std::string& s, const std::regex& reg2) {
   return false;
 }
 
+// minutes and seconds must be within [0, 60)
+bool check_min_sec(const std::vector<double>& nums, const std::string& str) {
+  for (std::size_t i = 1; i < nums.size(); ++i) {
+    if (!(nums[i] >= 0 && nums[i] < 60)) {
+      Rcpp::warning("minutes or seconds not within 0/60 range, got: " + str);
+      return false;
+    }
+  }
+  return true;
+}
+
 bool is_negative(const std::string& s) {
   static const std::regex reg("^-.+");
   std::smatch match;
@@ -189,7 +200,7 @@ double convert_lat(std::string& str) {
     }
 
     std::vector<double> nums = extract_floats_from_string(str);
-    if (nums.size() == 0) {
+    if (nums.size() == 0 || (nums.size() <= 3 && !check_min_sec(nums, str))) {
       ret = NA_REAL;
     } else if (nums.size() == 1) {
       ret = fabs(nums[0]) * dir_val;
@@ -245,7 +256,7 @@ double convert_lon(std::string& str) {
     }
 
     std::vector<double> nums = extract_floats_from_string(str);
-    if (nums.size() == 0) {
+    if (nums.size() == 0 || (nums.size() <= 3 && !check_min_sec(nums, str))) {
       ret = NA_REAL;
     } else if (nums.size() == 1) {
       ret = fabs(nums[0]) * dir_val;

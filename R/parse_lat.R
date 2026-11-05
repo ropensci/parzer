@@ -14,6 +14,11 @@
 #' - out of range: numbers of out acceptable range, see
 #' <https://en.cppreference.com/w/cpp/error/out_of_range.html>
 #' - out of latitude range: not within -90/90 range
+#' - minutes or seconds out of range: not within 0/60 range, e.g. `"10 30,12345"`
+#' is read as 10 degrees, 30 minutes and 12345 seconds, so it gives a warning and `NA`
+#'
+#' A comma or space is always a separator between degrees, minutes and seconds,
+#' never a decimal mark.
 #'
 #' @examples
 #' parse_lat("")

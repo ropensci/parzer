@@ -28,7 +28,12 @@ see \url{https://en.cppreference.com/w/cpp/error/invalid_argument.html}
 \item out of range: numbers of out acceptable range, see
 \url{https://en.cppreference.com/w/cpp/error/out_of_range.html}
 \item out of longitude range: not within -180/360 range
+\item minutes or seconds out of range: not within 0/60 range, e.g. \code{"10 30,12345"}
+is read as 10 degrees, 30 minutes and 12345 seconds, so it gives a warning and \code{NA}
 }
+
+A comma or space is always a separator between degrees, minutes and seconds,
+never a decimal mark.
 }
 
 \examples{

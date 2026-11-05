@@ -133,8 +133,14 @@ test_that("parse_lon correctly processes NA values", {
 
 test_that("parse_lon errors with 'format handling not ready yet' when format is supplied", {
   # Covers the stop_form() else-branch at parse_lon.R:64 and zzz.R:22
-  expect_error(parse_lon("74E", format = "dms"), "format handling not ready yet")
-  expect_error(parse_lon("-74.64111", format = "decimal"), "format handling not ready yet")
+  expect_error(
+    parse_lon("74E", format = "dms"),
+    "format handling not ready yet"
+  )
+  expect_error(
+    parse_lon("-74.64111", format = "decimal"),
+    "format handling not ready yet"
+  )
 })
 
 test_that("parse_lon accepts numeric and integer inputs", {
@@ -146,4 +152,18 @@ test_that("parse_lon accepts numeric and integer inputs", {
   result <- suppressWarnings(parse_lon(355:365))
   expect_equal(result[1:6], as.double(355:360))
   expect_true(all(is.na(result[7:11])))
+})
+
+test_that("parse_lon: minutes and seconds >= 60 give NA with a warning", {
+  expect_warning(
+    res <- parse_lon("10°30,12345"),
+    "minutes or seconds not within 0/60"
+  )
+  expect_true(is.na(res))
+  expect_warning(
+    res <- parse_lon("100°75'"),
+    "minutes or seconds not within 0/60"
+  )
+  expect_true(is.na(res))
+  expect_equal(parse_lon("10°59'59.9\""), 10 + 59 / 60 + 59.9 / 3600)
 })
