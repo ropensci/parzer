@@ -8,6 +8,7 @@
 #include <cstdlib>
 #include <cmath>
 #include <algorithm>
+#include <cctype>
 
 bool check_lat(const double& lat) {
   return lat >= -90 && lat <= 90;
@@ -26,9 +27,14 @@ void digits_only(std::string& x) {
                   [](char z){ return ::ispunct(z) && z != '.' && z != '-'; }, ' ');
 }
 
+// A '-' right after a digit is a separator, not a sign: "40-25" -> "40 25".
+// Plain loop: the equivalent std::regex took about half of convert_lat's time.
 void remove_internal_dashes(std::string& x) {
-  static const std::regex dash_reg("([0-9]+)(-)");
-  x = std::regex_replace(x, dash_reg, "$1 ");
+  for (std::size_t i = 1; i < x.size(); ++i) {
+    if (x[i] == '-' && std::isdigit(static_cast<unsigned char>(x[i - 1]))) {
+      x[i] = ' ';
+    }
+  }
 }
 
 std::vector<double> extract_floats_from_string(std::string& str) {

@@ -189,3 +189,18 @@ test_that("parse_parts_lat() and parse_hemisphere() reject minutes >= 60", {
     "not within 0/60"
   )
 })
+
+test_that("parse_lat/parse_lon: a dash after a digit separates, a leading dash is a sign", {
+  expect_equal(parse_lat("40-25-5.994N"), 40 + 25 / 60 + 5.994 / 3600)
+  expect_equal(parse_lat("4-5-6.5S"), -(4 + 5 / 60 + 6.5 / 3600))
+  expect_equal(parse_lat("-45-30"), -45.5)
+  expect_equal(parse_lat("-12.5-"), -12.5)
+  expect_equal(parse_lat("12-"), 12)
+  expect_equal(parse_lon("1-2-3"), 1 + 2 / 60 + 3 / 3600)
+  expect_equal(parse_lon("-120-30"), -120.5)
+  # only a dash right after a digit is turned into a separator
+  expect_warning(res <- parse_lat("40--25-6"), "not within 0/60")
+  expect_true(is.na(res))
+  expect_warning(res <- parse_lat("40 -25"), "not within 0/60")
+  expect_true(is.na(res))
+})
