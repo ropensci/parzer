@@ -1,5 +1,4 @@
 #include <Rcpp.h>
-// [[Rcpp::plugins(cpp11)]]
 
 #include <string>
 #include <iterator>
