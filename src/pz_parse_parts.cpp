@@ -34,15 +34,6 @@ static DMS split_dms(double x) {
 }
 
 // [[Rcpp::export]]
-Rcpp::List split_decimal_degree(const double& x, const std::string& fmt = "dms") {
-  if (std::isnan(x)) {
-    return Rcpp::List::create(NA_REAL, NA_REAL, NA_REAL);
-  }
-  DMS dms = split_dms(x);
-  return Rcpp::List::create(dms.deg, dms.min, dms.sec);
-}
-
-// [[Rcpp::export]]
 Rcpp::DataFrame pz_parse_parts_lat(std::vector<std::string>& x) {
   const int n = x.size();
   std::vector<int> deg(n, 0);
