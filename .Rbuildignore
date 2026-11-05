@@ -23,5 +23,6 @@ Makefile
 ^\.github$
 ^\.git$
 ^\.claude$
+^\.agents$
 ^vignettes/*_files$
 ^benchmarks$
