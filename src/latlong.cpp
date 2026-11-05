@@ -56,7 +56,13 @@ std::vector<double> extract_floats_from_string(std::string& str) {
   while (ss >> temp) {
     try {
       y.push_back(std::stod(temp));
-    } catch (...) {}
+    } catch (...) {
+      // lone "-" or "." are separators, anything with a digit is a bad number
+      if (temp.find_first_of("0123456789") != std::string::npos) {
+        Rcpp::warning("invalid number, got: " + temp);
+        return std::vector<double>();
+      }
+    }
   }
   return y;
 }

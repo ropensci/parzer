@@ -63,3 +63,15 @@ test_that("parse_hemisphere - fails well", {
     "longitude value within 180/360 range, got: 190"
   )
 })
+
+test_that("parse_hemisphere scrubs symbols and handles tiny numbers", {
+  expect_equal(parse_hemisphere("40°25'W", "40°25'S"), "SW")
+  expect_equal(parse_hemisphere("40d 25’ 6\" E", "40:25:6N"), "NE")
+  expect_equal(parse_hemisphere(1e-5, 1e-5), "NE")
+  expect_equal(parse_hemisphere(-1e-5, -1e-5), "SW")
+  expect_warning(
+    res <- parse_hemisphere(c(1e-5, NA), c(-2e-5, 10)),
+    "no digits detected"
+  )
+  expect_equal(res, c("SE", "N"))
+})
