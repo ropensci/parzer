@@ -41,8 +41,7 @@ License: MIT + file LICENSE
 URL: https://github.com/ropensci/parzer, https://docs.ropensci.org/parzer/
 BugReports: https://github.com/ropensci/parzer/issues
 Imports:
-    Rcpp (>= 1.0.2),
-    withr
+    Rcpp (>= 1.0.2)
 Suggests:
     bench,
     testthat (>= 3.0.0),
@@ -51,7 +50,8 @@ Suggests:
     leaflet,
     callr,
     pkgbuild,
-    pkgload
+    pkgload,
+    withr
 Config/testthat/edition: 3
 Config/testthat/parallel: false
 Config/testthat/start-first: *utils*, *parse_parts*, *parse*, *dms*, *benchmarks*

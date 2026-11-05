@@ -40,18 +40,3 @@ scrub <- function(x) {
 }
 
 stop_form <- function() stop("format handling not ready yet")
-
-# Because of a std::regex's bug, all Rcpp functions hangs on Windows with MBCS
-# locale (#31). As a workaround for this, we can wrap the functions with
-# `withr::with_locale()` and force C locale temporarily. To ensure all the Rcpp
-# functions are wrapped with this, override `.Call()` inside the package.
-.Call <- function(...) {
-  if (identical(tolower(Sys.info()[["sysname"]]), "windows")) {
-    withr::with_locale(
-      c(LC_COLLATE = "C"),
-      base::.Call(...)
-    )
-  } else {
-    base::.Call(...)
-  }
-}
