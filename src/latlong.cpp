@@ -212,9 +212,9 @@ double convert_lat(std::string& str) {
     ret = NA_REAL;
     Rcpp::warning("invalid cardinal direction, got: " + str);
   } else if (invalid_degree_letter(str, nsd_reg)) {
-    // to support e.g.: 40d 25’ 6\" N
+    // to support e.g.: 40d 25' 6\" N
     ret = NA_REAL;
-    Rcpp::warning("expected single ‘N|S|d’ after degrees, got: " + str);
+    Rcpp::warning("expected single 'N|S|d' after degrees, got: " + str);
   } else {
     std::string dir = extract_nsew(str, ns_reg);
     double dir_val = 1.0;
@@ -258,9 +258,9 @@ double convert_lon(std::string& str) {
     ret = NA_REAL;
     Rcpp::warning("invalid cardinal direction, got: " + str);
   } else if (invalid_degree_letter(str, ewd_reg)) {
-    // to support e.g.: 40d 25’ 6\" E
+    // to support e.g.: 40d 25' 6\" E
     ret = NA_REAL;
-    Rcpp::warning("expected single ‘E|W|d’ after degrees, got: " + str);
+    Rcpp::warning("expected single 'E|W|d' after degrees, got: " + str);
   } else {
     std::string dir = extract_nsew(str, ew_reg);
     double dir_val = 1.0;

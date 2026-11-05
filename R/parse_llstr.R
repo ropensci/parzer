@@ -23,11 +23,18 @@
 parse_llstr <- function(str) {
   assert(str, "character")
   tmp <- pz_split_llstr(scrub(str))
-
-  return(
-    data.frame(
-      lat = parse_lat(tmp$lat),
-      lon = parse_lon(tmp$lon)
+  # "NA_STRING" marks strings that could not be split (see pz_split_llstr())
+  unsplit <- tmp$lat == "NA_STRING"
+  for (bad in str[unsplit & !is.na(str)]) {
+    warning(
+      "could not split into latitude and longitude, got: ",
+      bad,
+      call. = FALSE
     )
-  )
+  }
+  lat <- rep(NA_real_, times = length(str))
+  lon <- rep(NA_real_, times = length(str))
+  lat[!unsplit] <- parse_lat(tmp$lat[!unsplit])
+  lon[!unsplit] <- parse_lon(tmp$lon[!unsplit])
+  data.frame(lat = lat, lon = lon)
 }

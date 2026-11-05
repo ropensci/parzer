@@ -87,3 +87,51 @@ test_that("parse_llstr uses the dot branch when a dot is the only separator", {
   expect_equal(result$lat, 45)
   expect_equal(result$lon, 74)
 })
+
+test_that("parse_llstr gives one clear warning per unsplittable string", {
+  expect_warning(
+    res <- parse_llstr("4545"),
+    "could not split into latitude and longitude, got: 4545"
+  )
+  expect_equal(res, data.frame(lat = NA_real_, lon = NA_real_))
+  # no leftover warning about the internal NA marker
+  warnings <- testthat::capture_warnings(parse_llstr("4545"))
+  expect_length(warnings, 1L)
+  expect_no_match(warnings, "na'string", ignore.case = TRUE)
+  expect_no_match(warnings, "no digits")
+})
+
+test_that("parse_llstr keeps good rows when others cannot be split", {
+  expect_warning(
+    res <- parse_llstr(c("45, 90", "4545", "N12.5, W30")),
+    "could not split"
+  )
+  expect_equal(res$lat, c(45, NA, 12.5))
+  expect_equal(res$lon, c(90, NA, -30))
+  expect_warning(
+    res <- parse_llstr(c("45, 45, 45", "1, 2")),
+    "got: 45, 45, 45"
+  )
+  expect_equal(res, data.frame(lat = c(NA, 1), lon = c(NA, 2)))
+})
+
+test_that("parse_llstr gives NA without a split warning for NA input", {
+  warnings <- testthat::capture_warnings(parse_llstr(c(NA_character_, "1, 2")))
+  expect_no_match(warnings, "could not split")
+  expect_equal(
+    suppressWarnings(parse_llstr(c(NA_character_, "1, 2"))),
+    data.frame(lat = c(NA, 1), lon = c(NA, 2))
+  )
+})
+
+test_that("parse_llstr handles empty and all-bad input", {
+  expect_equal(
+    parse_llstr(character(0)),
+    data.frame(lat = numeric(0), lon = numeric(0))
+  )
+  warnings <- testthat::capture_warnings(res <- parse_llstr(c("abc", "123")))
+  expect_length(warnings, 2L)
+  expect_match(warnings, "could not split")
+  expect_true(all(is.na(res$lat)) && all(is.na(res$lon)))
+  expect_equal(nrow(res), 2L)
+})
