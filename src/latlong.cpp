@@ -4,30 +4,17 @@
 #include <string>
 #include <regex>
 #include <iterator>
-#include <iostream>
 #include <sstream>
 #include <cstdlib>
-#include <cstdio>
 #include <cmath>
-#include <functional>
 #include <algorithm>
 
-// check if latitude within acceptable range, etc.
 bool check_lat(const double& lat) {
-  bool lat_check = false;
-  if (lat >= -90  && lat <= 90) {
-    lat_check = true;
-  }
-  return lat_check;
+  return lat >= -90 && lat <= 90;
 }
 
-// check if longitude within acceptable range, etc.
 bool check_lon(const double& lon) {
-  bool lon_check = false;
-  if (lon >= -180  && lon <= 360) {
-    lon_check = true;
-  }
-  return lon_check;
+  return lon >= -180 && lon <= 360;
 }
 
 void strip_alpha(std::string& x) {
@@ -45,11 +32,9 @@ void remove_internal_dashes(std::string& x) {
 }
 
 std::vector<double> extract_floats_from_string(std::string& str) {
-  // str = remove_internal_dashes(digits_only(strip_alpha(str)));
   strip_alpha(str);
   digits_only(str);
   remove_internal_dashes(str);
-  // Rprintf("within extract_floats_from_string: %s \n", str.c_str());
   std::istringstream ss(str);
   std::string temp;
   std::vector<double> y;
@@ -80,8 +65,6 @@ std::string extract_nsew(const std::string& s, const std::regex& reg) {
   std::string out = "";
   if (std::regex_search(s, match, reg))
     out = match[0];
-  // Rprintf("extract_ns length: %f \n", match.size());
-  // Rprintf("extract_nsew result: %s \n", out.c_str());
   return out;
 }
 
@@ -91,17 +74,9 @@ void str_tolower(std::string &s) {
   );
 }
 
+// x is already lower case (convert_lat/lon lower it); "" and n/e are positive
 double plus_minus(const std::string& x) {
-  double out = 1.0;
-  // x = str_tolower(x); // deactivated because it is done before in convert_lat or convert_lon
-  // Rprintf("within plus_minus = %s \n", x.c_str());
-  if (x == "n" || x == "e") {
-    out = 1.0;
-  }
-  if (x == "s" || x == "w") {
-    out = -1.0;
-  }
-  return out;
+  return (x == "s" || x == "w") ? -1.0 : 1.0;
 }
 
 double decimal_minute(const double& x) {
@@ -121,7 +96,6 @@ bool any_digits(const std::string& s) {
 }
 
 bool has_non_direction_letters(std::string& s, const std::string& reggex) {
-  // s = str_tolower(s);
   // allow "n", "s", "e", "w" for cardinal directions
   // allow "d" for degree delimiter, check below to make sure d used correctly
   bool z = std::string::npos != s.find_first_of(reggex);
@@ -149,7 +123,6 @@ bool invalid_degree_letter(const std::string& s, const std::regex& reg2) {
   std::string out = "";
   if (std::regex_search(s, match, reg)) {
     out = match[0];
-    // Rprintf("invalid_degree_letter result:  %s \n", out.c_str());
     std::smatch match2;
     if (!std::regex_search(out, match2, reg2)) {
       return true;
@@ -216,11 +189,7 @@ double convert_lat(std::string& str) {
     ret = NA_REAL;
     Rcpp::warning("expected single 'N|S|d' after degrees, got: " + str);
   } else {
-    std::string dir = extract_nsew(str, ns_reg);
-    double dir_val = 1.0;
-    if (dir != "") {
-      dir_val = plus_minus(dir);
-    }
+    double dir_val = plus_minus(extract_nsew(str, ns_reg));
     if (is_negative(str)) {
       dir_val = -1.0;
     }
@@ -262,11 +231,7 @@ double convert_lon(std::string& str) {
     ret = NA_REAL;
     Rcpp::warning("expected single 'E|W|d' after degrees, got: " + str);
   } else {
-    std::string dir = extract_nsew(str, ew_reg);
-    double dir_val = 1.0;
-    if (dir != "") {
-      dir_val = plus_minus(dir);
-    }
+    double dir_val = plus_minus(extract_nsew(str, ew_reg));
     if (is_negative(str)) {
       dir_val = -1.0;
     }
