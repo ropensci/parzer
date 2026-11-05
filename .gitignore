@@ -16,3 +16,4 @@ src/desktop.ini
 *.html
 vignettes/*.R
 .agents/
+.posit/
