@@ -81,7 +81,7 @@ test_that("parse_lon_lat and parse_lat handle tiny and large numeric input", {
   expect_warning(parse_lon(1e20), "not within -180/360 range")
   expect_true(is.na(suppressWarnings(parse_lat(c(Inf, NaN)))[[1]]))
   expect_equal(parse_lat(-1e-5), -1e-5)
-  expect_equal(parse_lat(1e-5L |> as.integer()), 0)
+  expect_equal(parse_lat(0L), 0)
 })
 
 test_that("numbers too large for a double give NA with a warning, not a shifted slot", {
