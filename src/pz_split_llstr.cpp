@@ -3,8 +3,18 @@
 
 // [[Rcpp::export]]
 std::vector<std::string> pz_split_llstr_string (std::string x) {
+  // compiled once, not on every call
+  static const std::regex trim_reg("^ +| +$|( ) +");
+  static const std::regex comma_after_reg(",.*$");
+  static const std::regex comma_before_reg("^.*,");
+  static const std::regex space_after_reg(" .*$");
+  static const std::regex space_before_reg("^.* ");
+  static const std::regex semicolon_after_reg(";.*$");
+  static const std::regex semicolon_before_reg("^.*;");
+  static const std::regex dot_after_reg("\\..*$");
+  static const std::regex dot_before_reg("^.*\\.");
 
-  x = std::regex_replace(x, std::regex("^ +| +$|( ) +"), "$1");
+  x = std::regex_replace(x, trim_reg, "$1");
 
   int nbCommas = std::count(x.begin(), x.end(), ',');
   int nbSpaces = std::count(x.begin(), x.end(), ' ');
@@ -14,17 +24,17 @@ std::vector<std::string> pz_split_llstr_string (std::string x) {
   std::vector<std::string> splitstr(2);
 
   if(nbCommas == 1) {
-    splitstr[0] = std::regex_replace(x, std::regex(",.*$"), "$1");
-    splitstr[1] = std::regex_replace(x, std::regex("^.*,"), "$1");
+    splitstr[0] = std::regex_replace(x, comma_after_reg, "$1");
+    splitstr[1] = std::regex_replace(x, comma_before_reg, "$1");
   } else if (nbCommas == 0 && nbSpaces == 1 && nbSC == 0 && (nbDots == 0 || nbDots == 2)) {
-    splitstr[0] = std::regex_replace(x, std::regex(" .*$"), "$1");
-    splitstr[1] = std::regex_replace(x, std::regex("^.* "), "$1");
+    splitstr[0] = std::regex_replace(x, space_after_reg, "$1");
+    splitstr[1] = std::regex_replace(x, space_before_reg, "$1");
   } else if (nbSC == 1) {
-    splitstr[0] = std::regex_replace(x, std::regex(";.*$"), "$1");
-    splitstr[1] = std::regex_replace(x, std::regex("^.*;"), "$1");
+    splitstr[0] = std::regex_replace(x, semicolon_after_reg, "$1");
+    splitstr[1] = std::regex_replace(x, semicolon_before_reg, "$1");
   } else if (nbDots == 1){
-    splitstr[0] = std::regex_replace(x, std::regex("\\..*$"), "$1");
-    splitstr[1] = std::regex_replace(x, std::regex("^.*\\."), "$1");
+    splitstr[0] = std::regex_replace(x, dot_after_reg, "$1");
+    splitstr[1] = std::regex_replace(x, dot_before_reg, "$1");
   } else {
     splitstr[0] = "NA_STRING";
     splitstr[1] = "NA_STRING";
