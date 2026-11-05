@@ -33,15 +33,15 @@ static DMS split_dms(double x) {
   return {d, m, s};
 }
 
-// [[Rcpp::export]]
-Rcpp::DataFrame pz_parse_parts_lat(std::vector<std::string>& x) {
+static Rcpp::DataFrame parse_parts(std::vector<std::string>& x,
+                                   double (*convert)(std::string&)) {
   const int n = x.size();
   std::vector<int> deg(n, 0);
   std::vector<int> min(n, 0);
   std::vector<double> sec(n, 0.);
 
   for (int i=0; i < n; ++i) {
-    double out = convert_lat(x[i]); // passed as a reference.
+    double out = convert(x[i]); // passed as a reference.
     if (R_IsNA(out)) {
       deg[i] = NA_INTEGER;
       min[i] = NA_INTEGER;
@@ -60,27 +60,11 @@ Rcpp::DataFrame pz_parse_parts_lat(std::vector<std::string>& x) {
 }
 
 // [[Rcpp::export]]
-Rcpp::DataFrame pz_parse_parts_lon(std::vector<std::string>& x) {
-  const int n = x.size();
-  std::vector<int> deg(n, 0);
-  std::vector<int> min(n, 0);
-  std::vector<double> sec(n, 0.);
+Rcpp::DataFrame pz_parse_parts_lat(std::vector<std::string>& x) {
+  return parse_parts(x, convert_lat);
+}
 
-  for (int i=0; i < n; ++i) {
-    double out = convert_lon(x[i]); // passed as a reference.
-    if (R_IsNA(out)) {
-      deg[i] = NA_INTEGER;
-      min[i] = NA_INTEGER;
-      sec[i] = NA_REAL;
-    } else {
-      DMS parts = split_dms(out);
-      deg[i] = parts.deg;
-      min[i] = parts.min;
-      sec[i] = parts.sec;
-    }
-  }
-  return Rcpp::DataFrame::create(Rcpp::_["deg"] = deg,
-                                 Rcpp::_["min"] = min,
-                                 Rcpp::_["sec"] = sec,
-                                 Rcpp::_["stringsAsFactors"] = false);
+// [[Rcpp::export]]
+Rcpp::DataFrame pz_parse_parts_lon(std::vector<std::string>& x) {
+  return parse_parts(x, convert_lon);
 }
