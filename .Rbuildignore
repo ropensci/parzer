@@ -25,3 +25,4 @@ notes.md
 ^\.agents$
 ^vignettes/*_files$
 ^benchmarks$
+^vignettes/.*\.R$
