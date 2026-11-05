@@ -2,7 +2,6 @@
 // [[Rcpp::plugins(cpp11)]]
 
 #include <string>
-#include <regex>
 #include <iterator>
 #include <sstream>
 #include <cstdlib>
@@ -58,20 +57,20 @@ std::vector<double> extract_floats_from_string(std::string& str) {
   return y;
 }
 
-int count_direction_matches(const std::string& s, const std::regex& re) {
-  auto words_begin = std::sregex_iterator(
-    s.begin(), s.end(), re);
-  auto words_end = std::sregex_iterator();
-
-  return std::distance(words_begin, words_end);
+bool is_digit(char c) {
+  return c >= '0' && c <= '9';
 }
 
-std::string extract_nsew(const std::string& s, const std::regex& reg) {
-  std::smatch match;
-  std::string out = "";
-  if (std::regex_search(s, match, reg))
-    out = match[0];
-  return out;
+// how many characters of s are one of `chars`, e.g. "ns"
+int count_direction_matches(const std::string& s, const std::string& chars) {
+  return std::count_if(s.begin(), s.end(),
+                       [&chars](char c) { return chars.find(c) != std::string::npos; });
+}
+
+// first character of s that is one of `chars`, or ""
+std::string extract_nsew(const std::string& s, const std::string& chars) {
+  std::size_t i = s.find_first_of(chars);
+  return i == std::string::npos ? "" : s.substr(i, 1);
 }
 
 void str_tolower(std::string &s) {
@@ -112,29 +111,30 @@ bool has_non_direction_letters(std::string& s, const std::string& reggex) {
 }
 
 // useful to NA on "-45.23232e24"
+// same as the regex "[0-9]+e[0-9]+$": digits, "e", digits at the end
 bool has_e_with_trailing_numbers(const std::string& s) {
-  static const std::regex reg("[0-9]+e[0-9]+$");
-  std::smatch match;
-  if (std::regex_search(s, match, reg)) {
+  std::size_t i = s.find_last_not_of("0123456789");
+  if (i != std::string::npos && i > 0 && i + 1 < s.size() &&
+      s[i] == 'e' && is_digit(s[i - 1])) {
     Rcpp::warning("invalid characters, got: " + s);
     return true;
   }
   return false;
 }
 
-bool invalid_degree_letter(const std::string& s, const std::regex& reg2) {
-  // matches: 40.
-  static const std::regex reg("^-?[0-9]{1,3}[\\s+]?[A-Za-z]");
-  std::smatch match;
-  std::string out = "";
-  if (std::regex_search(s, match, reg)) {
-    out = match[0];
-    std::smatch match2;
-    if (!std::regex_search(out, match2, reg2)) {
-      return true;
-    }
-  }
-  return false;
+// same as the regex "^-?[0-9]{1,3}[\s+]?[A-Za-z]": true when the letter after
+// the degrees is not one of `chars`
+bool invalid_degree_letter(const std::string& s, const std::string& chars) {
+  std::size_t i = (!s.empty() && s[0] == '-') ? 1 : 0;
+  const std::size_t start = i;
+  while (i < s.size() && is_digit(s[i])) ++i;
+  if (i == start || i - start > 3) return false;
+  // \s in std::regex is the "C" locale space set
+  if (i < s.size() && std::string(" \t\n\v\f\r+").find(s[i]) != std::string::npos) ++i;
+  if (i >= s.size()) return false;
+  const char c = s[i];
+  const bool letter = (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
+  return letter && chars.find(c) == std::string::npos;
 }
 
 // Combine degree/minute/second slots into signed decimal degrees, NA on
@@ -167,16 +167,13 @@ double nums_to_decimal(const std::vector<double>& nums, const std::string& orig,
   return ret * dir_val;
 }
 
+// same as the regex "^-.+"; "." does not match a line break
 bool is_negative(const std::string& s) {
-  static const std::regex reg("^-.+");
-  std::smatch match;
-  return std::regex_search(s, match, reg);
+  return s.size() >= 2 && s[0] == '-' && s[1] != '\n' && s[1] != '\r';
 }
 
 // [[Rcpp::export]]
 double convert_lat(std::string& str) {
-  static const std::regex ns_reg("[ns]");
-  static const std::regex nsd_reg("[nsd]");
   double ret = NA_REAL;
   str_tolower(str);
   const std::string orig = str;
@@ -187,15 +184,15 @@ double convert_lat(std::string& str) {
 
   ) {
     ret = NA_REAL;
-  } else if (count_direction_matches(str, ns_reg) > 1) {
+  } else if (count_direction_matches(str, "ns") > 1) {
     ret = NA_REAL;
     Rcpp::warning("invalid cardinal direction, got: " + str);
-  } else if (invalid_degree_letter(str, nsd_reg)) {
+  } else if (invalid_degree_letter(str, "nsd")) {
     // to support e.g.: 40d 25' 6\" N
     ret = NA_REAL;
     Rcpp::warning("expected single 'N|S|d' after degrees, got: " + str);
   } else {
-    double dir_val = plus_minus(extract_nsew(str, ns_reg));
+    double dir_val = plus_minus(extract_nsew(str, "ns"));
     if (is_negative(str)) {
       dir_val = -1.0;
     }
@@ -217,8 +214,6 @@ double convert_lat(std::string& str) {
 
 // [[Rcpp::export]]
 double convert_lon(std::string& str) {
-  static const std::regex ew_reg("[ew]");
-  static const std::regex ewd_reg("[ewd]");
   double ret = NA_REAL;
   str_tolower(str);
   const std::string orig = str;
@@ -229,15 +224,15 @@ double convert_lon(std::string& str) {
         has_e_with_trailing_numbers(str)
   ) {
     ret = NA_REAL;
-  } else if (count_direction_matches(str, ew_reg) > 1) {
+  } else if (count_direction_matches(str, "ew") > 1) {
     ret = NA_REAL;
     Rcpp::warning("invalid cardinal direction, got: " + str);
-  } else if (invalid_degree_letter(str, ewd_reg)) {
+  } else if (invalid_degree_letter(str, "ewd")) {
     // to support e.g.: 40d 25' 6\" E
     ret = NA_REAL;
     Rcpp::warning("expected single 'E|W|d' after degrees, got: " + str);
   } else {
-    double dir_val = plus_minus(extract_nsew(str, ew_reg));
+    double dir_val = plus_minus(extract_nsew(str, "ew"));
     if (is_negative(str)) {
       dir_val = -1.0;
     }
