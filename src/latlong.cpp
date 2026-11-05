@@ -152,15 +152,34 @@ bool invalid_degree_letter(const std::string& s, const std::regex& reg2) {
   return false;
 }
 
-// minutes and seconds must be within [0, 60)
-bool check_min_sec(const std::vector<double>& nums, const std::string& str) {
-  for (std::size_t i = 1; i < nums.size(); ++i) {
+// Combine degree/minute/second slots into signed decimal degrees, NA on
+// invalid input. `orig` is the input before extract_floats_from_string
+// altered it, so warnings show what the user typed.
+double nums_to_decimal(const std::vector<double>& nums, const std::string& orig, double dir_val) {
+  std::size_t n = nums.size();
+  if (n == 0) return NA_REAL;
+  if (n > 3) {
+    Rcpp::warning("invalid format, more than 3 numeric slots, got: " + orig);
+    return NA_REAL;
+  }
+  for (std::size_t i = 1; i < n; ++i) {
+    // negative or >= 60 minutes/seconds
     if (!(nums[i] >= 0 && nums[i] < 60)) {
-      Rcpp::warning("minutes or seconds not within 0/60 range, got: " + str);
-      return false;
+      Rcpp::warning("minutes or seconds not within 0/60 range, got: " + orig);
+      return NA_REAL;
     }
   }
-  return true;
+  for (std::size_t i = 0; i + 1 < n; ++i) {
+    // a fraction is only allowed in the last slot, e.g. not "45.5 30"
+    if (nums[i] != std::floor(nums[i])) {
+      Rcpp::warning("only the last of degrees, minutes, seconds can be decimal, got: " + orig);
+      return NA_REAL;
+    }
+  }
+  double ret = fabs(nums[0]);
+  if (n >= 2) ret += decimal_minute(nums[1]);
+  if (n == 3) ret += decimal_second(nums[2]);
+  return ret * dir_val;
 }
 
 bool is_negative(const std::string& s) {
@@ -175,6 +194,7 @@ double convert_lat(std::string& str) {
   static const std::regex nsd_reg("[nsd]");
   double ret = NA_REAL;
   str_tolower(str);
+  const std::string orig = str;
   if (
       str.size() == 0 ||
         !any_digits(str) ||
@@ -200,23 +220,12 @@ double convert_lat(std::string& str) {
     }
 
     std::vector<double> nums = extract_floats_from_string(str);
-    if (nums.size() == 0 || (nums.size() <= 3 && !check_min_sec(nums, str))) {
-      ret = NA_REAL;
-    } else if (nums.size() == 1) {
-      ret = fabs(nums[0]) * dir_val;
-    } else if (nums.size() == 2) {
-      ret = (fabs(nums[0]) + decimal_minute(nums[1])) * dir_val;
-    } else if (nums.size() == 3) {
-      ret = (fabs(nums[0]) + decimal_minute(nums[1]) + decimal_second(nums[2])) * dir_val;
-    } else {
-      Rcpp::warning("invalid format, more than 3 numeric slots, got: " + str);
-      ret = NA_REAL;
-    }
+    ret = nums_to_decimal(nums, orig, dir_val);
 
     if (!Rcpp::NumericVector::is_na(ret)) {
       if (!check_lat(ret)) {
         ret = NA_REAL;
-        Rcpp::warning("not within -90/90 range, got: " + str +
+        Rcpp::warning("not within -90/90 range, got: " + orig +
           "\n  check that you did not invert lon and lat");
       }
     }
@@ -231,6 +240,7 @@ double convert_lon(std::string& str) {
   static const std::regex ewd_reg("[ewd]");
   double ret = NA_REAL;
   str_tolower(str);
+  const std::string orig = str;
   if (
       str.size() == 0 ||
         !any_digits(str) ||
@@ -256,23 +266,12 @@ double convert_lon(std::string& str) {
     }
 
     std::vector<double> nums = extract_floats_from_string(str);
-    if (nums.size() == 0 || (nums.size() <= 3 && !check_min_sec(nums, str))) {
-      ret = NA_REAL;
-    } else if (nums.size() == 1) {
-      ret = fabs(nums[0]) * dir_val;
-    } else if (nums.size() == 2) {
-      ret = (fabs(nums[0]) + decimal_minute(nums[1])) * dir_val;
-    } else if (nums.size() == 3) {
-      ret = (fabs(nums[0]) + decimal_minute(nums[1]) + decimal_second(nums[2])) * dir_val;
-    } else {
-      Rcpp::warning("invalid format, more than 3 numeric slots, got: " + str);
-      ret = NA_REAL;
-    }
+    ret = nums_to_decimal(nums, orig, dir_val);
 
     if (!Rcpp::NumericVector::is_na(ret)) {
       if (!check_lon(ret)) {
         ret = NA_REAL;
-        Rcpp::warning("not within -180/360 range, got: " + str);
+        Rcpp::warning("not within -180/360 range, got: " + orig);
       }
     }
   }

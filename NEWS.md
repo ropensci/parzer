@@ -3,7 +3,7 @@ parzer 0.5.0
 
 ### BUG FIX
 
-* `parse_lat()` and `parse_lon()` (and the functions built on them) now return `NA` with a warning when minutes or seconds are not within 0/60, instead of silently converting them, e.g. "10°30,12345" (#60). A comma is a separator, not a decimal mark; this is now documented.
+* `parse_lat()` and `parse_lon()` (and the functions built on them) now return `NA` with a warning when minutes or seconds are not within 0/60, instead of silently converting them, e.g. "10°30,12345" (#60). Negative minutes or seconds, and a decimal degree or minute followed by another slot (e.g. "45.5 30"), now also give `NA` with a warning. A comma is a separator, not a decimal mark; this is now documented.
 * `parse_lon_lat()` and `parse_hemisphere()` now accept numeric and integer inputs, as documented.
 * `parse_llstr()` now returns NA for unrecognized formats instead of two empty strings.
 * Strings that cannot be converted (no digits, or more than 3 numeric slots) now give only one warning, with no spurious second range warning.

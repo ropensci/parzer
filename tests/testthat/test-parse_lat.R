@@ -161,3 +161,31 @@ test_that("parse_lat: minutes and seconds >= 60 give NA with a warning", {
   expect_true(is.na(res))
   expect_equal(parse_lat("10°59'59.9\""), 10 + 59 / 60 + 59.9 / 3600)
 })
+
+test_that("parse_lat: 0/60 boundaries, negative and decimal slots", {
+  expect_warning(res <- parse_lat("10 60"), "not within 0/60")
+  expect_true(is.na(res))
+  expect_equal(parse_lat("10 59.999"), 10 + 59.999 / 60)
+  expect_warning(res <- parse_lat("10 -30"), "not within 0/60")
+  expect_true(is.na(res))
+  expect_warning(res <- parse_lat("10 30 -15"), "not within 0/60")
+  expect_true(is.na(res))
+  expect_warning(res <- parse_lat("45.5 30"), "only the last")
+  expect_true(is.na(res))
+  expect_warning(res <- parse_lat("10 30.5 20"), "only the last")
+  expect_true(is.na(res))
+  expect_equal(parse_lat("10 30.5"), 10 + 30.5 / 60)
+})
+
+test_that("parse_lat: range warning shows the input", {
+  expect_warning(parse_lat("10°30,12345"), "10.30.12345")
+})
+
+test_that("parse_parts_lat() and parse_hemisphere() reject minutes >= 60", {
+  expect_warning(res <- parse_parts_lat("10 75"), "not within 0/60")
+  expect_true(is.na(res[[1]]))
+  expect_warning(
+    parse_hemisphere("10 75", "10 30"),
+    "not within 0/60"
+  )
+})
