@@ -195,3 +195,17 @@ test_that("parse_parts_lon() and parse_hemisphere() reject minutes >= 60", {
     "not within 0/60"
   )
 })
+
+test_that("parse_lon/parse_lat: exponents, repeated directions and signs", {
+  expect_warning(res <- parse_lon("45e2"), "invalid characters")
+  expect_true(is.na(res))
+  expect_warning(res <- parse_lon("-45.23232e24"), "invalid characters")
+  expect_true(is.na(res))
+  expect_warning(res <- parse_lon("74ew"), "invalid cardinal direction")
+  expect_true(is.na(res))
+  expect_warning(res <- parse_lat("40ns"), "invalid cardinal direction")
+  expect_true(is.na(res))
+  expect_equal(parse_lon("74 W"), -74)
+  expect_equal(parse_lat("40 s"), -40)
+  expect_equal(parse_lat("-40.5"), -40.5)
+})

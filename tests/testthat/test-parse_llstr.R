@@ -135,3 +135,15 @@ test_that("parse_llstr handles empty and all-bad input", {
   expect_true(all(is.na(res$lat)) && all(is.na(res$lon)))
   expect_equal(nrow(res), 2L)
 })
+
+test_that("pz_split_llstr_string trims spaces and splits at the only separator", {
+  expect_equal(pz_split_llstr_string("  40.5  ,   74.5  "), c("40.5 ", " 74.5"))
+  expect_equal(pz_split_llstr_string("40 74"), c("40", "74"))
+  expect_equal(pz_split_llstr_string("40.5 74.5"), c("40.5", "74.5"))
+  expect_equal(pz_split_llstr_string("40.5;74"), c("40.5", "74"))
+  expect_equal(pz_split_llstr_string("40.74"), c("40", "74"))
+  expect_equal(pz_split_llstr_string("40,5,74"), c("NA_STRING", "NA_STRING"))
+  # a line break keeps the whole string on that side, as the old regexes did
+  expect_equal(pz_split_llstr_string("40,\n74"), c("40,\n74", "\n74"))
+  expect_equal(pz_split_llstr_string("\n40, 74"), c("\n40", "\n40, 74"))
+})

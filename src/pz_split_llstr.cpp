@@ -1,45 +1,51 @@
 #include <Rcpp.h>
-#include <regex>
+#include <algorithm>
+
+// Same as regex_replace(x, "^ +| +$|( ) +", "$1"): drop leading and trailing
+// spaces, collapse runs of spaces to one.
+static std::string squish_spaces(const std::string& x) {
+  std::string out;
+  bool gap = false;
+  for (char c : x) {
+    if (c == ' ') {
+      gap = true;
+      continue;
+    }
+    if (gap && !out.empty()) out += ' ';
+    gap = false;
+    out += c;
+  }
+  return out;
+}
 
 // [[Rcpp::export]]
 std::vector<std::string> pz_split_llstr_string (std::string x) {
-  // compiled once, not on every call
-  static const std::regex trim_reg("^ +| +$|( ) +");
-  static const std::regex comma_after_reg(",.*$");
-  static const std::regex comma_before_reg("^.*,");
-  static const std::regex space_after_reg(" .*$");
-  static const std::regex space_before_reg("^.* ");
-  static const std::regex semicolon_after_reg(";.*$");
-  static const std::regex semicolon_before_reg("^.*;");
-  static const std::regex dot_after_reg("\\..*$");
-  static const std::regex dot_before_reg("^.*\\.");
-
-  x = std::regex_replace(x, trim_reg, "$1");
+  x = squish_spaces(x);
 
   int nbCommas = std::count(x.begin(), x.end(), ',');
   int nbSpaces = std::count(x.begin(), x.end(), ' ');
   int nbSC = std::count(x.begin(), x.end(), ';');
   int nbDots = std::count(x.begin(), x.end(), '.');
 
-  std::vector<std::string> splitstr(2);
-
-  if(nbCommas == 1) {
-    splitstr[0] = std::regex_replace(x, comma_after_reg, "$1");
-    splitstr[1] = std::regex_replace(x, comma_before_reg, "$1");
+  char sep;
+  if (nbCommas == 1) {
+    sep = ',';
   } else if (nbCommas == 0 && nbSpaces == 1 && nbSC == 0 && (nbDots == 0 || nbDots == 2)) {
-    splitstr[0] = std::regex_replace(x, space_after_reg, "$1");
-    splitstr[1] = std::regex_replace(x, space_before_reg, "$1");
+    sep = ' ';
   } else if (nbSC == 1) {
-    splitstr[0] = std::regex_replace(x, semicolon_after_reg, "$1");
-    splitstr[1] = std::regex_replace(x, semicolon_before_reg, "$1");
-  } else if (nbDots == 1){
-    splitstr[0] = std::regex_replace(x, dot_after_reg, "$1");
-    splitstr[1] = std::regex_replace(x, dot_before_reg, "$1");
+    sep = ';';
+  } else if (nbDots == 1) {
+    sep = '.';
   } else {
-    splitstr[0] = "NA_STRING";
-    splitstr[1] = "NA_STRING";
+    return {"NA_STRING", "NA_STRING"};
   }
-  return splitstr;
+  // Split at the only `sep`. Same as the old regexes "sep.*$" and "^.*sep":
+  // "." does not match a line break, so a line break on one side leaves that
+  // side's part as the whole string.
+  std::size_t i = x.find(sep);
+  bool break_before = x.find_first_of("\n\r") < i;
+  bool break_after = x.find_first_of("\n\r", i + 1) != std::string::npos;
+  return {break_after ? x : x.substr(0, i), break_before ? x : x.substr(i + 1)};
 }
 
 
