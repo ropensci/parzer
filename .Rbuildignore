@@ -12,7 +12,6 @@ README.html
 reviewer_replies.md
 man-roxygen
 notes.md
-Makefile
 ^docs$
 ^doc$
 ^Meta$
