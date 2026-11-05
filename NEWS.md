@@ -16,9 +16,11 @@ parzer 0.5.0
 
 ### MINOR IMPROVEMENTS
 
-* Faster parsing: regular expressions are compiled once instead of for each coordinate, numbers are read with `std::stod` instead of a new stream for each token, and `parse_parts_*()` no longer allocates an R list for each coordinate.
+* Faster parsing: the C++ code no longer uses regular expressions (`std::regex`), numbers are read with `std::stod` instead of a new stream for each token, and `parse_parts_*()` no longer allocates an R list for each coordinate. `parse_lat()`, `parse_lon()`, `parse_llstr()` and `parse_parts_lat()` are about 9 to 12 times faster than in 0.4.4.
+* withr is no longer a required dependency (it moved to Suggests). The Windows-only `.Call()` wrapper that forced the C locale (#31) is removed, because it only worked around a `std::regex` bug.
 * `parse_hemisphere()` detects the sign of a value with `std::signbit()` instead of converting it to a string.
-* Added performance tests (`bench`) to detect slowdowns, and a larger test suite (about 96% coverage).
+* Added performance tests (`bench`) to detect slowdowns, and a larger test suite (about 98% coverage).
+* The use cases vignette now runs its sf and leaflet code only when both packages are installed.
 * README: local coverage badge, and installation with `pak::pkg_install()`.
 
 parzer 0.4.4
