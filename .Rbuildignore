@@ -26,3 +26,4 @@ notes.md
 ^vignettes/*_files$
 ^benchmarks$
 ^vignettes/.*\.R$
+^\.posit$
