@@ -4,6 +4,7 @@ parzer 0.5.0
 ### BUG FIX
 
 * `parse_lat()` and `parse_lon()` (and the functions built on them) now return `NA` with a warning when minutes or seconds are not within 0/60, instead of silently converting them, e.g. "10°30,12345" (#60). Negative minutes or seconds, and a decimal degree or minute followed by another slot (e.g. "45.5 30"), now also give `NA` with a warning. A comma is a separator, not a decimal mark; this is now documented.
+* `parse_parts_lat()` and `parse_parts_lon()` (and `pz_degree()`, `pz_minute()`, `pz_second()`) no longer lose the sign of values between -1 and 0: the sign now sits on the first non-zero part, e.g. -0.5 gives deg 0, min -30. They also no longer return 60 seconds, e.g. 10.35 is now 10 deg 21 min 0 sec, not 10 deg 20 min 60 sec.
 * `parse_lon_lat()` and `parse_hemisphere()` now clean symbols like `°` the same way `parse_lat()` and `parse_lon()` do (before, "40°25'" gave 40).
 * Small numeric inputs such as `1e-5` are no longer misread as two slots, and a number too large for a double now gives `NA` with a warning instead of shifting the other slots.
 * `parse_lon_lat()` and `parse_hemisphere()` now accept numeric and integer inputs, as documented.

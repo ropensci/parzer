@@ -3,12 +3,34 @@
 
 struct DMS { int deg; int min; double sec; };
 
+// The sign goes on the first non-zero field, so -0.5 is 0 deg, -30 min, 0 sec.
 static DMS split_dms(double x) {
+  const double eps = 1e-9; // seconds; absorbs floating-point error
   double x_abs = std::fabs(x);
   int d = static_cast<int>(x_abs);
   int m = static_cast<int>((x_abs - d) * 60.0);
   double s = ((x_abs - d) - (m / 60.0)) * 3600.0;
-  return {(x < 0.) ? -d : d, m, s};
+  if (s < eps) {
+    s = 0.;
+  } else if (s > 60. - eps) {
+    // truncation left almost a full minute in the seconds: carry it
+    s = 0.;
+    ++m;
+  }
+  if (m == 60) {
+    m = 0;
+    ++d;
+  }
+  if (x < 0.) {
+    if (d != 0) {
+      d = -d;
+    } else if (m != 0) {
+      m = -m;
+    } else {
+      s = -s;
+    }
+  }
+  return {d, m, s};
 }
 
 // [[Rcpp::export]]
