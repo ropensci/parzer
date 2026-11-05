@@ -1,3 +1,21 @@
+parzer 0.5.0
+============
+
+### BUG FIX
+
+* `parse_lat()` and `parse_lon()` (and the functions built on them) now return `NA` with a warning when minutes or seconds are not within 0/60, instead of silently converting them, e.g. "10°30,12345" (#60). A comma is a separator, not a decimal mark; this is now documented.
+* `parse_lon_lat()` and `parse_hemisphere()` now accept numeric and integer inputs, as documented.
+* `parse_llstr()` now returns NA for unrecognized formats instead of two empty strings.
+* Strings that cannot be converted (no digits, or more than 3 numeric slots) now give only one warning, with no spurious second range warning.
+* Fixed undefined behaviour in `parse_parts_lat()` and `parse_parts_lon()` when a value could not be parsed (NA was cast to an integer).
+
+### MINOR IMPROVEMENTS
+
+* Faster parsing: regular expressions are compiled once instead of for each coordinate, numbers are read with `std::stod` instead of a new stream for each token, and `parse_parts_*()` no longer allocates an R list for each coordinate.
+* `parse_hemisphere()` detects the sign of a value with `std::signbit()` instead of converting it to a string.
+* Added performance tests (`bench`) to detect slowdowns, and a larger test suite (about 96% coverage).
+* README: local coverage badge, and installation with `pak::pkg_install()`.
+
 parzer 0.4.4
 ============
 
