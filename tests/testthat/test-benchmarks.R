@@ -7,8 +7,9 @@
 #                        wall-clock budget (catches catastrophic regressions).
 #   2. Linear scaling  – per-item time must not grow more than 3× when input
 #                        size increases 10× (catches O(n²) regressions).
-#   3. Bounded memory  – bytes allocated per item must stay below a ceiling
-#                        (catches memory-leak regressions).
+#   3. Bounded memory  – R heap bytes allocated per item must stay below a
+#                        ceiling (catches extra R copies; blind to C++
+#                        allocations and leaks).
 #
 # Thresholds are intentionally loose (10–100× typical performance) so that
 # slow CI runners and debug builds never trigger false positives.
@@ -179,10 +180,14 @@ test_that("parse_parts_lat scales near-linearly (n=96 to n=960)", {
 # ---------------------------------------------------------------------------
 # 3. Bounded memory allocation per item
 #
-# bench::mark() mem_alloc reports total bytes allocated in one expression
-# evaluation.  Threshold of 10 kB/item is ~10–100× typical; it catches
-# any regression that introduces per-item heap growth (e.g. temporary lists
-# or unnecessary copies).
+# bench::mark() mem_alloc reports total R heap bytes allocated in one
+# expression evaluation (via Rprofmem).  Threshold of 10 kB/item is ~10–100×
+# typical; it catches any regression that introduces per-item R heap growth
+# (e.g. temporary lists or unnecessary copies).
+#
+# It does not see C++ allocations (std::string, std::regex, std::vector) and
+# cannot detect leaks.  The C++ code currently uses only RAII containers, so
+# leaks are unlikely; run the tests under ASan or valgrind to check for them.
 # ---------------------------------------------------------------------------
 
 test_that("parse_lat allocates < 10 kB per item (960 items)", {
