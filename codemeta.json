@@ -4,17 +4,23 @@
   "identifier": "parzer",
   "description": "Parse messy geographic coordinates from various character formats to decimal degree numeric values. Parse coordinates into their parts (degree, minutes, seconds); calculate hemisphere from coordinates; pull out individually degrees, minutes, or seconds; add and subtract degrees, minutes, and seconds. C++ code herein originally inspired from code written by Jeffrey D. Bogan, but then completely re-written.",
   "name": "parzer: Parse Messy Geographic Coordinates",
-  "relatedLink": "https://docs.ropensci.org/parzer/",
+  "relatedLink": ["https://docs.ropensci.org/parzer/", "https://CRAN.R-project.org/package=parzer"],
   "codeRepository": "https://github.com/ropensci/parzer",
   "issueTracker": "https://github.com/ropensci/parzer/issues",
   "license": "https://spdx.org/licenses/MIT",
-  "version": "0.4.4",
+  "version": "0.5.0",
   "programmingLanguage": {
     "@type": "ComputerLanguage",
     "name": "R",
     "url": "https://r-project.org"
   },
-  "runtimePlatform": "R version 4.5.0 (2025-04-11)",
+  "runtimePlatform": "R version 4.6.1 (2026-06-24)",
+  "provider": {
+    "@id": "https://cran.r-project.org",
+    "@type": "Organization",
+    "name": "Comprehensive R Archive Network (CRAN)",
+    "url": "https://cran.r-project.org"
+  },
   "author": [
     {
       "@type": "Person",
@@ -75,6 +81,18 @@
     }
   ],
   "softwareSuggestions": [
+    {
+      "@type": "SoftwareApplication",
+      "identifier": "bench",
+      "name": "bench",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=bench"
+    },
     {
       "@type": "SoftwareApplication",
       "identifier": "testthat",
@@ -159,6 +177,18 @@
         "url": "https://cran.r-project.org"
       },
       "sameAs": "https://CRAN.R-project.org/package=pkgload"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "identifier": "withr",
+      "name": "withr",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=withr"
     }
   ],
   "softwareRequirements": {
@@ -175,27 +205,15 @@
       },
       "sameAs": "https://CRAN.R-project.org/package=Rcpp"
     },
-    "2": {
-      "@type": "SoftwareApplication",
-      "identifier": "withr",
-      "name": "withr",
-      "provider": {
-        "@id": "https://cran.r-project.org",
-        "@type": "Organization",
-        "name": "Comprehensive R Archive Network (CRAN)",
-        "url": "https://cran.r-project.org"
-      },
-      "sameAs": "https://CRAN.R-project.org/package=withr"
-    },
     "SystemRequirements": null
   },
   "applicationCategory": "Geospatial",
   "isPartOf": "https://ropensci.org",
   "keywords": ["geospatial", "data", "latitude", "longitude", "parser", "coordinates", "r", "rstats", "geo", "r-package"],
-  "fileSize": "6120.123KB",
-  "releaseNotes": "https://github.com/ropensci/parzer/blob/master/NEWS.md",
+  "fileSize": "3347.943KB",
+  "releaseNotes": "https://github.com/ropensci/parzer/blob/main/NEWS.md",
   "readme": "https://github.com/ropensci/parzer/blob/main/README.md",
-  "contIntegration": ["https://github.com/ropensci/parzer/actions/", "https://app.codecov.io/github/ropensci/parzer?branch=main"],
+  "contIntegration": "https://github.com/ropensci/parzer/actions/",
   "developmentStatus": "https://www.repostatus.org/#active",
   "review": {
     "@type": "Review",

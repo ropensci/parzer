@@ -27,6 +27,7 @@ Useful links:
 
 Authors:
 \itemize{
+  \item Alban Sagouis \email{sagouis@pm.me} (\href{https://orcid.org/0000-0002-3827-1063}{ORCID})
   \item Scott Chamberlain \email{sckott@protonmail.com} (\href{https://orcid.org/0000-0003-1444-9135}{ORCID})
 }
 
