@@ -27,6 +27,7 @@ Useful links:
 
 Authors:
 \itemize{
+  \item Alban Sagouis \email{sagouis@pm.me} (\href{https://orcid.org/0000-0002-3827-1063}{ORCID})
   \item Scott Chamberlain \email{sckott@protonmail.com} (\href{https://orcid.org/0000-0003-1444-9135}{ORCID})
 }
 
@@ -38,8 +39,8 @@ Other contributors:
   \item Jeffrey Bogan (C++ code originally from Jeffrey Bogan, but completely re-written) [contributor]
   \item Julien Brun (\href{https://orcid.org/0000-0002-7751-6238}{ORCID}) (Julien Brun reviewed the package, see https://github.com/ropensci/onboarding/issues/341) [reviewer]
   \item Maria Munafó (Maria Munafó reviewed the package, see https://github.com/ropensci/onboarding/issues/341) [reviewer]
-  \item rOpenSci (019jywm96) [funder]
-  \item German Centre for Integrative Biodiversity Research (iDiv) Halle-Jena-Leipzig (01jty7g66) [funder]
+  \item rOpenSci (\href{https://ror.org/019jywm96}{ROR}) [funder]
+  \item German Centre for Integrative Biodiversity Research (iDiv) Halle-Jena-Leipzig (\href{https://ror.org/01jty7g66}{ROR}) [funder]
 }
 
 }

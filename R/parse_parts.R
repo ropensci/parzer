@@ -9,6 +9,10 @@
 #' - min (integer)
 #' - sec (numeric)
 #'
+#' For negative values the sign is carried by the first non-zero part: `-45.5`
+#' gives deg -45, min 30, but `-0.5` gives deg 0, min -30. Minutes are always
+#' below 60 and seconds below 60, in absolute value.
+#'
 #' NA/NaN given upon error
 #'
 #' @examples

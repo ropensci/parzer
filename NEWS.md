@@ -1,3 +1,28 @@
+parzer 0.5.0
+============
+
+### BUG FIX
+
+* `parse_lat()` and `parse_lon()` (and the functions built on them) now return `NA` with a warning when minutes or seconds are not within 0/60, instead of silently converting them, e.g. "10°30,12345" (#60). Negative minutes or seconds, and a decimal degree or minute followed by another slot (e.g. "45.5 30"), now also give `NA` with a warning. A comma is a separator, not a decimal mark; this is now documented.
+* `parse_parts_lat()` and `parse_parts_lon()` (and `pz_degree()`, `pz_minute()`, `pz_second()`) no longer lose the sign of values between -1 and 0: the sign now sits on the first non-zero part, e.g. -0.5 gives deg 0, min -30. They also no longer return 60 seconds, e.g. 10.35 is now 10 deg 21 min 0 sec, not 10 deg 20 min 60 sec.
+* `parse_llstr()` now gives one clear warning ("could not split into latitude and longitude") for each string it cannot split, and keeps the other rows. Before, each such string gave two confusing "no digits" warnings about an internal marker.
+* The warning text for an invalid letter after degrees uses plain ASCII quotes.
+* `parse_lon_lat()` and `parse_hemisphere()` now clean symbols like `°` the same way `parse_lat()` and `parse_lon()` do (before, "40°25'" gave 40).
+* Small numeric inputs such as `1e-5` are no longer misread as two slots, and a number too large for a double now gives `NA` with a warning instead of shifting the other slots.
+* `parse_lon_lat()` and `parse_hemisphere()` now accept numeric and integer inputs, as documented.
+* `parse_llstr()` now returns NA for unrecognized formats instead of two empty strings.
+* Strings that cannot be converted (no digits, or more than 3 numeric slots) now give only one warning, with no spurious second range warning.
+* Fixed undefined behaviour in `parse_parts_lat()` and `parse_parts_lon()` when a value could not be parsed (NA was cast to an integer).
+
+### MINOR IMPROVEMENTS
+
+* Faster parsing: the C++ code no longer uses regular expressions (`std::regex`), numbers are read with `std::stod` instead of a new stream for each token, and `parse_parts_*()` no longer allocates an R list for each coordinate. `parse_lat()`, `parse_lon()`, `parse_llstr()` and `parse_parts_lat()` are about 9 to 12 times faster than in 0.4.4.
+* withr is no longer a required dependency (it moved to Suggests). The Windows-only `.Call()` wrapper that forced the C locale (#31) is removed, because it only worked around a `std::regex` bug.
+* `parse_hemisphere()` detects the sign of a value with `std::signbit()` instead of converting it to a string.
+* Added performance tests (`bench`) to detect slowdowns, and a larger test suite (about 98% coverage).
+* The use cases vignette now runs its sf and leaflet code only when both packages are installed.
+* README: local coverage badge, and installation with `pak::pkg_install()`.
+
 parzer 0.4.4
 ============
 

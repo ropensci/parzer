@@ -1,71 +1,70 @@
 #include <Rcpp.h>
 #include "latlong.h"
 
-// [[Rcpp::export]]
-Rcpp::List split_decimal_degree(const double& x, const std::string& fmt = "dms") {
-  //std::vector<double> split_decimal_degree(const double& x, const std::string& fmt = "dms") {
-  const double sixty = 60;
-  const double thirtysixh = 3600;
-  double dir_val = 1.0;
+struct DMS { int deg; int min; double sec; };
 
-  if (std::isnan(x)) {
-    //std::vector<double>{0, 0, 0}; // this has to be updated
-    return Rcpp::List::create(NA_REAL, NA_REAL, NA_REAL);
-  }
-  // auto x_str = Rcpp::toString(x); // Rcpp should be replaced here
-  // if (is_negative(x)) { // does not use Rcpp but uses regex
-  if (x < 0.) {
-    dir_val = -1.0;
-  }
+// The sign goes on the first non-zero field, so -0.5 is 0 deg, -30 min, 0 sec.
+static DMS split_dms(double x) {
+  const double eps = 1e-9; // seconds; absorbs floating-point error
   double x_abs = std::fabs(x);
+  int d = static_cast<int>(x_abs);
+  int m = static_cast<int>((x_abs - d) * 60.0);
+  double s = ((x_abs - d) - (m / 60.0)) * 3600.0;
+  if (s < eps) {
+    s = 0.;
+  } else if (s > 60. - eps) {
+    // truncation left almost a full minute in the seconds: carry it
+    s = 0.;
+    ++m;
+  }
+  if (m == 60) {
+    m = 0;
+    ++d;
+  }
+  if (x < 0.) {
+    if (d != 0) {
+      d = -d;
+    } else if (m != 0) {
+      m = -m;
+    } else {
+      s = -s;
+    }
+  }
+  return {d, m, s};
+}
 
-  double d = static_cast<int>(x_abs); // is this : "double X = static_cast<int>(Y);" OK? it works...
-  double m = static_cast<int>((x_abs - d) * sixty);
-  double s = ((x_abs - d) - (m/sixty)) * thirtysixh;
-  d = d * dir_val;
+static Rcpp::DataFrame parse_parts(std::vector<std::string>& x,
+                                   double (*convert)(std::string&)) {
+  const int n = x.size();
+  std::vector<int> deg(n, 0);
+  std::vector<int> min(n, 0);
+  std::vector<double> sec(n, 0.);
 
-  return Rcpp::List::create(d, m, s);
-  // return std::vector<double>{d, m, s};
+  for (int i=0; i < n; ++i) {
+    double out = convert(x[i]); // passed as a reference.
+    if (R_IsNA(out)) {
+      deg[i] = NA_INTEGER;
+      min[i] = NA_INTEGER;
+      sec[i] = NA_REAL;
+    } else {
+      DMS parts = split_dms(out);
+      deg[i] = parts.deg;
+      min[i] = parts.min;
+      sec[i] = parts.sec;
+    }
+  }
+  return Rcpp::DataFrame::create(Rcpp::_["deg"] = deg,
+                                 Rcpp::_["min"] = min,
+                                 Rcpp::_["sec"] = sec,
+                                 Rcpp::_["stringsAsFactors"] = false);
 }
 
 // [[Rcpp::export]]
 Rcpp::DataFrame pz_parse_parts_lat(std::vector<std::string>& x) {
-  const int n = x.size();
-  std::vector<int> deg(n, 0);
-  std::vector<int> min(n, 0);
-  std::vector<double> sec(n, 0.);
-
-  for (int i=0; i < n; ++i) {
-    double out = convert_lat(x[i]); // passed as a reference.
-    //std::vector<double>  = split_decimal_degree(out); // passed as a const reference.
-    Rcpp::List parts = split_decimal_degree(out); // passed as a const reference.
-    deg[i] = parts[0];
-    min[i] = parts[1];
-    sec[i] = parts[2];
-  }
-  return Rcpp::DataFrame::create(Rcpp::_["deg"] = deg,
-                                 Rcpp::_["min"] = min,
-                                 Rcpp::_["sec"] = sec,
-                                 Rcpp::_["stringsAsFactors"] = false);
+  return parse_parts(x, convert_lat);
 }
 
 // [[Rcpp::export]]
 Rcpp::DataFrame pz_parse_parts_lon(std::vector<std::string>& x) {
-  const int n = x.size();
-  std::vector<int> deg(n, 0);
-  std::vector<int> min(n, 0);
-  std::vector<double> sec(n, 0.);
-
-  for (int i=0; i < n; ++i) {
-    double out = convert_lon(x[i]); // passed as a reference.
-    //std::vector<double> parts = split_decimal_degree(out); // passed as a const reference.
-    Rcpp::List parts = split_decimal_degree(out); // passed as a const reference.
-    deg[i] = parts[0];
-    min[i] = parts[1];
-    sec[i] = parts[2];
-  }
-  return Rcpp::DataFrame::create(Rcpp::_["deg"] = deg,
-                                 Rcpp::_["min"] = min,
-                                 Rcpp::_["sec"] = sec,
-                                 Rcpp::_["stringsAsFactors"] = false);
+  return parse_parts(x, convert_lon);
 }

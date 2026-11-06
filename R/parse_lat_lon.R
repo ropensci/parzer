@@ -22,8 +22,8 @@ parse_lon_lat <- function(lon, lat) {
   lint_inputs(lon, lat, "")
   stopifnot(length(lon) == length(lat))
   data.frame(
-    lon = pz_parse_lon(as.character(lon)),
-    lat = pz_parse_lat(as.character(lat)),
+    lon = pz_parse_lon(scrub(lon)),
+    lat = pz_parse_lat(scrub(lat)),
     stringsAsFactors = FALSE
   )
 }

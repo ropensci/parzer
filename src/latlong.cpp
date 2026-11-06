@@ -1,33 +1,19 @@
 #include <Rcpp.h>
-// [[Rcpp::plugins(cpp11)]]
 
 #include <string>
-#include <regex>
 #include <iterator>
-#include <iostream>
 #include <sstream>
 #include <cstdlib>
-#include <cstdio>
 #include <cmath>
-#include <functional>
 #include <algorithm>
+#include <cctype>
 
-// check if latitude within acceptable range, etc.
 bool check_lat(const double& lat) {
-  bool lat_check = false;
-  if (lat >= -90  && lat <= 90) {
-    lat_check = true;
-  }
-  return lat_check;
+  return lat >= -90 && lat <= 90;
 }
 
-// check if longitude within acceptable range, etc.
 bool check_lon(const double& lon) {
-  bool lon_check = false;
-  if (lon >= -180  && lon <= 360) {
-    lon_check = true;
-  }
-  return lon_check;
+  return lon >= -180 && lon <= 360;
 }
 
 void strip_alpha(std::string& x) {
@@ -39,51 +25,51 @@ void digits_only(std::string& x) {
                   [](char z){ return ::ispunct(z) && z != '.' && z != '-'; }, ' ');
 }
 
+// A '-' right after a digit is a separator, not a sign: "40-25" -> "40 25".
+// Plain loop: the equivalent std::regex took about half of convert_lat's time.
 void remove_internal_dashes(std::string& x) {
-  std::regex dash_reg("([0-9]+)(-)");
-  x = std::regex_replace(x, dash_reg, "$1 ");
+  for (std::size_t i = 1; i < x.size(); ++i) {
+    if (x[i] == '-' && std::isdigit(static_cast<unsigned char>(x[i - 1]))) {
+      x[i] = ' ';
+    }
+  }
 }
 
 std::vector<double> extract_floats_from_string(std::string& str) {
-  // str = remove_internal_dashes(digits_only(strip_alpha(str)));
   strip_alpha(str);
   digits_only(str);
   remove_internal_dashes(str);
-  // Rprintf("within extract_floats_from_string: %s \n", str.c_str());
-  std::stringstream ss(str);
+  std::istringstream ss(str);
   std::string temp;
-  double found;
   std::vector<double> y;
-  while (!ss.eof()) {
-    /* extracting chunk by chunk from stream */
-    ss >> temp;
-    /* Checking the given word is integer or not */
-    if (std::stringstream(temp) >> found)
-      y.push_back(found);
-    /* To save from space at the end of string */
-    temp = "";
+  while (ss >> temp) {
+    try {
+      y.push_back(std::stod(temp));
+    } catch (...) {
+      // lone "-" or "." are separators, anything with a digit is a bad number
+      if (temp.find_first_of("0123456789") != std::string::npos) {
+        Rcpp::warning("invalid number, got: " + temp);
+        return std::vector<double>();
+      }
+    }
   }
   return y;
 }
 
-int count_direction_matches(const std::string& s, const std::string& re) {
-  std::regex words_regex(re);
-  auto words_begin = std::sregex_iterator(
-    s.begin(), s.end(), words_regex);
-  auto words_end = std::sregex_iterator();
-
-  return std::distance(words_begin, words_end);
+bool is_digit(char c) {
+  return c >= '0' && c <= '9';
 }
 
-std::string extract_nsew(const std::string& s, const std::string& reggex) {
-  std::regex reg(reggex);
-  std::smatch match;
-  std::string out = "";
-  if (std::regex_search(s, match, reg))
-    out = match[0];
-  // Rprintf("extract_ns length: %f \n", match.size());
-  // Rprintf("extract_nsew result: %s \n", out.c_str());
-  return out;
+// how many characters of s are one of `chars`, e.g. "ns"
+int count_direction_matches(const std::string& s, const std::string& chars) {
+  return std::count_if(s.begin(), s.end(),
+                       [&chars](char c) { return chars.find(c) != std::string::npos; });
+}
+
+// first character of s that is one of `chars`, or ""
+std::string extract_nsew(const std::string& s, const std::string& chars) {
+  std::size_t i = s.find_first_of(chars);
+  return i == std::string::npos ? "" : s.substr(i, 1);
 }
 
 void str_tolower(std::string &s) {
@@ -92,17 +78,9 @@ void str_tolower(std::string &s) {
   );
 }
 
+// x is already lower case (convert_lat/lon lower it); "" and n/e are positive
 double plus_minus(const std::string& x) {
-  double out = 1.0;
-  // x = str_tolower(x); // deactivated because it is done before in convert_lat or convert_lon
-  // Rprintf("within plus_minus = %s \n", x.c_str());
-  if (x == "n" || x == "e") {
-    out = 1.0;
-  }
-  if (x == "s" || x == "w") {
-    out = -1.0;
-  }
-  return out;
+  return (x == "s" || x == "w") ? -1.0 : 1.0;
 }
 
 double decimal_minute(const double& x) {
@@ -122,7 +100,6 @@ bool any_digits(const std::string& s) {
 }
 
 bool has_non_direction_letters(std::string& s, const std::string& reggex) {
-  // s = str_tolower(s);
   // allow "n", "s", "e", "w" for cardinal directions
   // allow "d" for degree delimiter, check below to make sure d used correctly
   bool z = std::string::npos != s.find_first_of(reggex);
@@ -133,53 +110,72 @@ bool has_non_direction_letters(std::string& s, const std::string& reggex) {
 }
 
 // useful to NA on "-45.23232e24"
+// same as the regex "[0-9]+e[0-9]+$": digits, "e", digits at the end
 bool has_e_with_trailing_numbers(const std::string& s) {
-  bool res = false;
-  // s = str_tolower(s);
-  std::regex reg("[0-9]+e[0-9]+$");
-  std::smatch match;
-  if (std::regex_search(s, match, reg)) {
-    res = true;
+  std::size_t i = s.find_last_not_of("0123456789");
+  if (i != std::string::npos && i > 0 && i + 1 < s.size() &&
+      s[i] == 'e' && is_digit(s[i - 1])) {
     Rcpp::warning("invalid characters, got: " + s);
+    return true;
   }
-  return res;
+  return false;
 }
 
-bool invalid_degree_letter(const std::string& s, const std::string& reggex) {
-  bool res = false;
+// same as the regex "^-?[0-9]{1,3}[\s+]?[A-Za-z]": true when the letter after
+// the degrees is not one of `chars`
+bool invalid_degree_letter(const std::string& s, const std::string& chars) {
+  std::size_t i = (!s.empty() && s[0] == '-') ? 1 : 0;
+  const std::size_t start = i;
+  while (i < s.size() && is_digit(s[i])) ++i;
+  if (i == start || i - start > 3) return false;
+  // \s in std::regex is the "C" locale space set
+  if (i < s.size() && std::string(" \t\n\v\f\r+").find(s[i]) != std::string::npos) ++i;
+  if (i >= s.size()) return false;
+  const char c = s[i];
+  const bool letter = (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
+  return letter && chars.find(c) == std::string::npos;
+}
 
-  // matches: 40.
-  std::regex reg("^-?[0-9]{1,3}[\\s+]?[A-Za-z]");
-  std::smatch match;
-  std::string out = "";
-  if (std::regex_search(s, match, reg)) {
-    out = match[0];
-    // Rprintf("invalid_degree_letter result:  %s \n", out.c_str());
-    // std::regex reg2("[nsewdNSEWD]");
-    std::regex reg2(reggex);
-    std::smatch match2;
-    std::string out2 = "";
-    if (!std::regex_search(out, match2, reg2)) {
-      res = true;
+// Combine degree/minute/second slots into signed decimal degrees, NA on
+// invalid input. `orig` is the input before extract_floats_from_string
+// altered it, so warnings show what the user typed.
+double nums_to_decimal(const std::vector<double>& nums, const std::string& orig, double dir_val) {
+  std::size_t n = nums.size();
+  if (n == 0) return NA_REAL;
+  if (n > 3) {
+    Rcpp::warning("invalid format, more than 3 numeric slots, got: " + orig);
+    return NA_REAL;
+  }
+  for (std::size_t i = 1; i < n; ++i) {
+    // negative or >= 60 minutes/seconds
+    if (!(nums[i] >= 0 && nums[i] < 60)) {
+      Rcpp::warning("minutes or seconds not within 0/60 range, got: " + orig);
+      return NA_REAL;
     }
   }
-  return res;
+  for (std::size_t i = 0; i + 1 < n; ++i) {
+    // a fraction is only allowed in the last slot, e.g. not "45.5 30"
+    if (nums[i] != std::floor(nums[i])) {
+      Rcpp::warning("only the last of degrees, minutes, seconds can be decimal, got: " + orig);
+      return NA_REAL;
+    }
+  }
+  double ret = fabs(nums[0]);
+  if (n >= 2) ret += decimal_minute(nums[1]);
+  if (n == 3) ret += decimal_second(nums[2]);
+  return ret * dir_val;
 }
 
+// same as the regex "^-.+"; "." does not match a line break
 bool is_negative(const std::string& s) {
-  bool res = false;
-  std::regex reg("^-.+");
-  std::smatch match;
-  if (std::regex_search(s, match, reg)) {
-    res = true;
-  }
-  return res;
+  return s.size() >= 2 && s[0] == '-' && s[1] != '\n' && s[1] != '\r';
 }
 
 // [[Rcpp::export]]
 double convert_lat(std::string& str) {
-  double ret;
+  double ret = NA_REAL;
   str_tolower(str);
+  const std::string orig = str;
   if (
       str.size() == 0 ||
         !any_digits(str) ||
@@ -187,48 +183,26 @@ double convert_lat(std::string& str) {
 
   ) {
     ret = NA_REAL;
-  } else if (count_direction_matches(str, "[ns]") > 1) {
+  } else if (count_direction_matches(str, "ns") > 1) {
     ret = NA_REAL;
     Rcpp::warning("invalid cardinal direction, got: " + str);
-  } else if (invalid_degree_letter(str, "[nsd]")) {
-    // to support e.g.: 40d 25’ 6\" N
+  } else if (invalid_degree_letter(str, "nsd")) {
+    // to support e.g.: 40d 25' 6\" N
     ret = NA_REAL;
     Rcpp::warning("expected single 'N|S|d' after degrees, got: " + str);
   } else {
-    std::string dir = extract_nsew(str, "[ns]");
-    double dir_val = 1.0;
-    if (dir != "") {
-      dir_val = plus_minus(dir);
-    }
+    double dir_val = plus_minus(extract_nsew(str, "ns"));
     if (is_negative(str)) {
       dir_val = -1.0;
     }
 
     std::vector<double> nums = extract_floats_from_string(str);
-    if (nums.size() == 0) {
-      ret = NA_REAL;
-    }
-    if (nums.size() == 1) {
-      ret = fabs(nums[0]);
-    }
-    if (nums.size() == 2) {
-      ret = fabs(nums[0]) + decimal_minute(nums[1]);
-    }
-    if (nums.size() == 3) {
-      ret = fabs(nums[0]) + decimal_minute(nums[1]) + decimal_second(nums[2]);
-    }
-    if (nums.size() > 3) {
-      Rcpp::warning("invalid format, more than 3 numeric slots, got: " + str);
-      ret = NA_REAL;
-    }
-
-    // apply direction
-    ret = ret * dir_val;
+    ret = nums_to_decimal(nums, orig, dir_val);
 
     if (!Rcpp::NumericVector::is_na(ret)) {
       if (!check_lat(ret)) {
         ret = NA_REAL;
-        Rcpp::warning("not within -90/90 range, got: " + str +
+        Rcpp::warning("not within -90/90 range, got: " + orig +
           "\n  check that you did not invert lon and lat");
       }
     }
@@ -239,8 +213,9 @@ double convert_lat(std::string& str) {
 
 // [[Rcpp::export]]
 double convert_lon(std::string& str) {
-  double ret;
+  double ret = NA_REAL;
   str_tolower(str);
+  const std::string orig = str;
   if (
       str.size() == 0 ||
         !any_digits(str) ||
@@ -248,48 +223,26 @@ double convert_lon(std::string& str) {
         has_e_with_trailing_numbers(str)
   ) {
     ret = NA_REAL;
-  } else if (count_direction_matches(str, "[ew]") > 1) {
+  } else if (count_direction_matches(str, "ew") > 1) {
     ret = NA_REAL;
     Rcpp::warning("invalid cardinal direction, got: " + str);
-  } else if (invalid_degree_letter(str, "[ewd]")) {
-    // to support e.g.: 40d 25’ 6\" E
+  } else if (invalid_degree_letter(str, "ewd")) {
+    // to support e.g.: 40d 25' 6\" E
     ret = NA_REAL;
     Rcpp::warning("expected single 'E|W|d' after degrees, got: " + str);
   } else {
-    std::string dir = extract_nsew(str, "[ew]");
-    double dir_val = 1.0;
-    if (dir != "") {
-      dir_val = plus_minus(dir);
-    }
+    double dir_val = plus_minus(extract_nsew(str, "ew"));
     if (is_negative(str)) {
       dir_val = -1.0;
     }
 
     std::vector<double> nums = extract_floats_from_string(str);
-    if (nums.size() == 0) {
-      ret = NA_REAL;
-    }
-    if (nums.size() == 1) {
-      ret = fabs(nums[0]);
-    }
-    if (nums.size() == 2) {
-      ret = fabs(nums[0]) + decimal_minute(nums[1]);
-    }
-    if (nums.size() == 3) {
-      ret = fabs(nums[0]) + decimal_minute(nums[1]) + decimal_second(nums[2]);
-    }
-    if (nums.size() > 3) {
-      Rcpp::warning("invalid format, more than 3 numeric slots, got: " + str);
-      ret = NA_REAL;
-    }
-
-    // apply direction
-    ret = ret * dir_val;
+    ret = nums_to_decimal(nums, orig, dir_val);
 
     if (!Rcpp::NumericVector::is_na(ret)) {
       if (!check_lon(ret)) {
         ret = NA_REAL;
-        Rcpp::warning("not within -180/360 range, got: " + str);
+        Rcpp::warning("not within -180/360 range, got: " + orig);
       }
     }
   }

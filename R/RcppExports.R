@@ -21,10 +21,6 @@ pz_hemisphere <- function(lon, lat) {
     .Call(`_parzer_pz_hemisphere`, lon, lat)
 }
 
-split_decimal_degree <- function(x, fmt = "dms") {
-    .Call(`_parzer_split_decimal_degree`, x, fmt)
-}
-
 pz_parse_parts_lat <- function(x) {
     .Call(`_parzer_pz_parse_parts_lat`, x)
 }

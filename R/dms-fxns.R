@@ -5,9 +5,7 @@ dms_helper <- function(lon = NULL, lat = NULL) {
   if (!is.null(lon)) {
     return(pz_parse_parts_lon(scrub(lon)))
   }
-  if (!is.null(lat)) {
-    return(pz_parse_parts_lat(scrub(lat)))
-  }
+  pz_parse_parts_lat(scrub(lat))
 }
 
 #' extract degree, minutes, and seconds

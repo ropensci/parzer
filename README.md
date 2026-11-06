@@ -12,7 +12,8 @@ downloads](https://cranlogs.r-pkg.org/badges/parzer)](https://github.com/r-hub/c
 [![cran
 version](https://www.r-pkg.org/badges/version/parzer)](https://cran.r-project.org/package=parzer)
 
-[![codecov.io](https://codecov.io/github/ropensci/parzer/coverage.svg?branch=main)](https://app.codecov.io/github/ropensci/parzer?branch=main)
+[![Code Coverage:
+96%](https://img.shields.io/badge/code_coverage-96%25-brightgreen)](#code-coverage)
 
 [![Ropensci Peer
 Reviewed](https://badges.ropensci.org/341_status.svg)](https://github.com/ropensci/software-review/issues/341)
@@ -67,7 +68,7 @@ install.packages("parzer")
 ### Development version:
 
 ``` r
-remotes::install_github("ropensci/parzer")
+pak::pkg_install("ropensci/parzer")
 ```
 
 ## List of functions:
@@ -96,6 +97,23 @@ remotes::install_github("ropensci/parzer")
   separate degrees, minutes, seconds and direction to `dms2dd`. No exact
   analog is found in `parzer`, whose main focus is parsing messy
   geographic coordinates in strings to a more machine readable version.
+
+## Code Coverage
+
+    R> parzer Coverage: 96.34%
+    R> src/latlong.cpp: 92.31%
+    R> R/dms-fxns.R: 100.00%
+    R> R/parse_hemisphere.R: 100.00%
+    R> R/parse_lat_lon.R: 100.00%
+    R> R/parse_lat.R: 100.00%
+    R> R/parse_llstr.R: 100.00%
+    R> R/parse_lon.R: 100.00%
+    R> R/parse_parts.R: 100.00%
+    R> R/zzz.R: 100.00%
+    R> src/parse.cpp: 100.00%
+    R> src/pz_hemisphere.cpp: 100.00%
+    R> src/pz_parse_parts.cpp: 100.00%
+    R> src/pz_split_llstr.cpp: 100.00%
 
 ## Meta
 

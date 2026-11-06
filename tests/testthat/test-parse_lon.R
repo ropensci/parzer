@@ -107,6 +107,21 @@ test_that("parse_lon works: invalid formats fail as expected", {
   }
 })
 
+test_that("parse_lon with >3 numeric tokens emits only the format warning", {
+  # Mirror of the parse_lat equivalent: ensure the if-else-if chain prevents
+  # a spurious range warning from firing after the "invalid format" warning.
+  warns <- character(0)
+  withCallingHandlers(
+    parse_lon("40 25 6 7"),
+    warning = function(w) {
+      warns <<- c(warns, conditionMessage(w))
+      invokeRestart("muffleWarning")
+    }
+  )
+  expect_length(warns, 1)
+  expect_match(warns, "invalid format, more than 3 numeric slots")
+})
+
 test_that("parse_lon correctly processes NA values", {
   expect_equal(
     suppressWarnings(
@@ -114,4 +129,83 @@ test_that("parse_lon correctly processes NA values", {
     ),
     c(NA_real_, NA_real_, NA_real_, 12.5)
   )
+})
+
+test_that("parse_lon errors with 'format handling not ready yet' when format is supplied", {
+  # Covers the stop_form() else-branch at parse_lon.R:64 and zzz.R:22
+  expect_error(
+    parse_lon("74E", format = "dms"),
+    "format handling not ready yet"
+  )
+  expect_error(
+    parse_lon("-74.64111", format = "decimal"),
+    "format handling not ready yet"
+  )
+})
+
+test_that("parse_lon accepts numeric and integer inputs", {
+  # scrub() coerces numeric/integer to character internally
+  expect_equal(parse_lon(74.5), 74.5)
+  expect_equal(parse_lon(180L), 180)
+  expect_equal(parse_lon(-74.5), -74.5)
+  # vector: 355:360 valid (<=360), 361:365 out of range -> NA_real_
+  result <- suppressWarnings(parse_lon(355:365))
+  expect_equal(result[1:6], as.double(355:360))
+  expect_true(all(is.na(result[7:11])))
+})
+
+test_that("parse_lon: minutes and seconds >= 60 give NA with a warning", {
+  expect_warning(
+    res <- parse_lon("10°30,12345"),
+    "minutes or seconds not within 0/60"
+  )
+  expect_true(is.na(res))
+  expect_warning(
+    res <- parse_lon("100°75'"),
+    "minutes or seconds not within 0/60"
+  )
+  expect_true(is.na(res))
+  expect_equal(parse_lon("10°59'59.9\""), 10 + 59 / 60 + 59.9 / 3600)
+})
+
+test_that("parse_lon: 0/60 boundaries, negative and decimal slots", {
+  expect_warning(res <- parse_lon("10 60"), "not within 0/60")
+  expect_true(is.na(res))
+  expect_equal(parse_lon("10 59.999"), 10 + 59.999 / 60)
+  expect_warning(res <- parse_lon("10 -30"), "not within 0/60")
+  expect_true(is.na(res))
+  expect_warning(res <- parse_lon("10 30 -15"), "not within 0/60")
+  expect_true(is.na(res))
+  expect_warning(res <- parse_lon("45.5 30"), "only the last")
+  expect_true(is.na(res))
+  expect_warning(res <- parse_lon("10 30.5 20"), "only the last")
+  expect_true(is.na(res))
+  expect_equal(parse_lon("10 30.5"), 10 + 30.5 / 60)
+})
+
+test_that("parse_lon: range warning shows the input", {
+  expect_warning(parse_lon("10°30,12345"), "10.30.12345")
+})
+
+test_that("parse_parts_lon() and parse_hemisphere() reject minutes >= 60", {
+  expect_warning(res <- parse_parts_lon("10 75"), "not within 0/60")
+  expect_true(is.na(res[[1]]))
+  expect_warning(
+    parse_hemisphere("10 75", "10 30"),
+    "not within 0/60"
+  )
+})
+
+test_that("parse_lon/parse_lat: exponents, repeated directions and signs", {
+  expect_warning(res <- parse_lon("45e2"), "invalid characters")
+  expect_true(is.na(res))
+  expect_warning(res <- parse_lon("-45.23232e24"), "invalid characters")
+  expect_true(is.na(res))
+  expect_warning(res <- parse_lon("74ew"), "invalid cardinal direction")
+  expect_true(is.na(res))
+  expect_warning(res <- parse_lat("40ns"), "invalid cardinal direction")
+  expect_true(is.na(res))
+  expect_equal(parse_lon("74 W"), -74)
+  expect_equal(parse_lat("40 s"), -40)
+  expect_equal(parse_lat("-40.5"), -40.5)
 })

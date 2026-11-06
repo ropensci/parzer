@@ -24,11 +24,17 @@ Throws warnings on parsing errors, and returns \code{NaN} in each case
 Types of errors:
 \itemize{
 \item invalid argument: e.g., letters passed instead of numbers,
-see \url{https://en.cppreference.com/w/cpp/error/invalid_argument.html}
+see \url{https://en.cppreference.com/cpp/error/invalid_argument}
 \item out of range: numbers of out acceptable range, see
-\url{https://en.cppreference.com/w/cpp/error/out_of_range.html}
+\url{https://en.cppreference.com/cpp/error/out_of_range}
 \item out of latitude range: not within -90/90 range
+\item minutes or seconds out of range (negative or 60 and above): not within 0/60 range, e.g. \code{"10 30,12345"}
+is read as 10 degrees, 30 minutes and 12345 seconds, so it gives a warning and \code{NA}
+\item a decimal degree or minute followed by another slot: only the last slot can be decimal, e.g. \code{"45.5 30"}
 }
+
+A comma or space is always a separator between degrees, minutes and seconds,
+never a decimal mark.
 }
 
 \examples{
