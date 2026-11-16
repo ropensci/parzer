@@ -44,7 +44,14 @@ std::vector<double> extract_floats_from_string(std::string& str) {
   std::vector<double> y;
   while (ss >> temp) {
     try {
-      y.push_back(std::stod(temp));
+      std::size_t used = 0;
+      double value = std::stod(temp, &used);
+      // stod stops at the second '.' of "40.25.30" and would keep 40.25
+      if (used != temp.size()) {
+        Rcpp::warning("invalid number, got: " + temp);
+        return std::vector<double>();
+      }
+      y.push_back(value);
     } catch (...) {
       // lone "-" or "." are separators, anything with a digit is a bad number
       if (temp.find_first_of("0123456789") != std::string::npos) {
@@ -121,21 +128,6 @@ bool has_e_with_trailing_numbers(const std::string& s) {
   return false;
 }
 
-// same as the regex "^-?[0-9]{1,3}[\s+]?[A-Za-z]": true when the letter after
-// the degrees is not one of `chars`
-bool invalid_degree_letter(const std::string& s, const std::string& chars) {
-  std::size_t i = (!s.empty() && s[0] == '-') ? 1 : 0;
-  const std::size_t start = i;
-  while (i < s.size() && is_digit(s[i])) ++i;
-  if (i == start || i - start > 3) return false;
-  // \s in std::regex is the "C" locale space set
-  if (i < s.size() && std::string(" \t\n\v\f\r+").find(s[i]) != std::string::npos) ++i;
-  if (i >= s.size()) return false;
-  const char c = s[i];
-  const bool letter = (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
-  return letter && chars.find(c) == std::string::npos;
-}
-
 // Combine degree/minute/second slots into signed decimal degrees, NA on
 // invalid input. `orig` is the input before extract_floats_from_string
 // altered it, so warnings show what the user typed.
@@ -186,10 +178,6 @@ double convert_lat(std::string& str) {
   } else if (count_direction_matches(str, "ns") > 1) {
     ret = NA_REAL;
     Rcpp::warning("invalid cardinal direction, got: " + str);
-  } else if (invalid_degree_letter(str, "nsd")) {
-    // to support e.g.: 40d 25' 6\" N
-    ret = NA_REAL;
-    Rcpp::warning("expected single 'N|S|d' after degrees, got: " + str);
   } else {
     double dir_val = plus_minus(extract_nsew(str, "ns"));
     if (is_negative(str)) {
@@ -226,10 +214,6 @@ double convert_lon(std::string& str) {
   } else if (count_direction_matches(str, "ew") > 1) {
     ret = NA_REAL;
     Rcpp::warning("invalid cardinal direction, got: " + str);
-  } else if (invalid_degree_letter(str, "ewd")) {
-    // to support e.g.: 40d 25' 6\" E
-    ret = NA_REAL;
-    Rcpp::warning("expected single 'E|W|d' after degrees, got: " + str);
   } else {
     double dir_val = plus_minus(extract_nsew(str, "ew"));
     if (is_negative(str)) {

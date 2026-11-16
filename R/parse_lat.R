@@ -2,10 +2,10 @@
 #'
 #' @export
 #' @param lat (numeric/integer/character) one or more latitude values
-#' @param format (character) format, default often works
+#' @param format (character) format, not implemented yet.
 #' @return numeric vector
 #' @section Errors:
-#' Throws warnings on parsing errors, and returns `NaN` in each case
+#' Throws warnings on parsing errors, and returns `NA` in each case
 #'
 #' Types of errors:
 #'

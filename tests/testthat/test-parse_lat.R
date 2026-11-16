@@ -90,7 +90,7 @@ test_that("parse_lat works: invalid formats fail as expected", {
       aa <- parse_lat(invalid_formats[i])
     })
     expect_type(aa, "double")
-    expect_equal(aa, NaN)
+    expect_identical(aa, NA_real_)
   }
 })
 
@@ -203,4 +203,60 @@ test_that("parse_lat/parse_lon: a dash after a digit separates, a leading dash i
   expect_true(is.na(res))
   expect_warning(res <- parse_lat("40 -25"), "not within 0/60")
   expect_true(is.na(res))
+})
+
+test_that("parse_lat gives NA without a warning for NA input", {
+  expect_no_warning(res <- parse_lat(NA_character_))
+  expect_identical(res, NA_real_)
+  expect_no_warning(res <- parse_lat(c("45", NA_character_, "-45")))
+  expect_equal(res, c(45, NA, -45))
+  expect_no_warning(res <- parse_lat(c(45.5, NA_real_, NaN)))
+  expect_equal(res, c(45.5, NA, NA))
+  expect_no_warning(res <- parse_lat(NA_integer_))
+  expect_identical(res, NA_real_)
+  # a literal "NA" string is text, not a missing value: it warns
+  expect_warning(res <- parse_lat("NA"), "no digits detected")
+  expect_identical(res, NA_real_)
+  expect_identical(parse_lat(""), NA_real_)
+})
+
+test_that("parse_lat reads a Unicode minus sign and dashes as a minus sign", {
+  expect_equal(parse_lat("−45.5"), -45.5)
+  expect_equal(parse_lat("–45.5"), -45.5)
+  expect_equal(parse_lat("—45.5"), -45.5)
+  expect_equal(parse_lat("− 45.5"), -45.5)
+  expect_equal(parse_lat("−40°25'6\""), -(40 + 25 / 60 + 6 / 3600))
+  # between parts a Unicode minus separates, as an ASCII dash does
+  expect_equal(parse_lat("40−25−6N"), 40 + 25 / 60 + 6 / 3600)
+  expect_equal(parse_lat("−40−25−6"), -(40 + 25 / 60 + 6 / 3600))
+})
+
+test_that("parse_lat rejects a number with two decimal points", {
+  expect_warning(res <- parse_lat("40.25.30"), "invalid number, got: 40.25.30")
+  expect_identical(res, NA_real_)
+  expect_warning(res <- parse_lat("1.2.3"), "invalid number")
+  expect_identical(res, NA_real_)
+  expect_warning(res <- parse_lat("40.5.N"), "invalid number")
+  expect_identical(res, NA_real_)
+  expect_warning(res <- parse_lat("40 25.5.5"), "invalid number")
+  expect_identical(res, NA_real_)
+  # one decimal point, with or without digits on both sides, still works
+  expect_equal(parse_lat("40."), 40)
+  expect_equal(parse_lat(".5"), 0.5)
+  expect_equal(parse_lat("-.5"), -0.5)
+  expect_equal(parse_lat("40 25.5"), 40 + 25.5 / 60)
+})
+
+test_that("parse_lat keeps accepting d after degrees and rejects other letters", {
+  # the dedicated degree-letter check was removed: these paths cover it
+  expect_equal(parse_lat("40d 25' 6\" N"), 40 + 25 / 60 + 6 / 3600)
+  expect_equal(parse_lat("40D 25' 6\" N"), 40 + 25 / 60 + 6 / 3600)
+  expect_equal(parse_lat("40N"), 40)
+  expect_equal(parse_lat("40 N"), 40)
+  expect_warning(res <- parse_lat("40X 25"), "invalid direction letter")
+  expect_identical(res, NA_real_)
+  expect_warning(res <- parse_lat("40 E"), "invalid direction letter")
+  expect_identical(res, NA_real_)
+  expect_warning(res <- parse_lat("40NS"), "invalid cardinal direction")
+  expect_identical(res, NA_real_)
 })

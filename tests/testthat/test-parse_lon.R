@@ -103,7 +103,7 @@ test_that("parse_lon works: invalid formats fail as expected", {
       aa <- parse_lon(invalid_formats[i])
     })
     expect_type(aa, "double")
-    expect_equal(aa, NaN)
+    expect_identical(aa, NA_real_)
   }
 })
 
@@ -208,4 +208,44 @@ test_that("parse_lon/parse_lat: exponents, repeated directions and signs", {
   expect_equal(parse_lon("74 W"), -74)
   expect_equal(parse_lat("40 s"), -40)
   expect_equal(parse_lat("-40.5"), -40.5)
+})
+
+test_that("parse_lon gives NA without a warning for NA input", {
+  expect_no_warning(res <- parse_lon(NA_character_))
+  expect_identical(res, NA_real_)
+  expect_no_warning(res <- parse_lon(c("74", NA_character_, "-74")))
+  expect_equal(res, c(74, NA, -74))
+  expect_no_warning(res <- parse_lon(c(74.5, NA_real_, NaN)))
+  expect_equal(res, c(74.5, NA, NA))
+  expect_no_warning(res <- parse_lon(NA_integer_))
+  expect_identical(res, NA_real_)
+})
+
+test_that("parse_lon reads a Unicode minus sign and dashes as a minus sign", {
+  expect_equal(parse_lon("−120.5"), -120.5)
+  expect_equal(parse_lon("–120.5"), -120.5)
+  expect_equal(parse_lon("—120.5"), -120.5)
+  expect_equal(parse_lon("−74°38'28\""), -(74 + 38 / 60 + 28 / 3600))
+  expect_equal(parse_lon("74−38−28W"), -(74 + 38 / 60 + 28 / 3600))
+})
+
+test_that("parse_lon rejects a number with two decimal points", {
+  expect_warning(res <- parse_lon("74.6.4W"), "invalid number, got: 74.6.4")
+  expect_identical(res, NA_real_)
+  expect_warning(res <- parse_lon("1.2.3"), "invalid number")
+  expect_identical(res, NA_real_)
+  expect_warning(res <- parse_lon("74 38.5.5"), "invalid number")
+  expect_identical(res, NA_real_)
+  expect_equal(parse_lon("74."), 74)
+  expect_equal(parse_lon("-.5"), -0.5)
+})
+
+test_that("parse_lon keeps accepting d after degrees and rejects other letters", {
+  expect_equal(parse_lon("74d 38' 28\" W"), -(74 + 38 / 60 + 28 / 3600))
+  expect_equal(parse_lon("74D 38' 28\" W"), -(74 + 38 / 60 + 28 / 3600))
+  expect_equal(parse_lon("74W"), -74)
+  expect_warning(res <- parse_lon("74X 38"), "invalid direction letter")
+  expect_identical(res, NA_real_)
+  expect_warning(res <- parse_lon("74 N"), "invalid direction letter")
+  expect_identical(res, NA_real_)
 })

@@ -22,21 +22,28 @@ num_to_chr <- function(x) {
   if (!is.numeric(x)) {
     return(as.character(x))
   }
-  vapply(
-    x,
-    function(value) {
-      if (is.na(value)) {
-        NA_character_
-      } else {
-        format(value, scientific = FALSE, digits = 15, trim = TRUE)
-      }
-    },
-    FUN.VALUE = character(1L)
-  )
+  out <- format(x, scientific = FALSE, digits = 15, trim = TRUE)
+  out[is.na(x)] <- NA_character_
+  out
 }
 
 scrub <- function(x) {
-  trimws(gsub("[^A-Za-z0-9\\.\\ ,'-]|d|g", "'", num_to_chr(x)))
+  x <- num_to_chr(x)
+  # NA in, NA out: "" is the one input the C++ parser turns into NA silently
+  x[is.na(x)] <- ""
+  # Unicode minus sign, en dash and em dash are a minus sign
+  x <- gsub(
+    pattern = "[\u2212\u2013\u2014]",
+    replacement = "-",
+    x = x,
+    perl = TRUE
+  )
+  trimws(gsub(
+    pattern = "[^A-Za-z0-9. ,'-]|d|g",
+    replacement = "'",
+    x = x,
+    perl = TRUE
+  ))
 }
 
 stop_form <- function() stop("format handling not ready yet")

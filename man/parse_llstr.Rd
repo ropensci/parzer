@@ -11,9 +11,41 @@ parse_llstr(str)
 }
 \value{
 A data.frame with parsed latitude and longitude in decimal degrees.
+A string that cannot be cut into two coordinates gives \code{NA} in both columns
+and a warning.
 }
 \description{
 parse string with lat and lon together
+}
+\details{
+Each string is cut into a latitude part and a longitude part, in that
+order, then the parts go through \code{\link[=parse_lat]{parse_lat()}} and \code{\link[=parse_lon]{parse_lon()}}. The cut
+is made at:
+\itemize{
+\item the comma, when the string has exactly one comma. Spaces around the comma
+and inside each part are fine: \code{"45.5, -74.5"}, \code{"45 30 15 S , 74 30 15 W"}
+\item the only space, when the string has no comma and exactly one space:
+\code{"45.5 -74.5"}, \code{"N45.5 W74.5"}, \code{"45.5N 74.5W"}. Degrees, minutes and
+seconds then need a symbol between them, not a space:
+\verb{"45°30'15\\"S 74°30'15\\"W"}, \code{"45:30:15 -74:30:15"}
+}
+
+Strings with no separator (\code{"N45.5W74.5"}), with two or more commas, or
+with two or more spaces and no comma (\code{"45 30 74 30"}) give \code{NA} with a
+warning. A dot is never a separator: \code{"45.74"} is one number, not two
+coordinates.
+
+Each part accepts the formats of \code{\link[=parse_lat]{parse_lat()}} and \code{\link[=parse_lon]{parse_lon()}}:
+\itemize{
+\item decimal degrees, signed: \code{"45.5, -74.5"}
+\item a hemisphere letter before or after the number: \code{"N45.5, W74.5"},
+\code{"45.5S, 74.5E"}
+\item degrees and decimal minutes: \code{"45 30.5, -74 30.5"}, \code{"N45°30.5', W74°30.5'"}
+\item degrees, minutes and seconds with any symbols or a dash between them:
+\verb{"45°30'15\\", -74°30'15\\""}, \code{"45:30:15N, 74:30:15W"}, \code{"45-30-15, 74-30-15"}
+\item a Unicode minus sign or a dash (\verb{−}, \verb{–}) in front of a number is read as a
+minus sign
+}
 }
 \examples{
 parse_llstr("N 04.1683, E 101.5823")
@@ -24,12 +56,17 @@ parse_llstr("N05.03062,E101.75172")
 parse_llstr("N4.9196, E101.345")
 parse_llstr("N4.9196, E101.346")
 parse_llstr("N4.9196, E101.347")
-# no comma
+# no comma: the only space is the separator
 parse_llstr("N4.9196 E101.347")
-# no space
-parse_llstr("N4.9196E101.347")
+# signed decimal degrees
+parse_llstr("4.9196 -101.347")
 
 # DMS
 parse_llstr("N4 51'36\", E101 34'7\"")
 parse_llstr(c("4 51'36\"S, 101 34'7\"W", "N4 51'36\", E101 34'7\""))
+parse_llstr("4:51:36S 101:34:7W")
+\dontrun{
+# not supported: no separator between latitude and longitude
+parse_llstr("N4.9196E101.347")
+}
 }

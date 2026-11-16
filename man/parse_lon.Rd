@@ -19,7 +19,7 @@ Parse longitude values
 }
 \section{Errors}{
 
-Throws warnings on parsing errors, and returns \code{NaN} in each case
+Throws warnings on parsing errors, and returns \code{NA} in each case
 
 Types of errors:
 \itemize{

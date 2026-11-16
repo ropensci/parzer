@@ -1,3 +1,19 @@
+parzer 0.5.0.9000
+============
+
+### BUG FIX
+
+* A Unicode minus sign (U+2212), an en dash or an em dash in front of a number is now read as a minus sign. Before, "−45.5" gave 45.5 without a warning.
+* `parse_llstr()` cuts at the only space whatever the number of decimal points: "45 74.5" gave lat `NA` and lon 5. A single decimal number such as "45.74" is no longer cut at the dot into two coordinates; it gives `NA` with a warning. The accepted formats are now listed in the documentation.
+* A number with two decimal points, e.g. "40.25.30", gives `NA` with a warning instead of silently reading 40.25.
+* `NA` input gives `NA` without a warning in all functions. Before, every `NA` gave a "no digits detected, got: na" warning.
+* Documentation: invalid values give `NA`, not `NaN`.
+
+### MINOR IMPROVEMENTS
+
+* Faster input cleaning: `parse_lat()` and `parse_lon()` are about 7 times faster on numeric input and about 25% faster on character input.
+* Removed a check in the C++ code that could never fire, and the Japanese-locale test for the old `std::regex` bug. callr, pkgbuild, pkgload and withr are no longer suggested.
+
 parzer 0.5.0
 ============
 

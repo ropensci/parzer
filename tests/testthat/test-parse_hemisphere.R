@@ -69,9 +69,18 @@ test_that("parse_hemisphere scrubs symbols and handles tiny numbers", {
   expect_equal(parse_hemisphere("40d 25’ 6\" E", "40:25:6N"), "NE")
   expect_equal(parse_hemisphere(1e-5, 1e-5), "NE")
   expect_equal(parse_hemisphere(-1e-5, -1e-5), "SW")
-  expect_warning(
-    res <- parse_hemisphere(c(1e-5, NA), c(-2e-5, 10)),
-    "no digits detected"
-  )
+  expect_no_warning(res <- parse_hemisphere(c(1e-5, NA), c(-2e-5, 10)))
   expect_equal(res, c("SE", "N"))
+})
+
+test_that("parse_hemisphere gives an empty string without a warning for NA input", {
+  expect_no_warning(res <- parse_hemisphere(NA_character_, NA_character_))
+  expect_equal(res, "")
+  expect_no_warning(res <- parse_hemisphere(c("-120", NA), c(NA, "45")))
+  expect_equal(res, c("W", "N"))
+})
+
+test_that("parse_hemisphere reads a Unicode minus sign as West or South", {
+  expect_equal(parse_hemisphere("−120", "−45"), "SW")
+  expect_equal(parse_hemisphere("–120", "45"), "NW")
 })

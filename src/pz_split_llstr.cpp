@@ -25,17 +25,16 @@ std::vector<std::string> pz_split_llstr_string (std::string x) {
   int nbCommas = std::count(x.begin(), x.end(), ',');
   int nbSpaces = std::count(x.begin(), x.end(), ' ');
   int nbSC = std::count(x.begin(), x.end(), ';');
-  int nbDots = std::count(x.begin(), x.end(), '.');
 
+  // One comma, or one space and no comma, cuts the string in two. A lone
+  // dot never does: "45.74" is one number, not two coordinates.
   char sep;
   if (nbCommas == 1) {
     sep = ',';
-  } else if (nbCommas == 0 && nbSpaces == 1 && nbSC == 0 && (nbDots == 0 || nbDots == 2)) {
+  } else if (nbCommas == 0 && nbSpaces == 1 && nbSC == 0) {
     sep = ' ';
   } else if (nbSC == 1) {
     sep = ';';
-  } else if (nbDots == 1) {
-    sep = '.';
   } else {
     return {"NA_STRING", "NA_STRING"};
   }
