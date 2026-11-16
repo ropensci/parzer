@@ -214,3 +214,16 @@ test_that("parse_parts_lat reads a Unicode minus sign as a minus sign", {
   expect_equal(parse_parts_lat("−45.5"), parse_parts_lat("-45.5"))
   expect_equal(parse_parts_lon("–120.5"), parse_parts_lon("-120.5"))
 })
+
+test_that("parse_parts and parse_hemisphere give NA when sign and letter disagree", {
+  expect_warning(res <- parse_parts_lat("N -45.5"), "disagree")
+  expect_equal(
+    res,
+    data.frame(deg = NA_integer_, min = NA_integer_, sec = NA_real_)
+  )
+  expect_warning(res <- parse_parts_lon("-120E"), "disagree")
+  expect_equal(res[["deg"]], NA_integer_)
+  expect_warning(res <- parse_hemisphere("E -120", "S -45"), "disagree")
+  expect_equal(res, "S")
+  expect_equal(parse_parts_lat("S -45.5"), parse_parts_lat("-45.5"))
+})

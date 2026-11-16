@@ -16,13 +16,15 @@ bool check_lon(const double& lon) {
   return lon >= -180 && lon <= 360;
 }
 
+// casts: the <cctype> functions take an unsigned char, a plain char may be negative
 void strip_alpha(std::string& x) {
-  std::replace_if(x.begin(), x.end(), ::isalpha, ' ');
+  std::replace_if(x.begin(), x.end(),
+                  [](char z){ return std::isalpha(static_cast<unsigned char>(z)); }, ' ');
 }
 
 void digits_only(std::string& x) {
   std::replace_if(x.begin(), x.end(),
-                  [](char z){ return ::ispunct(z) && z != '.' && z != '-'; }, ' ');
+                  [](char z){ return std::ispunct(static_cast<unsigned char>(z)) && z != '.' && z != '-'; }, ' ');
 }
 
 // A '-' right after a digit is a separator, not a sign: "40-25" -> "40 25".
@@ -90,6 +92,18 @@ double plus_minus(const std::string& x) {
   return (x == "s" || x == "w") ? -1.0 : 1.0;
 }
 
+// -1 or 1 from the hemisphere letter ("" when absent) and the minus sign;
+// NA with a warning when the two disagree, e.g. "N -45" or "-45N"
+double direction(const std::string& letter, bool minus, const std::string& orig) {
+  if (letter.empty()) return minus ? -1.0 : 1.0;
+  const double from_letter = plus_minus(letter);
+  if (minus && from_letter > 0) {
+    Rcpp::warning("minus sign and direction letter disagree, got: " + orig);
+    return NA_REAL;
+  }
+  return from_letter;
+}
+
 double decimal_minute(const double& x) {
   return (x / 60.0);
 }
@@ -107,8 +121,7 @@ bool any_digits(const std::string& s) {
 }
 
 bool has_non_direction_letters(std::string& s, const std::string& reggex) {
-  // allow "n", "s", "e", "w" for cardinal directions
-  // allow "d" for degree delimiter, check below to make sure d used correctly
+  // only "n", "s", "e", "w" are allowed; scrub() in R already replaced "d"
   bool z = std::string::npos != s.find_first_of(reggex);
   if (z) {
     Rcpp::warning("invalid direction letter, got: " + s);
@@ -163,7 +176,6 @@ bool is_negative(const std::string& s) {
   return s.size() >= 2 && s[0] == '-' && s[1] != '\n' && s[1] != '\r';
 }
 
-// [[Rcpp::export]]
 double convert_lat(std::string& str) {
   double ret = NA_REAL;
   str_tolower(str);
@@ -171,7 +183,7 @@ double convert_lat(std::string& str) {
   if (
       str.size() == 0 ||
         !any_digits(str) ||
-        has_non_direction_letters(str, "abcefghijklmopqrtuvwxyz")
+        has_non_direction_letters(str, "abcdefghijklmopqrtuvwxyz")
 
   ) {
     ret = NA_REAL;
@@ -179,13 +191,13 @@ double convert_lat(std::string& str) {
     ret = NA_REAL;
     Rcpp::warning("invalid cardinal direction, got: " + str);
   } else {
-    double dir_val = plus_minus(extract_nsew(str, "ns"));
-    if (is_negative(str)) {
-      dir_val = -1.0;
-    }
-
+    const std::string letter = extract_nsew(str, "ns");
+    const bool leading_minus = is_negative(str);
     std::vector<double> nums = extract_floats_from_string(str);
-    ret = nums_to_decimal(nums, orig, dir_val);
+    // "N -45": the minus sign sits after the letter, so it is in the first slot
+    const bool minus = leading_minus || (!nums.empty() && std::signbit(nums[0]));
+    const double dir_val = direction(letter, minus, orig);
+    ret = Rcpp::NumericVector::is_na(dir_val) ? NA_REAL : nums_to_decimal(nums, orig, dir_val);
 
     if (!Rcpp::NumericVector::is_na(ret)) {
       if (!check_lat(ret)) {
@@ -199,7 +211,6 @@ double convert_lat(std::string& str) {
 }
 
 
-// [[Rcpp::export]]
 double convert_lon(std::string& str) {
   double ret = NA_REAL;
   str_tolower(str);
@@ -207,7 +218,7 @@ double convert_lon(std::string& str) {
   if (
       str.size() == 0 ||
         !any_digits(str) ||
-        has_non_direction_letters(str, "abcfghijklmnopqrstuvxyz")  ||
+        has_non_direction_letters(str, "abcdfghijklmnopqrstuvxyz")  ||
         has_e_with_trailing_numbers(str)
   ) {
     ret = NA_REAL;
@@ -215,13 +226,13 @@ double convert_lon(std::string& str) {
     ret = NA_REAL;
     Rcpp::warning("invalid cardinal direction, got: " + str);
   } else {
-    double dir_val = plus_minus(extract_nsew(str, "ew"));
-    if (is_negative(str)) {
-      dir_val = -1.0;
-    }
-
+    const std::string letter = extract_nsew(str, "ew");
+    const bool leading_minus = is_negative(str);
     std::vector<double> nums = extract_floats_from_string(str);
-    ret = nums_to_decimal(nums, orig, dir_val);
+    // "N -45": the minus sign sits after the letter, so it is in the first slot
+    const bool minus = leading_minus || (!nums.empty() && std::signbit(nums[0]));
+    const double dir_val = direction(letter, minus, orig);
+    ret = Rcpp::NumericVector::is_na(dir_val) ? NA_REAL : nums_to_decimal(nums, orig, dir_val);
 
     if (!Rcpp::NumericVector::is_na(ret)) {
       if (!check_lon(ret)) {

@@ -157,3 +157,20 @@ test_that("numeric input of mixed magnitude is formatted as one vector without l
     tolerance = 1e-14
   )
 })
+
+test_that("parse_lon_lat and parse_hemisphere name the length mismatch", {
+  expect_error(parse_lon_lat(1:2, 1:3), "lon and lat must have the same length")
+  expect_error(
+    parse_hemisphere("45", c("45", "46")),
+    "lon and lat must have the same length"
+  )
+  expect_error(parse_lon_lat(character(0), "45"), "same length")
+  expect_equal(nrow(parse_lon_lat(character(0), character(0))), 0L)
+})
+
+test_that("lint_inputs checks class and length", {
+  expect_error(lint_inputs(mtcars, "45"), "lon must be of class")
+  expect_error(lint_inputs("45", TRUE), "lat must be of class")
+  expect_error(lint_inputs("45", c("45", "46")), "same length")
+  expect_null(lint_inputs("45", 45))
+})

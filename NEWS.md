@@ -7,6 +7,11 @@ parzer 0.5.0.9000
 * `parse_llstr()` cuts at the only space whatever the number of decimal points: "45 74.5" gave lat `NA` and lon 5. A single decimal number such as "45.74" is no longer cut at the dot into two coordinates; it gives `NA` with a warning. The accepted formats are now listed in the documentation.
 * A number with two decimal points, e.g. "40.25.30", gives `NA` with a warning instead of silently reading 40.25.
 * `NA` input gives `NA` without a warning in all functions. Before, every `NA` gave a "no digits detected, got: na" warning.
+* A minus sign that disagrees with the hemisphere letter, e.g. "N -45" or "-45N", gives `NA` with a warning. Before, "N -45" gave 45 and "-45N" gave -45, both silently. "S -45" still gives -45.
+* The degree marks `d` and `g` are accepted in upper case too: "40G 25 6N" gave `NA`.
+* `pz_d(1) + 5` and the like now fail with a clear message ("both sides must be pz objects"); unary minus works and keeps the unit: `-pz_m(30)`.
+* `pz_degree()`, `parse_lon_lat()` and `parse_hemisphere()` give plain error messages for a missing argument or a length mismatch.
+* The lifecycle badge figure is now shipped with the package, so the help page no longer shows a broken image.
 * Documentation: invalid values give `NA`, not `NaN`.
 
 ### MINOR IMPROVEMENTS

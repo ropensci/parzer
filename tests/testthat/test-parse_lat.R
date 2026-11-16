@@ -7,38 +7,7 @@ test_that("parse_lat works", {
   expect_equal(round(aa), 46)
   expect_match(strsplit(as.character(aa), "\\.")[[1]][2], "903")
 })
-
-# FIXME: look into commented out values
-test_lats <- c(
-  "40.4183318",
-  "40.4183318° N",
-  "40° 25´ 5.994\" N",
-  "40° 25.0999’",
-  "N40°25’5.994",
-  "40°25’5.994\"N",
-  "40 25 5.994",
-  "40.4183318",
-  "40.4183318°",
-  "40.4183318N",
-  "40°25’5.994\"N",
-  "N 40 25.0999",
-  "40:25:6N",
-  "40:25:5.994N",
-  "40°25’6\"N",
-  "40°25’6\"",
-  "40d 25’ 6\" N",
-  "40.4183318N",
-  "40° 25.0999",
-  "40-25-5.994N",
-  "40_25_5.994N"
-)
-
 test_that("parse_lat works: run through test_lats", {
-  out <- data.frame(
-    input = test_lats,
-    res = NA_real_,
-    stringsAsFactors = FALSE
-  )
   for (i in seq_along(test_lats)) {
     expect_equal(round(parse_lat(test_lats[i]), 5), 40.41833)
   }
@@ -77,15 +46,7 @@ invalid_formats <- c(
 
 # res column should all give NaN
 test_that("parse_lat works: invalid formats fail as expected", {
-  out <- data.frame(
-    input = invalid_formats,
-    res = NA_real_,
-    stringsAsFactors = FALSE
-  )
   for (i in seq_along(invalid_formats)) {
-    out[i, "res"] <- suppressWarnings({
-      parse_lat(invalid_formats[i])
-    })
     expect_warning({
       aa <- parse_lat(invalid_formats[i])
     })
@@ -258,5 +219,44 @@ test_that("parse_lat keeps accepting d after degrees and rejects other letters",
   expect_warning(res <- parse_lat("40 E"), "invalid direction letter")
   expect_identical(res, NA_real_)
   expect_warning(res <- parse_lat("40NS"), "invalid cardinal direction")
+  expect_identical(res, NA_real_)
+})
+
+test_that("parse_lat: a minus sign that disagrees with the letter gives NA", {
+  expect_warning(
+    res <- parse_lat("N -45"),
+    "minus sign and direction letter disagree, got: n -45"
+  )
+  expect_identical(res, NA_real_)
+  expect_warning(res <- parse_lat("N-45"), "disagree")
+  expect_identical(res, NA_real_)
+  expect_warning(res <- parse_lat("-45N"), "disagree")
+  expect_identical(res, NA_real_)
+  expect_warning(res <- parse_lat("-45 N"), "disagree")
+  expect_identical(res, NA_real_)
+  expect_warning(res <- parse_lat("−40°25'6\"N"), "disagree")
+  expect_identical(res, NA_real_)
+  # letter and sign agree: one minus, not two
+  expect_equal(parse_lat("S -45"), -45)
+  expect_equal(parse_lat("S-45"), -45)
+  expect_equal(parse_lat("-45S"), -45)
+  expect_equal(parse_lat("-45 S"), -45)
+  expect_equal(parse_lat("S-40-25-6"), -(40 + 25 / 60 + 6 / 3600))
+  # no letter: the minus sign is the sign, wherever a symbol sits before it
+  expect_equal(parse_lat("-45"), -45)
+  expect_equal(parse_lat("° -45"), -45)
+  expect_equal(parse_lat("45"), 45)
+  expect_equal(parse_lat("N 45"), 45)
+  expect_equal(parse_lat("-0"), 0)
+})
+
+test_that("parse_lat: d and g degree marks are accepted in either case", {
+  expect_equal(parse_lat("40d 25' 6\" N"), 40 + 25 / 60 + 6 / 3600)
+  expect_equal(parse_lat("40D 25' 6\" N"), 40 + 25 / 60 + 6 / 3600)
+  expect_equal(parse_lat("40g 25' 6\" N"), 40 + 25 / 60 + 6 / 3600)
+  expect_equal(parse_lat("40G 25' 6\" N"), 40 + 25 / 60 + 6 / 3600)
+  expect_equal(scrub("40D 25G"), "40' 25'")
+  # the C++ parser itself no longer accepts a d: scrub() must remove it first
+  expect_warning(res <- pz_parse_lat("40d 25"), "invalid direction letter")
   expect_identical(res, NA_real_)
 })

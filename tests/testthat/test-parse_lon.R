@@ -33,11 +33,6 @@ test_lons <- c(
 )
 
 test_that("parse_lon works: run through test_lons", {
-  out <- data.frame(
-    input = test_lons,
-    res = NA_real_,
-    stringsAsFactors = FALSE
-  )
   for (i in seq_along(test_lons)) {
     expect_equal(round(parse_lon(test_lons[i]), 5), -74.64111)
   }
@@ -90,15 +85,7 @@ invalid_formats <- c(
 
 # res column should all give NaN
 test_that("parse_lon works: invalid formats fail as expected", {
-  out <- data.frame(
-    input = invalid_formats,
-    res = NA_real_,
-    stringsAsFactors = FALSE
-  )
   for (i in seq_along(invalid_formats)) {
-    out[i, "res"] <- suppressWarnings({
-      parse_lon(invalid_formats[i])
-    })
     expect_warning({
       aa <- parse_lon(invalid_formats[i])
     })
@@ -247,5 +234,32 @@ test_that("parse_lon keeps accepting d after degrees and rejects other letters",
   expect_warning(res <- parse_lon("74X 38"), "invalid direction letter")
   expect_identical(res, NA_real_)
   expect_warning(res <- parse_lon("74 N"), "invalid direction letter")
+  expect_identical(res, NA_real_)
+})
+
+test_that("parse_lon: a minus sign that disagrees with the letter gives NA", {
+  expect_warning(
+    res <- parse_lon("E -120"),
+    "minus sign and direction letter disagree, got: e -120"
+  )
+  expect_identical(res, NA_real_)
+  expect_warning(res <- parse_lon("-120E"), "disagree")
+  expect_identical(res, NA_real_)
+  expect_warning(res <- parse_lon("E-120"), "disagree")
+  expect_identical(res, NA_real_)
+  expect_equal(parse_lon("W -120"), -120)
+  expect_equal(parse_lon("-120W"), -120)
+  expect_equal(parse_lon("W-120-30"), -120.5)
+  expect_equal(parse_lon("-120"), -120)
+  expect_equal(parse_lon("E 120"), 120)
+  # the disagreement check runs before the range check
+  expect_warning(res <- parse_lon("E -400"), "disagree")
+  expect_identical(res, NA_real_)
+})
+
+test_that("parse_lon: d and g degree marks are accepted in either case", {
+  expect_equal(parse_lon("74D 38' 28\" W"), -(74 + 38 / 60 + 28 / 3600))
+  expect_equal(parse_lon("74G 38' 28\" W"), -(74 + 38 / 60 + 28 / 3600))
+  expect_warning(res <- pz_parse_lon("74d 38"), "invalid direction letter")
   expect_identical(res, NA_real_)
 })

@@ -11,10 +11,12 @@ assert <- function(x, y) {
   }
 }
 
-lint_inputs <- function(lon = NULL, lat = NULL, format) {
+lint_inputs <- function(lon, lat) {
   assert(lon, c("numeric", "integer", "character"))
   assert(lat, c("numeric", "integer", "character"))
-  assert(format, "character")
+  stopifnot(
+    "lon and lat must have the same length" = length(lon) == length(lat)
+  )
 }
 
 # as.character() gives "1e-05" for small numbers, which the parser misreads
@@ -38,8 +40,9 @@ scrub <- function(x) {
     x = x,
     perl = TRUE
   )
+  # d and g are degree marks ("40d 25' 6\"") and are replaced in either case
   trimws(gsub(
-    pattern = "[^A-Za-z0-9. ,'-]|d|g",
+    pattern = "[^A-Za-z0-9. ,'-]|[dgDG]",
     replacement = "'",
     x = x,
     perl = TRUE

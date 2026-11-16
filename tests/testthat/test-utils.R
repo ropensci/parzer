@@ -58,3 +58,11 @@ test_that("num_to_chr formats whole vectors without scientific notation", {
   x <- c(1e-15, 123456789e-15, 45.123456789012, 1e12)
   expect_equal(as.numeric(num_to_chr(x)), x, tolerance = 1e-14)
 })
+
+test_that("scrub replaces d and g degree marks in either case", {
+  expect_equal(scrub("40d 25g 6"), "40' 25' 6")
+  expect_equal(scrub("40D 25G 6"), "40' 25' 6")
+  # other letters are left for the parser to reject
+  expect_equal(scrub("40X 25"), "40X 25")
+  expect_equal(scrub("N40 S E W"), "N40 S E W")
+})
