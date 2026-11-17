@@ -11,8 +11,10 @@
 #                        ceiling (catches extra R copies; blind to C++
 #                        allocations and leaks).
 #
-# Thresholds are intentionally loose (10–100× typical performance) so that
-# slow CI runners and debug builds never trigger false positives.
+# Thresholds are intentionally loose: the 2 s floor is about 10 000 times the
+# measured time for 96 strings (about 0.1 ms with -O2), so slow CI runners
+# and -O0 debug builds never trigger false positives. These tests only catch
+# catastrophic regressions; compare timings with benchmarks/compare_with_ref.R.
 
 # ---------------------------------------------------------------------------
 # Shared fixtures

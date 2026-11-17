@@ -21,29 +21,6 @@ test_that("pz_second works", {
   expect_equal(round(aa), 60)
 })
 
-test_lats <- c(
-  "40.4183318",
-  "40.4183318° N",
-  "40° 25´ 5.994\" N",
-  "40° 25.0999’",
-  "N40°25’5.994",
-  "40°25’5.994\"N",
-  "40 25 5.994",
-  "40.4183318",
-  "40.4183318°",
-  "40.4183318N",
-  "40°25’5.994\"N",
-  "N 40 25.0999",
-  "40:25:6N",
-  "40:25:5.994N",
-  "40°25’6\"N",
-  "40°25’6\"",
-  "40d 25’ 6\" N",
-  "40.4183318N",
-  "40° 25.0999",
-  "40-25-5.994N",
-  "40_25_5.994N"
-)
 
 test_that("degree works with varied formats", {
   for (i in seq_along(test_lats)) {
@@ -54,8 +31,10 @@ test_that("degree works with varied formats", {
 })
 
 test_that("pz_degree - fails well", {
-  expect_error(pz_degree(), "is not TRUE")
-  expect_error(pz_degree(4, 5), "is not TRUE")
+  expect_error(pz_degree(), "give exactly one of lon or lat")
+  expect_error(pz_degree(4, 5), "give exactly one of lon or lat")
+  expect_error(pz_minute(), "give exactly one of lon or lat")
+  expect_error(pz_second(lon = 4, lat = 5), "give exactly one of lon or lat")
   expect_error(pz_degree(mtcars), "lon must be of class")
 })
 
@@ -81,11 +60,6 @@ invalid_formats <- c(
 )
 
 test_that("dms fxns fail as expected", {
-  out <- data.frame(
-    input = invalid_formats,
-    res = NA_real_,
-    stringsAsFactors = FALSE
-  )
   for (i in seq_along(invalid_formats)) {
     expect_warning(pz_degree(lat = invalid_formats[i]))
     expect_warning(pz_minute(lat = invalid_formats[i]))
@@ -144,4 +118,37 @@ test_that("dms fxns: utilities", {
 
   # print.pz
   expect_output(print(pz_d(31)), "31")
+})
+
+test_that("pz arithmetic rejects a plain number with a clear message", {
+  expect_error(pz_d(1) + 5, "both sides must be pz objects")
+  expect_error(5 + pz_d(1), "both sides must be pz objects")
+  expect_error(pz_m(30) - 5, "both sides must be pz objects")
+  expect_error(5 - pz_s(30), "both sides must be pz objects")
+  expect_error(pz_d(1) + "a", "both sides must be pz objects")
+})
+
+test_that("unary minus and plus keep the unit of a pz object", {
+  neg <- -pz_m(30)
+  expect_s3_class(neg, "pz")
+  expect_equal(attr(neg, "type"), "min")
+  expect_equal(unclass_strip_atts(neg), -30)
+  expect_equal(unclass_strip_atts(-pz_d(3)), -3)
+  expect_equal(attr(-pz_s(10), "type"), "sec")
+  expect_equal(unclass_strip_atts(pz_d(1) + -pz_m(30)), 0.5)
+  expect_equal(unclass_strip_atts(-pz_d(1) - pz_m(30)), -1.5)
+  expect_equal(unclass_strip_atts(-(-pz_d(2))), 2)
+  expect_equal(+pz_m(30), pz_m(30))
+  expect_equal(unclass_strip_atts(-pz_d(1:3)), -(1:3))
+})
+
+test_that("pz addition and subtraction are vectorised and typed as degrees", {
+  res <- pz_d(c(1, 2)) + pz_m(30)
+  expect_equal(attr(res, "type"), "deg")
+  expect_equal(unclass_strip_atts(res), c(1.5, 2.5))
+  expect_equal(unclass_strip_atts(pz_s(3600) - pz_m(60)), 0)
+  expect_equal(
+    unclass_strip_atts(pz_d(31) + pz_m(44) + pz_s(59)),
+    31 + 44 / 60 + 59 / 3600
+  )
 })

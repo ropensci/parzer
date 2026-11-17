@@ -195,3 +195,35 @@ test_that("parse_parts splits plain decimal degrees", {
   expect_equal(res[["min"]], 38L)
   expect_equal(res[["sec"]], 28, tolerance = 1e-3)
 })
+
+test_that("parse_parts_lat/lon give NA rows without a warning for NA input", {
+  expect_no_warning(res <- parse_parts_lat(c("45.5", NA_character_)))
+  expect_equal(res[["deg"]], c(45L, NA_integer_))
+  expect_equal(res[["min"]], c(30L, NA_integer_))
+  expect_equal(res[["sec"]], c(0, NA_real_))
+  expect_no_warning(res <- parse_parts_lon(NA_character_))
+  expect_equal(
+    res,
+    data.frame(deg = NA_integer_, min = NA_integer_, sec = NA_real_)
+  )
+  expect_no_warning(pz_degree(lat = NA_character_))
+  expect_no_warning(pz_minute(lon = NA_real_))
+})
+
+test_that("parse_parts_lat reads a Unicode minus sign as a minus sign", {
+  expect_equal(parse_parts_lat("−45.5"), parse_parts_lat("-45.5"))
+  expect_equal(parse_parts_lon("–120.5"), parse_parts_lon("-120.5"))
+})
+
+test_that("parse_parts and parse_hemisphere give NA when sign and letter disagree", {
+  expect_warning(res <- parse_parts_lat("N -45.5"), "disagree")
+  expect_equal(
+    res,
+    data.frame(deg = NA_integer_, min = NA_integer_, sec = NA_real_)
+  )
+  expect_warning(res <- parse_parts_lon("-120E"), "disagree")
+  expect_equal(res[["deg"]], NA_integer_)
+  expect_warning(res <- parse_hemisphere("E -120", "S -45"), "disagree")
+  expect_equal(res, "S")
+  expect_equal(parse_parts_lat("S -45.5"), parse_parts_lat("-45.5"))
+})

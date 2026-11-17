@@ -72,22 +72,6 @@ test_that("pz_split_llstr_string splits on a semicolon separator", {
   expect_equal(pz_split_llstr_string("N45.5;W74.5"), c("N45.5", "W74.5"))
 })
 
-# pz_split_llstr_string dot branch (pz_split_llstr.cpp:26-28).
-# The dot branch fires when: 0 commas, the single-space condition does not
-# match (requires 0 or 2 dots), 0 semicolons, and exactly 1 dot.
-test_that("pz_split_llstr_string splits on a dot when it is the sole separator", {
-  # "4574.5": 0 commas, 0 spaces, 0 semicolons, 1 dot -> dot branch
-  expect_equal(pz_split_llstr_string("4574.5"), c("4574", "5"))
-})
-
-test_that("parse_llstr uses the dot branch when a dot is the only separator", {
-  # "45.74" -> scrub() preserves the dot -> pz_split_llstr_string uses dot
-  # branch -> lat token = "45", lon token = "74"
-  result <- parse_llstr("45.74")
-  expect_equal(result$lat, 45)
-  expect_equal(result$lon, 74)
-})
-
 test_that("parse_llstr gives one clear warning per unsplittable string", {
   expect_warning(
     res <- parse_llstr("4545"),
@@ -141,9 +125,129 @@ test_that("pz_split_llstr_string trims spaces and splits at the only separator",
   expect_equal(pz_split_llstr_string("40 74"), c("40", "74"))
   expect_equal(pz_split_llstr_string("40.5 74.5"), c("40.5", "74.5"))
   expect_equal(pz_split_llstr_string("40.5;74"), c("40.5", "74"))
-  expect_equal(pz_split_llstr_string("40.74"), c("40", "74"))
+  expect_equal(pz_split_llstr_string("40.74"), c("NA_STRING", "NA_STRING"))
   expect_equal(pz_split_llstr_string("40,5,74"), c("NA_STRING", "NA_STRING"))
   # a line break keeps the whole string on that side, as the old regexes did
   expect_equal(pz_split_llstr_string("40,\n74"), c("40,\n74", "\n74"))
   expect_equal(pz_split_llstr_string("\n40, 74"), c("\n40", "\n40, 74"))
+})
+
+test_that("parse_llstr cuts at the only space whatever the number of dots", {
+  # before, one space with one dot fell through to a cut at the dot
+  expect_equal(parse_llstr("45 74.5"), data.frame(lat = 45, lon = 74.5))
+  expect_equal(parse_llstr("45.5 74"), data.frame(lat = 45.5, lon = 74))
+  expect_equal(parse_llstr("45.5 74.5"), data.frame(lat = 45.5, lon = 74.5))
+  expect_equal(parse_llstr("45 74"), data.frame(lat = 45, lon = 74))
+  expect_equal(pz_split_llstr_string("45 74.5"), c("45", "74.5"))
+  expect_equal(pz_split_llstr_string("45.5 74"), c("45.5", "74"))
+})
+
+test_that("parse_llstr never cuts a single number at its dot", {
+  expect_warning(res <- parse_llstr("45.74"), "could not split")
+  expect_equal(res, data.frame(lat = NA_real_, lon = NA_real_))
+  expect_warning(res <- parse_llstr("4574.5"), "could not split")
+  expect_equal(res, data.frame(lat = NA_real_, lon = NA_real_))
+  expect_equal(pz_split_llstr_string("4574.5"), c("NA_STRING", "NA_STRING"))
+})
+
+# every format listed in ?parse_llstr, so the docs and the code cannot drift
+documented_llstr <- data.frame(
+  str = c(
+    "45.5, -74.5",
+    "45 30 15 S , 74 30 15 W",
+    "45.5 -74.5",
+    "N45.5 W74.5",
+    "45.5N 74.5W",
+    "45\u00b030'15\"S 74\u00b030'15\"W",
+    "45:30:15 -74:30:15",
+    "N45.5, W74.5",
+    "45.5S, 74.5E",
+    "45 30.5, -74 30.5",
+    "N45\u00b030.5', W74\u00b030.5'",
+    "45\u00b030'15\", -74\u00b030'15\"",
+    "45:30:15N, 74:30:15W",
+    "45-30-15, 74-30-15",
+    "\u221245.5, \u201374.5",
+    "4.9196 -101.347",
+    "4:51:36S 101:34:7W"
+  ),
+  lat = c(
+    45.5,
+    -(45 + 30 / 60 + 15 / 3600),
+    45.5,
+    45.5,
+    45.5,
+    -(45 + 30 / 60 + 15 / 3600),
+    45 + 30 / 60 + 15 / 3600,
+    45.5,
+    -45.5,
+    45 + 30.5 / 60,
+    45 + 30.5 / 60,
+    45 + 30 / 60 + 15 / 3600,
+    45 + 30 / 60 + 15 / 3600,
+    45 + 30 / 60 + 15 / 3600,
+    -45.5,
+    4.9196,
+    -(4 + 51 / 60 + 36 / 3600)
+  ),
+  lon = c(
+    -74.5,
+    -(74 + 30 / 60 + 15 / 3600),
+    -74.5,
+    -74.5,
+    -74.5,
+    -(74 + 30 / 60 + 15 / 3600),
+    -(74 + 30 / 60 + 15 / 3600),
+    -74.5,
+    74.5,
+    -(74 + 30.5 / 60),
+    -(74 + 30.5 / 60),
+    -(74 + 30 / 60 + 15 / 3600),
+    -(74 + 30 / 60 + 15 / 3600),
+    74 + 30 / 60 + 15 / 3600,
+    -74.5,
+    -101.347,
+    -(101 + 34 / 60 + 7 / 3600)
+  ),
+  stringsAsFactors = FALSE
+)
+
+test_that("parse_llstr accepts every format listed in its documentation", {
+  expect_no_warning(res <- parse_llstr(documented_llstr[["str"]]))
+  expect_equal(res[["lat"]], documented_llstr[["lat"]], tolerance = 1e-9)
+  expect_equal(res[["lon"]], documented_llstr[["lon"]], tolerance = 1e-9)
+  # one at a time too, so a failing row names its input
+  for (i in seq_len(nrow(documented_llstr))) {
+    expect_equal(
+      parse_llstr(documented_llstr[["str"]][[i]]),
+      data.frame(
+        lat = documented_llstr[["lat"]][[i]],
+        lon = documented_llstr[["lon"]][[i]]
+      ),
+      tolerance = 1e-9,
+      label = documented_llstr[["str"]][[i]]
+    )
+  }
+})
+
+test_that("parse_llstr rejects the formats its documentation lists as unsupported", {
+  unsupported <- c(
+    "N45.5W74.5", # no separator
+    "N4.9196E101.347",
+    "45, 74, 30", # two commas
+    "45 30 74 30", # two spaces, no comma
+    "45,5 74,5", # decimal commas
+    "45.74"
+  )
+  for (bad in unsupported) {
+    expect_warning(res <- parse_llstr(bad), "could not split", label = bad)
+    expect_equal(res, data.frame(lat = NA_real_, lon = NA_real_), label = bad)
+  }
+})
+
+test_that("parse_llstr gives NA without any warning for NA input", {
+  expect_no_warning(res <- parse_llstr(NA_character_))
+  expect_equal(res, data.frame(lat = NA_real_, lon = NA_real_))
+  expect_no_warning(res <- parse_llstr(c("45, 74", NA, "N1, E2")))
+  expect_equal(res, data.frame(lat = c(45, NA, 1), lon = c(74, NA, 2)))
 })

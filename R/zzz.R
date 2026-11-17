@@ -11,10 +11,12 @@ assert <- function(x, y) {
   }
 }
 
-lint_inputs <- function(lon = NULL, lat = NULL, format) {
+lint_inputs <- function(lon, lat) {
   assert(lon, c("numeric", "integer", "character"))
   assert(lat, c("numeric", "integer", "character"))
-  assert(format, "character")
+  stopifnot(
+    "lon and lat must have the same length" = length(lon) == length(lat)
+  )
 }
 
 # as.character() gives "1e-05" for small numbers, which the parser misreads
@@ -22,21 +24,29 @@ num_to_chr <- function(x) {
   if (!is.numeric(x)) {
     return(as.character(x))
   }
-  vapply(
-    x,
-    function(value) {
-      if (is.na(value)) {
-        NA_character_
-      } else {
-        format(value, scientific = FALSE, digits = 15, trim = TRUE)
-      }
-    },
-    FUN.VALUE = character(1L)
-  )
+  out <- format(x, scientific = FALSE, digits = 15, trim = TRUE)
+  out[is.na(x)] <- NA_character_
+  out
 }
 
 scrub <- function(x) {
-  trimws(gsub("[^A-Za-z0-9\\.\\ ,'-]|d|g", "'", num_to_chr(x)))
+  x <- num_to_chr(x)
+  # NA in, NA out: "" is the one input the C++ parser turns into NA silently
+  x[is.na(x)] <- ""
+  # Unicode minus sign, en dash and em dash are a minus sign
+  x <- gsub(
+    pattern = "[\u2212\u2013\u2014]",
+    replacement = "-",
+    x = x,
+    perl = TRUE
+  )
+  # d and g are degree marks ("40d 25' 6\"") and are replaced in either case
+  trimws(gsub(
+    pattern = "[^A-Za-z0-9. ,'-]|[dgDG]",
+    replacement = "'",
+    x = x,
+    perl = TRUE
+  ))
 }
 
 stop_form <- function() stop("format handling not ready yet")

@@ -13,7 +13,7 @@
 #' gives deg -45, min 30, but `-0.5` gives deg 0, min -30. Minutes are always
 #' below 60 and seconds below 60, in absolute value.
 #'
-#' NA/NaN given upon error
+#' `NA` given upon error, with a warning
 #'
 #' @examples
 #' parse_parts_lon("140.4183318")

@@ -9,7 +9,7 @@ parse_lat(lat, format = NULL)
 \arguments{
 \item{lat}{(numeric/integer/character) one or more latitude values}
 
-\item{format}{(character) format, default often works}
+\item{format}{(character) format, not implemented yet.}
 }
 \value{
 numeric vector
@@ -19,7 +19,7 @@ Parse latitude values
 }
 \section{Errors}{
 
-Throws warnings on parsing errors, and returns \code{NaN} in each case
+Throws warnings on parsing errors, and returns \code{NA} in each case
 
 Types of errors:
 \itemize{
