@@ -446,6 +446,17 @@ test_that("a latitude that looks like a longitude does not change the other rows
   expect_length(res[["warnings"]], 3L)
 })
 
+test_that("the exponent of a number is not the direction letter E", {
+  # parse_lat() cannot read "1.5e2", so the row keeps its longitude, as
+  # before order = "auto" existed: the halves must not be swapped
+  res <- collect_warnings(parse_llstr(c("1.5e2, 4", "45N, 74E", "E74, N45")))
+  expect_equal(
+    res[["value"]],
+    data.frame(lat = c(NA, 45, 45), lon = c(4, 74, 74))
+  )
+  expect_match(res[["warnings"]], regexp = "got: 1.5e2", all = FALSE)
+})
+
 test_that("format: a latitude that looks like a longitude gives NA for both", {
   res <- collect_warnings(parse_llstr("101.347 4.9196", format = "DDD.d D.d"))
   expect_equal(res[["value"]], data.frame(lat = NA_real_, lon = NA_real_))

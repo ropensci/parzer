@@ -217,11 +217,13 @@ parse_llstr <- function(
   # scrub() keeps letters as typed: only N, S, E and W are direction letters
   # perl = TRUE: 3 times faster than the default engine here
   has <- function(x, pattern) grepl(pattern = pattern, x = x, perl = TRUE)
+  # the "e" of an exponent, as in "1.5e2", is not the letter E
+  ew <- "[Ww]|(?<![0-9.])[Ee]|[Ee](?![-+]?[0-9])"
   picked <- pick_order(
     ns1 = has(x = first, pattern = "[NSns]"),
-    ew1 = has(x = first, pattern = "[EWew]"),
+    ew1 = has(x = first, pattern = ew),
     ns2 = has(x = second, pattern = "[NSns]"),
-    ew2 = has(x = second, pattern = "[EWew]"),
+    ew2 = has(x = second, pattern = ew),
     order = order
   )
   why <- picked[["why"]]
