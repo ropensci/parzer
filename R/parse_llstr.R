@@ -106,6 +106,17 @@ parse_llstr <- function(
   lon <- rep(NA_real_, times = length(str))
   lat[ok] <- parse_lat(lat_half[ok])
   lon[ok] <- parse_lon(lon_half[ok])
+  # a latitude out of range that is a valid longitude (see swap_why()). Only
+  # rows with an NA latitude are parsed again, so valid input does not pay.
+  maybe <- which(ok & is.na(lat) & picked[["can_swap"]])
+  as_lon <- withCallingHandlers(
+    parse_lon(lat_half[maybe]),
+    # parse_lat() already gave a warning for each of them
+    warning = function(w) invokeRestart("muffleWarning")
+  )
+  swapped <- maybe[!is.na(as_lon)]
+  lon[swapped] <- NA_real_
+  why[swapped] <- swap_why(lat_first = lat_first[swapped])
   for (i in which(!is.na(why))) {
     warning(why[[i]], ", got: ", str[[i]], call. = FALSE)
   }
@@ -137,5 +148,19 @@ pick_order <- function(ns1, ew1, ns2, ew2, order) {
     lat_first = lat_first,
     why = why,
     can_swap = fits_lat_lon & fits_lon_lat
+  )
+}
+
+# The reason for an NA row whose latitude is out of range but would be a
+# valid longitude, in a string without direction letters, as in
+# "101.347, 4.9196": longitude and latitude are probably swapped, so the
+# other value is probably not a longitude either and gives NA too.
+swap_why <- function(lat_first) {
+  paste0(
+    "latitude out of range but valid as a longitude, so ",
+    ifelse(test = lat_first, yes = "longitude", no = "latitude"),
+    " may come first: try order = \"",
+    ifelse(test = lat_first, yes = "lon_lat", no = "lat_lon"),
+    "\""
   )
 }

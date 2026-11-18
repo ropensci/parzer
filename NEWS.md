@@ -9,6 +9,7 @@ parzer 0.5.0.9000
 
 ### BUG FIX
 
+* `parse_llstr()` no longer returns a latitude as the longitude when the values seem to be swapped. When the first value is out of the latitude range but is a valid longitude, and the string has no direction letter, as in "101.347, 4.9196", both values are now `NA`, with a warning that suggests `order = "lon_lat"`. Before, this gave lat `NA` and lon 4.9196. Other failures still keep the value that could be read: "abc, -74.5" gives lat `NA` and lon -74.5. Only these rows, which already had an `NA`, change.
 * A Unicode minus sign (U+2212), an en dash or an em dash in front of a number is now read as a minus sign. Before, "−45.5" gave 45.5 without a warning.
 * `parse_llstr()` cuts at the only space whatever the number of decimal points: "45 74.5" gave lat `NA` and lon 5. A single decimal number such as "45.74" is no longer cut at the dot into two coordinates; it gives `NA` with a warning. The accepted formats are now listed in the documentation.
 * A number with two decimal points, e.g. "40.25.30", gives `NA` with a warning instead of silently reading 40.25.
