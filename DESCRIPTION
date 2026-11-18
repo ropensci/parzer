@@ -52,7 +52,7 @@ Suggests:
     leaflet
 Config/testthat/edition: 3
 Config/testthat/parallel: false
-Config/testthat/start-first: *utils*, *parse_parts*, *parse*, *dms*, *benchmarks*
+Config/testthat/start-first: *utils*, *format*, *parse_parts*, *parse*, *dms*, *benchmarks*
 LinkingTo: Rcpp
 VignetteBuilder: quarto
 Roxygen: list(markdown = TRUE)
