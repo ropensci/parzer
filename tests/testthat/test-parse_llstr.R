@@ -35,9 +35,12 @@ test_that("parse_llstr - fails well", {
   expect_error(parse_llstr(mtcars), "str must be of class character")
   expect_error(parse_llstr("", mtcars))
 
-  # src/ error
-  expect_warning(parse_llstr("190, 45"), "not within -90")
-  expect_warning(parse_llstr("190, 45"), "check that you did not invert")
+  # src/ error, then the warning for a latitude that looks like a longitude
+  res <- collect_warnings(parse_llstr("190, 45"))
+  expect_length(res[["warnings"]], 2L)
+  expect_match(res[["warnings"]][[1]], "not within -90")
+  expect_match(res[["warnings"]][[1]], "check that you did not invert")
+  expect_match(res[["warnings"]][[2]], "try order = \"lon_lat\"", fixed = TRUE)
 })
 
 test_that("parse_llstr correctly processes NA values", {
@@ -250,4 +253,272 @@ test_that("parse_llstr gives NA without any warning for NA input", {
   expect_equal(res, data.frame(lat = NA_real_, lon = NA_real_))
   expect_no_warning(res <- parse_llstr(c("45, 74", NA, "N1, E2")))
   expect_equal(res, data.frame(lat = c(45, NA, 1), lon = c(74, NA, 2)))
+})
+
+# order --------------------------------------------------------------------
+
+test_that("order = 'auto': latitude first, unless the letters only fit longitude first", {
+  expect_equal(parse_llstr("45.5, -74.5"), data.frame(lat = 45.5, lon = -74.5))
+  expect_equal(parse_llstr("-74.5, 45.5"), data.frame(lat = -74.5, lon = 45.5))
+  # both halves have a letter
+  expect_equal(
+    parse_llstr(c("W74.5, N45.5", "74.5E 45.5S", "N45.5 W74.5")),
+    data.frame(lat = c(45.5, -45.5, 45.5), lon = c(-74.5, 74.5, -74.5))
+  )
+  # only one half has a letter: that half decides
+  expect_equal(
+    parse_llstr(c("74.5W, 45.5", "45.5, 74.5W", "74.5, 45.5n", "45.5n, 74.5")),
+    data.frame(
+      lat = c(45.5, 45.5, 45.5, 45.5),
+      lon = c(-74.5, -74.5, 74.5, 74.5)
+    )
+  )
+  expect_identical(
+    parse_llstr("W74.5, N45.5"),
+    parse_llstr("W74.5, N45.5", order = "auto")
+  )
+})
+
+test_that("order = 'auto': letters that contradict each other give NA and a warning", {
+  bad <- c("E45, E30", "N45, N30", "s45, 30N", "N45E, 30", "45, 30NE")
+  for (x in bad) {
+    res <- collect_warnings(parse_llstr(x))
+    expect_equal(
+      res[["value"]],
+      data.frame(lat = NA_real_, lon = NA_real_),
+      label = x
+    )
+    expect_identical(
+      res[["warnings"]],
+      paste0("direction letters contradict each other, got: ", x),
+      label = x
+    )
+  }
+  # the other rows are kept
+  expect_warning(
+    res <- parse_llstr(c("E45, E30", "N1, E2")),
+    "contradict each other, got: E45, E30"
+  )
+  expect_equal(res, data.frame(lat = c(NA, 1), lon = c(NA, 2)))
+})
+
+test_that("order = 'lat_lon' and 'lon_lat' force the order", {
+  expect_equal(
+    parse_llstr(c("-74.5, 45.5", "W74.5, N45.5"), order = "lon_lat"),
+    data.frame(lat = c(45.5, 45.5), lon = c(-74.5, -74.5))
+  )
+  expect_equal(
+    parse_llstr(c("-74.5, 45.5", "N45.5, W74.5"), order = "lat_lon"),
+    data.frame(lat = c(-74.5, 45.5), lon = c(45.5, -74.5))
+  )
+})
+
+test_that("a forced order with letters that do not fit it gives NA and a warning", {
+  res <- collect_warnings(
+    parse_llstr(c("N45.5, W74.5", "45.5, 74.5"), order = "lon_lat")
+  )
+  expect_equal(res[["value"]], data.frame(lat = c(NA, 74.5), lon = c(NA, 45.5)))
+  expect_identical(
+    res[["warnings"]],
+    "direction letters do not fit order = \"lon_lat\", got: N45.5, W74.5"
+  )
+  for (x in c("W74.5, N45.5", "W74.5, 45.5", "74.5, 45.5N")) {
+    expect_warning(
+      res <- parse_llstr(x, order = "lat_lon"),
+      paste0("do not fit order = \"lat_lon\", got: ", x),
+      fixed = TRUE
+    )
+    expect_equal(res, data.frame(lat = NA_real_, lon = NA_real_), label = x)
+  }
+})
+
+test_that("order must be one of auto, lat_lon and lon_lat", {
+  expect_error(parse_llstr("1, 2", order = "latlon"), "should be one of")
+  expect_error(parse_llstr("1, 2", order = c("lat_lon", "lon_lat")), "length 1")
+  # partial matching, as with match.arg()
+  expect_equal(
+    parse_llstr("1, 2", order = "lon"),
+    data.frame(lat = 2, lon = 1)
+  )
+})
+
+test_that("order does not change the split warnings or NA input", {
+  expect_warning(
+    res <- parse_llstr(c("4545", NA, "1, 2"), order = "lon_lat"),
+    "could not split into latitude and longitude, got: 4545"
+  )
+  expect_equal(res, data.frame(lat = c(NA, NA, 2), lon = c(NA, NA, 1)))
+  expect_equal(
+    parse_llstr(character(0), order = "lon_lat"),
+    data.frame(lat = numeric(0), lon = numeric(0))
+  )
+})
+
+# a latitude that looks like a longitude ------------------------------------
+
+swap_hint <- function(order) {
+  paste0("may come first: try order = \"", order, "\"")
+}
+
+test_that("a latitude out of range that is a valid longitude gives NA for both", {
+  # before, "101.347, 4.9196" gave lat NA and lon 4.9196
+  res <- collect_warnings(parse_llstr("101.347, 4.9196"))
+  expect_equal(res[["value"]], data.frame(lat = NA_real_, lon = NA_real_))
+  expect_length(res[["warnings"]], 2L)
+  expect_match(res[["warnings"]][[1]], "not within -90/90 range, got: 101.347")
+  expect_identical(
+    res[["warnings"]][[2]],
+    paste0(
+      "latitude out of range but valid as a longitude, so longitude may ",
+      "come first: try order = \"lon_lat\", got: 101.347, 4.9196"
+    )
+  )
+  # the order that the warning suggests reads it
+  expect_no_warning(res <- parse_llstr("101.347, 4.9196", order = "lon_lat"))
+  expect_equal(res, data.frame(lat = 4.9196, lon = 101.347))
+  for (x in c(
+    "190, 45",
+    "-91 30",
+    "-180, 4",
+    "360, 4",
+    "90.5 1",
+    "101 30 15, 4"
+  )) {
+    res <- collect_warnings(parse_llstr(x))
+    expect_equal(
+      res[["value"]],
+      data.frame(lat = NA_real_, lon = NA_real_),
+      label = x
+    )
+    expect_match(
+      res[["warnings"]][[2]],
+      swap_hint("lon_lat"),
+      fixed = TRUE,
+      label = x
+    )
+  }
+})
+
+test_that("a latitude that looks like a longitude: forced orders", {
+  res <- collect_warnings(parse_llstr("101.347, 4.9196", order = "lat_lon"))
+  expect_equal(res[["value"]], data.frame(lat = NA_real_, lon = NA_real_))
+  expect_match(res[["warnings"]][[2]], swap_hint("lon_lat"), fixed = TRUE)
+  # with longitude first, the latitude is the second value
+  res <- collect_warnings(parse_llstr("4.9196, 101.347", order = "lon_lat"))
+  expect_equal(res[["value"]], data.frame(lat = NA_real_, lon = NA_real_))
+  expect_match(res[["warnings"]][[2]], swap_hint("lat_lon"), fixed = TRUE)
+})
+
+test_that("other failures keep the working half, warnings included", {
+  cases <- list(
+    # input, lat, lon, the one warning
+    list("abc, -74.5", NA, -74.5, "no digits detected, got: abc"),
+    list("45, abc", 45, NA, "no digits detected, got: abc"),
+    # out of the longitude range too
+    list("400, 45", NA, 45, "not within -90/90 range, got: 400"),
+    list("45:75, 10", NA, 10, "minutes or seconds not within 0/60 range"),
+    list("45, 190.5W", 45, NA, "not within -180/360 range"),
+    # a direction letter fixes the order, so the order is not in doubt
+    list("101.347, 4.9196E", NA, 4.9196, "not within -90/90 range"),
+    list("S101.347, 4.9", NA, 4.9, "not within -90/90 range"),
+    list("4.9, 101.347N", NA, 4.9, "not within -90/90 range, got: 101.347n")
+  )
+  for (case in cases) {
+    res <- collect_warnings(parse_llstr(case[[1]]))
+    expect_equal(
+      res[["value"]],
+      data.frame(lat = as.numeric(case[[2]]), lon = as.numeric(case[[3]])),
+      label = case[[1]]
+    )
+    expect_length(res[["warnings"]], 1L)
+    expect_match(res[["warnings"]], case[[4]], label = case[[1]])
+  }
+})
+
+test_that("a latitude that looks like a longitude does not change the other rows", {
+  res <- collect_warnings(
+    parse_llstr(c("101.347, 4.9196", "45, 74", "abc, -74.5", NA))
+  )
+  expect_equal(
+    res[["value"]],
+    data.frame(lat = c(NA, 45, NA, NA), lon = c(NA, 74, -74.5, NA))
+  )
+  expect_length(res[["warnings"]], 3L)
+})
+
+test_that("the exponent of a number is not the direction letter E", {
+  # parse_lat() cannot read "1.5e2", so the row keeps its longitude, as
+  # before order = "auto" existed: the halves must not be swapped
+  res <- collect_warnings(parse_llstr(c("1.5e2, 4", "45N, 74E", "E74, N45")))
+  expect_equal(
+    res[["value"]],
+    data.frame(lat = c(NA, 45, 45), lon = c(4, 74, 74))
+  )
+  expect_match(res[["warnings"]], regexp = "got: 1.5e2", all = FALSE)
+})
+
+test_that("format: a latitude that looks like a longitude gives NA for both", {
+  res <- collect_warnings(parse_llstr("101.347 4.9196", format = "DDD.d D.d"))
+  expect_equal(res[["value"]], data.frame(lat = NA_real_, lon = NA_real_))
+  expect_identical(
+    res[["warnings"]],
+    paste0(
+      "NA for 1 value(s) that could not be read with `format`:\n",
+      "  \"101.347 4.9196\": latitude out of range but valid as a longitude, ",
+      "so longitude may come first: try order = \"lon_lat\""
+    )
+  )
+  expect_equal(
+    parse_llstr("101.347 4.9196", format = "DDD.d D.d", order = "lon_lat"),
+    data.frame(lat = 4.9196, lon = 101.347)
+  )
+  expect_warning(
+    res <- parse_llstr(
+      "4.9196 101.347",
+      format = "D.d DDD.d",
+      order = "lon_lat"
+    ),
+    swap_hint("lat_lon"),
+    fixed = TRUE
+  )
+  expect_equal(res, data.frame(lat = NA_real_, lon = NA_real_))
+})
+
+test_that("format: other failures keep the working half", {
+  cases <- list(
+    # input, format, lat, lon, the reason in the one warning
+    list(
+      "401.5 4.9",
+      "DDD.d D.d",
+      NA,
+      4.9,
+      "latitude: not within -90/90 range"
+    ),
+    list("1017530 4.9", "DDDMMSS D.d", NA, 4.9, "latitude: minutes or seconds"),
+    list(
+      "101.347 4.9196E",
+      "DDD.d D.dH",
+      NA,
+      4.9196,
+      "latitude: not within -90/90 range"
+    ),
+    list(
+      "45.5 400.5",
+      "DD.d DDD.d",
+      45.5,
+      NA,
+      "longitude: not within -180/360 range"
+    )
+  )
+  for (case in cases) {
+    res <- collect_warnings(parse_llstr(case[[1]], format = case[[2]]))
+    expect_equal(
+      res[["value"]],
+      data.frame(lat = as.numeric(case[[3]]), lon = as.numeric(case[[4]])),
+      label = case[[1]]
+    )
+    expect_length(res[["warnings"]], 1L)
+    expect_match(res[["warnings"]], case[[5]], fixed = TRUE, label = case[[1]])
+    expect_no_match(res[["warnings"]], "try order", fixed = TRUE)
+  }
 })

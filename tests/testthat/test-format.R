@@ -435,3 +435,665 @@ test_that("compile_format() gives an unanchored regex and its fields", {
     list(value = -(45 + 30.5 / 60), why = NA_character_)
   )
 })
+
+# parse_llstr(format =): one format for the whole string ---------------------
+
+test_that("pair format: a format that cannot work is an error", {
+  bad_pairs <- c(
+    "DDMMSSH" = "needs exactly two D blocks, one for each coordinate",
+    "DD DD DD" = "needs exactly two D blocks",
+    "MM SS" = "needs exactly two D blocks",
+    "HHDD DDD" = "invalid format \"HHDD DDD\", part \"HHDD \": more than one H",
+    "DDMMSSH DDDMMSSHH" = "part \"DDDMMSSHH\": more than one H",
+    "HDDHMM HDDD" = "part \"HDDHMM \": more than one H",
+    "DDX DDD" = "part \"DDX \": unknown letter X",
+    "DDmm DDD" = "part \"DDmm \": m must come right after M",
+    "MMDD DDD" = "part \"MMDD \": D, M and S must come in this order",
+    "DD DDDSS" = "part \"DDDSS\": S \\(seconds\\) needs M \\(minutes\\)"
+  )
+  for (f in names(bad_pairs)) {
+    expect_error(
+      parse_llstr("45 074", format = f),
+      bad_pairs[[f]],
+      fixed = !grepl(pattern = "\\\\", x = bad_pairs[[f]]),
+      label = f
+    )
+  }
+  expect_error(parse_llstr("45 074", format = ""), "two D blocks")
+})
+
+test_that("pair format: every format is checked before any parsing", {
+  expect_error(
+    parse_llstr("45 074", format = c("DD DDD", "DDMMSS")),
+    "invalid format \"DDMMSS\""
+  )
+  expect_error(parse_llstr("45 074", format = NA_character_), "without NA")
+  expect_error(parse_llstr("45 074", format = character(0)), "one or more")
+  expect_error(parse_llstr("45 074", format = 5), "format must be of class")
+  # one format of parse_lat() is not a pair format
+  expect_error(parse_llstr("512839N", format = "DDMMSSH"), "two D blocks")
+})
+
+test_that("pair format: the format is cut at the start of the second D block", {
+  halves <- function(f) {
+    vapply(
+      X = compile_pair_format(f)[["halves"]],
+      FUN = function(h) paste(h[["groups"]], collapse = " "),
+      FUN.VALUE = ""
+    )
+  }
+  expect_identical(
+    halves("DDMMSSH DDDMMSSH"),
+    c("sign D M S H", "sign D M S H")
+  )
+  expect_identical(halves("DD.d DDD.d"), c("sign D dec", "sign D dec"))
+  # an H between the coordinates: with the first one, unless it has an H
+  expect_identical(halves("DDMMSSHDDDMMSSH"), c("sign D M S H", "sign D M S H"))
+  expect_identical(halves("HD.dHDDD.d"), c("H sign D dec", "H sign D dec"))
+  expect_identical(halves("DDH HDDD"), c("sign D H", "H sign D"))
+  expect_identical(halves("HDD HDDD"), c("H sign D", "H sign D"))
+  expect_identical(halves("HDDH DDD"), c("H sign D", "H sign D"))
+  expect_identical(halves("DDHDDD"), c("sign D H", "sign D"))
+  f <- compile_pair_format("HD.dHDDD.d")
+  expect_identical(
+    f[["groups"]],
+    c("H", "sign", "D", "dec", "H", "sign", "D", "dec")
+  )
+  expect_false(startsWith(f[["regex"]], "^"))
+})
+
+test_that("pair format: one warning lists every string that gave an NA", {
+  res <- collect_warnings(
+    parse_llstr(
+      c(
+        "512839N 0002741W",
+        "51 28 39N 000 27 41W",
+        "517539N 0002741W",
+        "512839N 1900000W",
+        "917539N 1900000W",
+        "512839N 0002741N",
+        NA,
+        "",
+        "  "
+      ),
+      format = "DDMMSSH DDDMMSSH"
+    )
+  )
+  lat <- 51 + 28 / 60 + 39 / 3600
+  lon <- -(27 / 60 + 41 / 3600)
+  expect_equal(
+    res[["value"]],
+    data.frame(
+      lat = c(lat, NA, NA, lat, NA, NA, NA, NA, NA),
+      lon = c(lon, NA, lon, NA, NA, NA, NA, NA, NA)
+    )
+  )
+  expect_identical(
+    res[["warnings"]],
+    paste0(
+      "NA for 5 value(s) that could not be read with `format`:\n",
+      "  \"51 28 39N 000 27 41W\": does not match format\n",
+      "  \"517539N 0002741W\": latitude: minutes or seconds not within 0/60 range\n",
+      "  \"512839N 1900000W\": longitude: not within -180/360 range\n",
+      "  \"917539N 1900000W\": latitude: minutes or seconds not within 0/60 range; ",
+      "longitude: not within -180/360 range\n",
+      "  \"512839N 0002741N\": direction letters contradict each other"
+    )
+  )
+})
+
+test_that("pair format: NA, empty and all-good input give no warning", {
+  expect_no_warning(
+    res <- parse_llstr(c(NA, "", "45 074"), format = "DD DDD")
+  )
+  expect_equal(res, data.frame(lat = c(NA, NA, 45), lon = c(NA, NA, 74)))
+  expect_equal(
+    parse_llstr(character(0), format = "DD DDD"),
+    data.frame(lat = numeric(0), lon = numeric(0))
+  )
+})
+
+test_that("pair format: the string is matched as it is, without cleaning", {
+  expect_equal(
+    parse_llstr(
+      "  51°28'39\"N 000°27'41\"W ",
+      format = "DD°MM'SS\"H DDD°MM'SS\"H"
+    ),
+    data.frame(lat = 51 + 28 / 60 + 39 / 3600, lon = -(27 / 60 + 41 / 3600))
+  )
+  expect_warning(
+    res <- parse_llstr(
+      "51d28'39\"N 000d27'41\"W",
+      format = "DD°MM'SS\"H DDD°MM'SS\"H"
+    ),
+    "does not match format"
+  )
+  expect_equal(res, data.frame(lat = NA_real_, lon = NA_real_))
+  # signs, as in parse_lat(format =)
+  expect_equal(
+    parse_llstr(
+      c("-45.5 −074.5", "+45.5S 074.5W"),
+      format = c("DD.d DDD.d", "DD.dH DDD.dH")
+    ),
+    data.frame(lat = c(-45.5, -45.5), lon = c(-74.5, -74.5))
+  )
+  expect_warning(
+    res <- parse_llstr("-45.5N 074.5W", format = "DD.dH DDD.dH"),
+    "latitude: minus sign and direction letter disagree"
+  )
+  expect_equal(res, data.frame(lat = NA_real_, lon = -74.5))
+})
+
+test_that("pair format: the first format that matches wins", {
+  formats <- c("DDMMSSH DDDMMSSH", "DDMMSSHDDDMMSSH", "DD MM SSH DDD MM SSH")
+  expect_equal(
+    parse_llstr(
+      c("51 28 39N 000 27 41W", "512839N0002741W", "512839N 0002741W"),
+      format = formats
+    ),
+    data.frame(
+      lat = rep(51 + 28 / 60 + 39 / 3600, times = 3),
+      lon = rep(-(27 / 60 + 41 / 3600), times = 3)
+    )
+  )
+  # a string that matches a format but gives NA is not read again
+  expect_warning(
+    res <- parse_llstr("4575 07430", format = c("DDMM DDDMM", "DDMm DDDMm")),
+    "latitude: minutes or seconds not within 0/60 range"
+  )
+  expect_equal(res, data.frame(lat = NA_real_, lon = 74.5))
+})
+
+test_that("pair format: the blocks follow order", {
+  lat <- 51 + 28 / 60 + 39 / 3600
+  lon <- -(27 / 60 + 41 / 3600)
+  # auto: the H letters decide; no H means latitude first
+  expect_equal(
+    parse_llstr(
+      c("512839N 0002741W", "0002741W 512839N"),
+      format = c("DDMMSSH DDDMMSSH", "DDDMMSSH DDMMSSH")
+    ),
+    data.frame(lat = c(lat, lat), lon = c(lon, lon))
+  )
+  expect_equal(
+    parse_llstr("0002741W 512839", format = "DDDMMSSH DDMMSS"),
+    data.frame(lat = lat, lon = lon)
+  )
+  expect_equal(
+    parse_llstr("45 074", format = "DD DDD"),
+    data.frame(lat = 45, lon = 74)
+  )
+  # forced
+  expect_equal(
+    parse_llstr("074 45", format = "DDD DD", order = "lon_lat"),
+    data.frame(lat = 45, lon = 74)
+  )
+  expect_equal(
+    parse_llstr(
+      "0002741W 512839N",
+      format = "DDDMMSSH DDMMSSH",
+      order = "lon_lat"
+    ),
+    data.frame(lat = lat, lon = lon)
+  )
+  # letters that do not fit the forced order
+  res <- collect_warnings(
+    parse_llstr(
+      "0002741W 512839N",
+      format = "DDDMMSSH DDMMSSH",
+      order = "lat_lon"
+    )
+  )
+  expect_equal(res[["value"]], data.frame(lat = NA_real_, lon = NA_real_))
+  expect_match(
+    res[["warnings"]],
+    "\"0002741W 512839N\": direction letters do not fit order = \"lat_lon\"",
+    fixed = TRUE
+  )
+  expect_length(res[["warnings"]], 1L)
+  # the order does not change which strings match
+  expect_warning(
+    res <- parse_llstr(
+      "512839N 0002741W",
+      format = "DDDMMSSH DDMMSSH",
+      order = "lon_lat"
+    ),
+    "\"512839N 0002741W\": does not match format",
+    fixed = TRUE
+  )
+  expect_equal(res, data.frame(lat = NA_real_, lon = NA_real_))
+})
+
+test_that("fields_to_degrees() takes zero rows without a warning", {
+  fields <- matrix(
+    character(0),
+    nrow = 0L,
+    ncol = 4L,
+    dimnames = list(NULL, c("sign", "D", "M", "dec"))
+  )
+  expect_no_warning(
+    res <- fields_to_degrees(fields = fields, dec_unit = "M", what = "lat")
+  )
+  expect_identical(res, list(value = numeric(0), why = character(0)))
+})
+
+# parse_lon_lat(lon_format =, lat_format =) ----------------------------------
+
+# ONE table for the Format examples section and the @examples with a format
+# of ?parse_lon_lat. Each row: lon, lat, lon_format, lat_format, the expected
+# lon and lat, and `warnings`: one regular expression per expected warning.
+llc <- function(
+  lon,
+  lat,
+  lon_format,
+  lat_format,
+  exp_lon,
+  exp_lat,
+  warnings = character(0)
+) {
+  list(
+    lon = lon,
+    lat = lat,
+    lon_format = lon_format,
+    lat_format = lat_format,
+    expected = data.frame(lon = exp_lon, lat = exp_lat),
+    warnings = warnings
+  )
+}
+icao_lat <- 51 + 28 / 60 + 39 / 3600
+icao_lon <- -(27 / 60 + 41 / 3600)
+nmea_lat <- 45 + 56.98735 / 60
+nmea_lon <- -(10 + 45.12345 / 60)
+
+lon_lat_cases <- list(
+  # the Format examples table of ?parse_lon_lat, in the same order
+  llc("0002741W", "512839N", "DDDMMSSH", "DDMMSSH", icao_lon, icao_lat),
+  llc("01045.12345W", "4556.98735N", "DDDMM.mH", "DDMM.mH", nmea_lon, nmea_lat),
+  llc(
+    "W0104512345",
+    "N455698735",
+    "HDDDMMmmmmm",
+    "HDDMMmmmmm",
+    nmea_lon,
+    nmea_lat
+  ),
+  llc("-120.43", "4907.2", NULL, "DDMM.m", -120.43, 49.12),
+  llc("12043W", "49.12", "DDDMMH", NULL, -(120 + 43 / 60), 49.12),
+  llc(
+    "0743056W",
+    "453015N",
+    c("DDDMMSSH", "DDD MM SSH"),
+    c("DDMMSSH", "DD MM SSH"),
+    -(74 + 30 / 60 + 56 / 3600),
+    45 + 30 / 60 + 15 / 3600
+  ),
+  llc(
+    "074 30 56W",
+    "45 30 15N",
+    c("DDDMMSSH", "DDD MM SSH"),
+    c("DDMMSSH", "DD MM SSH"),
+    -(74 + 30 / 60 + 56 / 3600),
+    45 + 30 / 60 + 15 / 3600
+  ),
+  llc(
+    "1800001W",
+    "512839N",
+    "DDDMMSSH",
+    "DDMMSSH",
+    NA_real_,
+    icao_lat,
+    "\"1800001W\": not within -180/360 range"
+  ),
+  llc(
+    "0002741W",
+    "517539N",
+    "DDDMMSSH",
+    "DDMMSSH",
+    icao_lon,
+    NA_real_,
+    "\"517539N\": minutes or seconds not within 0/60 range"
+  ),
+  llc(
+    "512839N",
+    "0002741W",
+    "DDDMMSSH",
+    "DDMMSSH",
+    NA_real_,
+    NA_real_,
+    c(
+      "\"512839N\": does not match format",
+      "\"0002741W\": does not match format"
+    )
+  ),
+  # @examples of parse_lon_lat() with a format
+  llc(
+    c("0743056W", "074 30 56W"),
+    c("453015N", "45 30 15N"),
+    c("DDDMMSSH", "DDD MM SSH"),
+    c("DDMMSSH", "DD MM SSH"),
+    rep(-(74 + 30 / 60 + 56 / 3600), times = 2),
+    rep(45 + 30 / 60 + 15 / 3600, times = 2)
+  )
+)
+
+test_that("parse_lon_lat: every documented example with a format", {
+  for (case in lon_lat_cases) {
+    label <- paste0(
+      "parse_lon_lat(",
+      deparse(case[["lon"]]),
+      ", ",
+      deparse(case[["lat"]]),
+      ")"
+    )
+    res <- collect_warnings(
+      parse_lon_lat(
+        lon = case[["lon"]],
+        lat = case[["lat"]],
+        lon_format = case[["lon_format"]],
+        lat_format = case[["lat_format"]]
+      )
+    )
+    expect_equal(
+      res[["value"]],
+      case[["expected"]],
+      tolerance = 1e-9,
+      label = label
+    )
+    expect_identical(
+      length(res[["warnings"]]),
+      length(case[["warnings"]]),
+      label = label
+    )
+    for (i in seq_along(case[["warnings"]])) {
+      expect_match(
+        res[["warnings"]][[i]],
+        case[["warnings"]][[i]],
+        label = label
+      )
+    }
+  }
+})
+
+# parse_llstr(format =, order =) --------------------------------------------
+
+# ONE table for the Format examples section and the @examples of
+# ?parse_llstr. Each row: str, format (NULL is the default path), order, the
+# expected lat and lon, and `warnings`: one regular expression per expected
+# warning, in order.
+lc <- function(str, format, order, lat, lon, warnings = character(0)) {
+  list(
+    str = str,
+    format = format,
+    order = order,
+    expected = data.frame(lat = lat, lon = lon),
+    warnings = warnings
+  )
+}
+swapped <- "may come first: try order"
+dms_lat <- 4 + 51 / 60 + 36 / 3600
+dms_lon <- 101 + 34 / 60 + 7 / 3600
+
+llstr_cases <- list(
+  # the Format examples table of ?parse_llstr, in the same order
+  lc("512839N 0002741W", "DDMMSSH DDDMMSSH", "auto", icao_lat, icao_lon),
+  lc("512839N0002741W", "DDMMSSHDDDMMSSH", "auto", icao_lat, icao_lon),
+  lc("512839N/0002741W", "DDMMSSH/DDDMMSSH", "auto", icao_lat, icao_lon),
+  lc(
+    "51°28'39\"N 000°27'41\"W",
+    "DD°MM'SS\"H DDD°MM'SS\"H",
+    "auto",
+    icao_lat,
+    icao_lon
+  ),
+  lc(
+    "4556.98735N 01045.12345W",
+    "DDMM.mH DDDMM.mH",
+    "auto",
+    nmea_lat,
+    nmea_lon
+  ),
+  lc(
+    "4916.45,N,12311.12,W",
+    "DDMM.m,H,DDDMM.m,H",
+    "auto",
+    49 + 16.45 / 60,
+    -(123 + 11.12 / 60)
+  ),
+  lc(
+    "N455698735W0104512345",
+    "HDDMMmmmmmHDDDMMmmmmm",
+    "auto",
+    nmea_lat,
+    nmea_lon
+  ),
+  lc("N4.9196E101.347", "HD.ddddHDDD.ddd", "auto", 4.9196, 101.347),
+  lc("4.9196N101.347E", "D.dHDDD.dH", "auto", 4.9196, 101.347),
+  lc("-45.5 -074.5", "DD.d DDD.d", "auto", -45.5, -74.5),
+  lc("0002741W 512839N", "DDDMMSSH DDMMSSH", "auto", icao_lat, icao_lon),
+  lc("E101.347N4.9196", "HDDD.dHD.d", "auto", 4.9196, 101.347),
+  lc("101.347 4.9196", "DDD.d D.d", "lon_lat", 4.9196, 101.347),
+  lc("101.347 4.9196", "DDD.d D.d", "auto", NA_real_, NA_real_, swapped),
+  lc(
+    "512839N 0002741W",
+    "DDMMSSH DDDMMSSH",
+    "lon_lat",
+    NA_real_,
+    NA_real_,
+    "do not fit order = \"lon_lat\""
+  ),
+  lc(
+    "512839N 0002741N",
+    "DDMMSSH DDDMMSSH",
+    "auto",
+    NA_real_,
+    NA_real_,
+    "contradict each other"
+  ),
+  lc(
+    "517539N 0002741W",
+    "DDMMSSH DDDMMSSH",
+    "auto",
+    NA_real_,
+    icao_lon,
+    "latitude: minutes or seconds not within 0/60 range"
+  ),
+  lc(
+    "512839N 1900000W",
+    "DDMMSSH DDDMMSSH",
+    "auto",
+    icao_lat,
+    NA_real_,
+    "longitude: not within -180/360 range"
+  ),
+  lc(
+    "51 28 39N 000 27 41W",
+    "DDMMSSH DDDMMSSH",
+    "auto",
+    NA_real_,
+    NA_real_,
+    "does not match format"
+  ),
+  lc(
+    "51 28 39N 000 27 41W",
+    c("DDMMSSH DDDMMSSH", "DD MM SSH DDD MM SSH"),
+    "auto",
+    icao_lat,
+    icao_lon
+  ),
+  lc(
+    "512839N0002741W",
+    c("DDMMSSH DDDMMSSH", "DDMMSSHDDDMMSSH"),
+    "auto",
+    icao_lat,
+    icao_lon
+  ),
+  lc("45.5, -74.5", NULL, "auto", 45.5, -74.5),
+  lc("W74.5, N45.5", NULL, "auto", 45.5, -74.5),
+  lc("74.5W, 45.5", NULL, "auto", 45.5, -74.5),
+  lc("-74.5, 45.5", NULL, "lon_lat", 45.5, -74.5),
+  lc(
+    "N45.5, W74.5",
+    NULL,
+    "lon_lat",
+    NA_real_,
+    NA_real_,
+    "do not fit order = \"lon_lat\""
+  ),
+  lc("E45, E30", NULL, "auto", NA_real_, NA_real_, "contradict each other"),
+  lc(
+    "101.347, 4.9196",
+    NULL,
+    "auto",
+    NA_real_,
+    NA_real_,
+    c("not within -90/90 range", swapped)
+  ),
+  lc("abc, -74.5", NULL, "auto", NA_real_, -74.5, "no digits detected"),
+  lc("N4.9196E101.347", NULL, "auto", NA_real_, NA_real_, "could not split"),
+
+  # @examples of parse_llstr(), in the same order
+  lc("N 04.1683, E 101.5823", NULL, "auto", 4.1683, 101.5823),
+  lc("N04.82344, E101.61320", NULL, "auto", 4.82344, 101.6132),
+  lc("N 04.25164, E 101.70695", NULL, "auto", 4.25164, 101.70695),
+  lc("N05.03062, E101.75172", NULL, "auto", 5.03062, 101.75172),
+  lc("N05.03062,E101.75172", NULL, "auto", 5.03062, 101.75172),
+  lc("N4.9196, E101.345", NULL, "auto", 4.9196, 101.345),
+  lc("N4.9196, E101.346", NULL, "auto", 4.9196, 101.346),
+  lc("N4.9196, E101.347", NULL, "auto", 4.9196, 101.347),
+  lc("N4.9196 E101.347", NULL, "auto", 4.9196, 101.347),
+  lc("4.9196 -101.347", NULL, "auto", 4.9196, -101.347),
+  lc("N4 51'36\", E101 34'7\"", NULL, "auto", dms_lat, dms_lon),
+  lc(
+    c("4 51'36\"S, 101 34'7\"W", "N4 51'36\", E101 34'7\""),
+    NULL,
+    "auto",
+    c(-dms_lat, dms_lat),
+    c(-dms_lon, dms_lon)
+  ),
+  lc("4:51:36S 101:34:7W", NULL, "auto", -dms_lat, -dms_lon),
+  lc("W101.347, N4.9196", NULL, "auto", 4.9196, -101.347),
+  lc("101.347E, 4.9196", NULL, "auto", 4.9196, 101.347),
+  lc("-101.347, 4.9196", NULL, "lon_lat", 4.9196, -101.347),
+  lc("E45, E30", NULL, "auto", NA_real_, NA_real_, "contradict each other"),
+  lc(
+    "101.347, 4.9196",
+    NULL,
+    "auto",
+    NA_real_,
+    NA_real_,
+    c("not within -90/90 range", swapped)
+  ),
+  lc("101.347, 4.9196", NULL, "lon_lat", 4.9196, 101.347),
+  lc("abc, -74.5", NULL, "auto", NA_real_, -74.5, "no digits detected"),
+  lc("512839N 0002741W", "DDMMSSH DDDMMSSH", "auto", icao_lat, icao_lon),
+  lc("512839N0002741W", "DDMMSSHDDDMMSSH", "auto", icao_lat, icao_lon),
+  lc(
+    "4916.45,N,12311.12,W",
+    "DDMM.m,H,DDDMM.m,H",
+    "auto",
+    49 + 16.45 / 60,
+    -(123 + 11.12 / 60)
+  ),
+  lc("N4.9196E101.347", "HD.ddddHDDD.ddd", "auto", 4.9196, 101.347),
+  lc("0002741W 512839N", "DDDMMSSH DDMMSSH", "auto", icao_lat, icao_lon),
+  lc("101.347 4.9196", "DDD.d D.d", "lon_lat", 4.9196, 101.347),
+  lc(
+    c("512839N 0002741W", "512839N0002741W", "51 28 39N 000 27 41W"),
+    c("DDMMSSH DDDMMSSH", "DDMMSSHDDDMMSSH", "DD MM SSH DDD MM SSH"),
+    "auto",
+    rep(icao_lat, times = 3),
+    rep(icao_lon, times = 3)
+  ),
+  lc(
+    c("517539N 0002741W", "512839N 0002741N"),
+    "DDMMSSH DDDMMSSH",
+    "auto",
+    c(NA_real_, NA_real_),
+    c(icao_lon, NA_real_),
+    paste0(
+      "NA for 2 value.*\n",
+      ".*\"517539N 0002741W\": latitude: minutes or seconds.*\n",
+      ".*\"512839N 0002741N\": direction letters contradict each other"
+    )
+  ),
+  lc("N4.9196E101.347", NULL, "auto", NA_real_, NA_real_, "could not split"),
+  lc(
+    c("N4.9196, E101.347", "4.9196 -101.347"),
+    NULL,
+    "auto",
+    c(4.9196, 4.9196),
+    c(101.347, -101.347)
+  )
+)
+
+test_that("parse_llstr: every documented example", {
+  for (case in llstr_cases) {
+    label <- paste0(
+      "parse_llstr(",
+      deparse(case[["str"]]),
+      ", format = ",
+      deparse(case[["format"]]),
+      ", order = ",
+      deparse(case[["order"]]),
+      ")"
+    )
+    res <- collect_warnings(
+      parse_llstr(
+        case[["str"]],
+        format = case[["format"]],
+        order = case[["order"]]
+      )
+    )
+    expect_equal(
+      res[["value"]],
+      case[["expected"]],
+      tolerance = 1e-9,
+      label = label
+    )
+    expect_identical(
+      length(res[["warnings"]]),
+      length(case[["warnings"]]),
+      label = label
+    )
+    for (i in seq_along(case[["warnings"]])) {
+      expect_match(
+        res[["warnings"]][[i]],
+        case[["warnings"]][[i]],
+        label = label
+      )
+    }
+  }
+})
+
+# examples given in the text of the docs, outside the example tables
+test_that("examples from the text of the docs", {
+  # parse_llstr(): when only one part has a letter, that part decides
+  expect_equal(
+    collect_warnings(parse_llstr(str = "-74.5, 45.5N")),
+    list(value = data.frame(lat = 45.5, lon = -74.5), warnings = character(0))
+  )
+  expect_error(
+    parse_llstr(str = "x", format = "DDMMSSHH DDDMMSSH"),
+    regexp = "more than one H"
+  )
+  # parse_lat(): decimal digits right after their unit
+  expect_equal(
+    parse_lat(lat = "4556987", format = "DDMMmmm"),
+    45 + 56.987 / 60
+  )
+  expect_error(
+    parse_lat(lat = "4530", format = "DDX"),
+    regexp = "unknown letter X"
+  )
+  # numbers lose their leading zeros: 0002741 is seen as "2741"
+  res <- collect_warnings(parse_lon(lon = 0002741, format = "DDDMMSS"))
+  expect_equal(res[["value"]], NA_real_)
+  expect_match(res[["warnings"]], regexp = "\"2741\": does not match format")
+  # the default path: minutes out of range
+  res <- collect_warnings(parse_lat(lat = "10 30,12345"))
+  expect_equal(res[["value"]], NA_real_)
+  expect_match(
+    res[["warnings"]],
+    regexp = "minutes or seconds not within 0/60 range"
+  )
+})
