@@ -1,7 +1,7 @@
 # Performance regression guards
 #
 # These tests use the `bench` package (listed in Suggests) and are skipped
-# on CRAN.  They verify three properties:
+# on CRAN.  They verify four properties:
 #
 #   1. Absolute floor  – a given input size must complete within a generous
 #                        wall-clock budget (catches catastrophic regressions).
@@ -10,11 +10,16 @@
 #   3. Bounded memory  – R heap bytes allocated per item must stay below a
 #                        ceiling (catches extra R copies; blind to C++
 #                        allocations and leaks).
+#   4. Relative speed  – time of parzer divided by the time of a base R
+#                        baseline, measured in the same run, must stay below
+#                        a ceiling (catches moderate slowdowns, e.g.
+#                        std::regex coming back).  Installed builds only.
 #
-# Thresholds are intentionally loose: the 2 s floor is about 10 000 times the
-# measured time for 96 strings (about 0.1 ms with -O2), so slow CI runners
-# and -O0 debug builds never trigger false positives. These tests only catch
+# Thresholds of 1-3 are intentionally loose: the 2 s floor is about 10 000
+# times the measured time for 96 strings (about 0.1 ms with -O2), so slow CI
+# runners and -O0 debug builds never trigger false positives. They only catch
 # catastrophic regressions; compare timings with benchmarks/compare_with_ref.R.
+# Test 4 does not depend on machine speed, so its limit is much tighter.
 
 # ---------------------------------------------------------------------------
 # Shared fixtures
@@ -237,5 +242,91 @@ test_that("parse_parts_lat allocates < 10 kB per item (960 items)", {
       "parse_parts_lat bytes/item = %.1f (must be < 10 000)",
       bytes_per_item
     )
+  )
+})
+
+# ---------------------------------------------------------------------------
+# 4. Relative speed against a base R baseline
+#
+# The tests above only catch large slowdowns.  These ones divide the median
+# time of parzer on 10 000 strings by the median time of
+# gsub("[^0-9A-Za-z.]", "'", x) on the same strings, measured in the same run,
+# so the ratio does not depend on the speed of the machine.
+#
+# Measured on 2026-11-18 (R 4.6.1, macOS arm64, -O2), 8 repeats each:
+#                          parse_lat  parse_lon  parse_llstr
+#   current code              1.5-1.6    1.6        2.1-2.2
+#   std::regex (aacd37b)      20         25-26      33-34
+# A maximum of 5 leaves a margin of 2-3x against noise on other platforms and
+# still fails when std::regex comes back.
+#
+# A package loaded with devtools::test() (pkgload::load_all()) is compiled at
+# -O0 and runs about 7x slower, so these tests only run on an installed one.
+# ---------------------------------------------------------------------------
+
+bench_ratio_max <- 5
+
+.is_dev_package <- function() {
+  exists(".__DEVTOOLS__", envir = asNamespace("parzer"), inherits = FALSE)
+}
+
+.relative_time <- function(f, baseline) {
+  bm <- bench::mark(f(), baseline(), iterations = 20L, check = FALSE)
+  as.numeric(median(bm$time[[1L]])) / as.numeric(median(bm$time[[2L]]))
+}
+
+.base_r_baseline <- function(x) {
+  function() gsub("[^0-9A-Za-z.]", "'", x)
+}
+
+lats_10k <- rep(bench_lats, length.out = 10000L)
+lons_10k <- rep(bench_lons, length.out = 10000L)
+llstrs_10k <- paste(lats_10k, lons_10k, sep = ", ")
+
+test_that("parse_lat stays within 5x the time of gsub (10k strings)", {
+  skip_on_cran()
+  skip_if_not_installed("bench")
+  skip_if(.is_dev_package(), "unoptimised load_all() build")
+
+  ratio <- .relative_time(
+    f = function() parse_lat(lats_10k),
+    baseline = .base_r_baseline(lats_10k)
+  )
+  expect_lt(
+    ratio,
+    bench_ratio_max,
+    label = sprintf("parse_lat / gsub time ratio = %.2f", ratio)
+  )
+})
+
+test_that("parse_lon stays within 5x the time of gsub (10k strings)", {
+  skip_on_cran()
+  skip_if_not_installed("bench")
+  skip_if(.is_dev_package(), "unoptimised load_all() build")
+
+  ratio <- .relative_time(
+    f = function() parse_lon(lons_10k),
+    baseline = .base_r_baseline(lons_10k)
+  )
+  expect_lt(
+    ratio,
+    bench_ratio_max,
+    label = sprintf("parse_lon / gsub time ratio = %.2f", ratio)
+  )
+})
+
+test_that("parse_llstr stays within 5x the time of gsub (10k strings)", {
+  skip_on_cran()
+  skip_if_not_installed("bench")
+  skip_if(.is_dev_package(), "unoptimised load_all() build")
+
+  ratio <- .relative_time(
+    f = function() parse_llstr(llstrs_10k),
+    baseline = .base_r_baseline(llstrs_10k)
+  )
+  expect_lt(
+    ratio,
+    bench_ratio_max,
+    label = sprintf("parse_llstr / gsub time ratio = %.2f", ratio)
   )
 })
