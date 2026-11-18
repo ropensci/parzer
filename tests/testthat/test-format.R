@@ -1064,3 +1064,36 @@ test_that("parse_llstr: every documented example", {
     }
   }
 })
+
+# examples given in the text of the docs, outside the example tables
+test_that("examples from the text of the docs", {
+  # parse_llstr(): when only one part has a letter, that part decides
+  expect_equal(
+    collect_warnings(parse_llstr(str = "-74.5, 45.5N")),
+    list(value = data.frame(lat = 45.5, lon = -74.5), warnings = character(0))
+  )
+  expect_error(
+    parse_llstr(str = "x", format = "DDMMSSHH DDDMMSSH"),
+    regexp = "more than one H"
+  )
+  # parse_lat(): decimal digits right after their unit
+  expect_equal(
+    parse_lat(lat = "4556987", format = "DDMMmmm"),
+    45 + 56.987 / 60
+  )
+  expect_error(
+    parse_lat(lat = "4530", format = "DDX"),
+    regexp = "unknown letter X"
+  )
+  # numbers lose their leading zeros: 0002741 is seen as "2741"
+  res <- collect_warnings(parse_lon(lon = 0002741, format = "DDDMMSS"))
+  expect_equal(res[["value"]], NA_real_)
+  expect_match(res[["warnings"]], regexp = "\"2741\": does not match format")
+  # the default path: minutes out of range
+  res <- collect_warnings(parse_lat(lat = "10 30,12345"))
+  expect_equal(res[["value"]], NA_real_)
+  expect_match(
+    res[["warnings"]],
+    regexp = "minutes or seconds not within 0/60 range"
+  )
+})
