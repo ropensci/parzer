@@ -22,3 +22,17 @@ test_lats <- c(
   "40-25-5.994N",
   "40_25_5.994N"
 )
+
+# the value of `expr` and the messages of all its warnings, so a test can
+# check that there is exactly one warning and what it says
+collect_warnings <- function(expr) {
+  warnings <- character(0)
+  value <- withCallingHandlers(
+    expr,
+    warning = function(w) {
+      warnings <<- c(warnings, conditionMessage(w))
+      invokeRestart("muffleWarning")
+    }
+  )
+  list(value = value, warnings = warnings)
+}

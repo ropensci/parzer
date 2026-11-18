@@ -16,6 +16,7 @@ parzer 0.5.0.9000
 
 ### MINOR IMPROVEMENTS
 
+* When a value with 4 or more digits in a row (not after a decimal point), such as "2343 56N", gives `NA` because its degrees, minutes or seconds are out of range, the warning now says that the digits may be packed together and points to the `format` argument. Before, a latitude warning said to check that lon and lat were not inverted.
 * Faster input cleaning: `parse_lat()` and `parse_lon()` are about 7 times faster on numeric input and about 25% faster on character input.
 * Removed a check in the C++ code that could never fire, and the Japanese-locale test for the old `std::regex` bug. callr, pkgbuild, pkgload and withr are no longer suggested.
 

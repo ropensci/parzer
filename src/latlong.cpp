@@ -69,6 +69,27 @@ bool is_digit(char c) {
   return c >= '0' && c <= '9';
 }
 
+// A run of 4 or more digits that is not right after a decimal point, as in
+// "2343 56n", is probably degrees and minutes written together. Only called
+// when a warning is given, so valid input does not pay for it.
+std::string packed_hint(const std::string& s) {
+  std::size_t i = 0;
+  while (i < s.size()) {
+    if (!is_digit(s[i])) {
+      ++i;
+      continue;
+    }
+    const bool after_dot = i > 0 && s[i - 1] == '.';
+    const std::size_t start = i;
+    while (i < s.size() && is_digit(s[i])) ++i;
+    if (!after_dot && i - start >= 4) {
+      return "\n  degrees, minutes and seconds may be packed together (e.g. DDMMSS):"
+             " try the format argument of parse_lat() or parse_lon()";
+    }
+  }
+  return "";
+}
+
 // how many characters of s are one of `chars`, e.g. "ns"
 int count_direction_matches(const std::string& s, const std::string& chars) {
   return std::count_if(s.begin(), s.end(),
@@ -154,7 +175,8 @@ double nums_to_decimal(const std::vector<double>& nums, const std::string& orig,
   for (std::size_t i = 1; i < n; ++i) {
     // negative or >= 60 minutes/seconds
     if (!(nums[i] >= 0 && nums[i] < 60)) {
-      Rcpp::warning("minutes or seconds not within 0/60 range, got: " + orig);
+      Rcpp::warning("minutes or seconds not within 0/60 range, got: " + orig +
+        packed_hint(orig));
       return NA_REAL;
     }
   }
@@ -202,8 +224,10 @@ double convert_lat(std::string& str) {
     if (!Rcpp::NumericVector::is_na(ret)) {
       if (!check_lat(ret)) {
         ret = NA_REAL;
+        // packed digits, not inverted coordinates, are the likely cause then
+        const std::string hint = packed_hint(orig);
         Rcpp::warning("not within -90/90 range, got: " + orig +
-          "\n  check that you did not invert lon and lat");
+          (hint.empty() ? "\n  check that you did not invert lon and lat" : hint));
       }
     }
   }
@@ -237,7 +261,7 @@ double convert_lon(std::string& str) {
     if (!Rcpp::NumericVector::is_na(ret)) {
       if (!check_lon(ret)) {
         ret = NA_REAL;
-        Rcpp::warning("not within -180/360 range, got: " + orig);
+        Rcpp::warning("not within -180/360 range, got: " + orig + packed_hint(orig));
       }
     }
   }

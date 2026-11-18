@@ -140,6 +140,48 @@ test_that("parse_lat: 0/60 boundaries, negative and decimal slots", {
 
 test_that("parse_lat: range warning shows the input", {
   expect_warning(parse_lat("10°30,12345"), "10.30.12345")
+  # 12345: 4 or more digits not after a decimal point, so the packed hint
+  expect_warning(parse_lat("10°30,12345"), "may be packed together")
+})
+
+test_that("parse_lat: packed digits get a hint to format, not to inverted lon and lat", {
+  packed <- c(
+    "2343 56N",
+    "23 4356N",
+    "4556.98735",
+    "N455698735",
+    "512839N",
+    "1234"
+  )
+  for (x in packed) {
+    res <- collect_warnings(parse_lat(x))
+    expect_identical(res[["value"]], NA_real_, label = x)
+    expect_length(res[["warnings"]], 1L)
+    expect_match(
+      res[["warnings"]],
+      "may be packed together \\(e.g. DDMMSS\\): try the format argument",
+      label = x
+    )
+    expect_no_match(res[["warnings"]], "invert", label = x)
+  }
+  # fewer than 4 digits, or digits after the decimal point: no hint
+  for (x in c("92", "-92N", "91.12345", "45 75")) {
+    res <- collect_warnings(parse_lat(x))
+    expect_identical(res[["value"]], NA_real_, label = x)
+    expect_length(res[["warnings"]], 1L)
+    expect_no_match(res[["warnings"]], "packed", label = x)
+  }
+  expect_warning(
+    parse_lat("91.12345"),
+    "check that you did not invert lon and lat"
+  )
+  # one warning for each value, each with its own hint
+  res <- collect_warnings(parse_lat(c("2343 56N", "92")))
+  expect_length(res[["warnings"]], 2L)
+  expect_match(res[["warnings"]][[1]], "packed")
+  expect_match(res[["warnings"]][[2]], "invert")
+  # the hint shows in the functions built on parse_lat() too
+  expect_warning(parse_parts_lat("2343 56N"), "packed")
 })
 
 test_that("parse_parts_lat() and parse_hemisphere() reject minutes >= 60", {
