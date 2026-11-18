@@ -7,7 +7,8 @@
 #'   `NULL`, parzer finds the degrees, minutes and seconds by itself. Give a
 #'   pattern when it cannot, for example when the digits are packed together
 #'   with no separator, as in `"512839N"`. With several patterns, each value
-#'   is read with the first pattern that matches it. See the Format section.
+#'   is read with the first pattern that matches it. See the Format and
+#'   Format examples sections.
 #' @return numeric vector
 #' @section Format:
 #' A pattern describes how the values are written. It is made of letters and
@@ -15,10 +16,13 @@
 #' `CLongLatString`.
 #'
 #' - `D`, `M` and `S` stand for the digits of the whole degrees, minutes and
-#'   seconds. The number of letters is the exact number of digits: `DD` reads
-#'   `"05"` but not `"5"`, and longitudes often need `DDD`. `D` is required.
-#'   `M` and `S` are optional, but `S` needs `M`, and they come in the order
-#'   `D`, `M`, `S`.
+#'   seconds. The number of letters is the exact number of digits: `DD` means
+#'   exactly 2 digits, so it reads `"05"` but not `"5"`, and `DDD` means
+#'   exactly 3 digits, as longitudes often need. Values written without
+#'   leading zeros need a second pattern, for example
+#'   `c("DD MM SSH", "D MM SSH")` reads both `"45 03 02N"` and `"5 03 02N"`.
+#'   `D` is required. `M` and `S` are optional, but `S` needs `M`, and they
+#'   come in the order `D`, `M`, `S`.
 #' - `d`, `m` and `s` stand for the decimal digits of the degrees, minutes or
 #'   seconds. Only the last unit can have them. They come right after it, as
 #'   in `"DDMMmmm"`, or after a dot that follows it, as in `"DDMM.m"`.
@@ -59,12 +63,14 @@
 #' `parse_lon(0002741, format = "DDDMMSS")` sees `"2741"` and gives `NA`.
 #' Give such values as text: `parse_lon("0002741", format = "DDDMMSS")`.
 #'
+#' See the Format examples section for many examples.
+#'
+#' @section Format examples:
 # Every row of this table and every format example in @examples is mirrored
 # in the table of tests/testthat/test-format.R: keep the two in sync.
 #' | Value | `format` | Result | Why |
 #' |---|---|---|---|
 #' | `"512839N"` | `"DDMMSSH"` | 51.4775 | ICAO latitude |
-#' | `"0002741W"` | `"DDDMMSSH"` | -0.46139 | ICAO longitude, with `parse_lon()` |
 #' | `"4556.98735"` | `"DDMM.mmmmm"` | 45.94979 | NMEA |
 #' | `"4556.98735"` | `"DDMM.m"` | 45.94979 | after a dot, any number of decimals |
 #' | `"4556.9"` | `"DDMM.m"` | 45.94833 | after a dot, any number of decimals |
@@ -88,10 +94,12 @@
 #' | `"4530"` | `c("DDMM", "DD MM")` | 45.5 | the first pattern matches |
 #' | `"45 30"` | `c("DDMM", "DD MM")` | 45.5 | the second pattern matches |
 #' | `"453"` | `"DDMM"` | `NA` | 3 digits do not match 4 letters |
+#' | `"45 03 02N"` | `c("DD MM SSH", "D MM SSH")` | 45.05056 | the first pattern matches |
+#' | `"5 03 02N"` | `c("DD MM SSH", "D MM SSH")` | 5.05056 | no leading zero: the second pattern matches |
 #' | `"5°3'2\"N"` | `"DD°MM'SS\"H"` | `NA` | `DD` needs exactly 2 digits |
 #' | `"4575"` | `"DDMM"` | `NA` | 75 minutes |
+#' | `"9000S"` | `"DDMMH"` | -90 | lowest latitude |
 #' | `"9130"` | `"DDMM"` | `NA` | latitude above 90 |
-#' | `"18030W"` | `"DDDMMH"` | `NA` | longitude below -180, with `parse_lon()` |
 #'
 #' @section Errors:
 #' Throws warnings on parsing errors, and returns `NA` in each case
@@ -130,6 +138,8 @@
 #' parse_lat(4530, format = "DDMM") # numbers work too => 45.5
 #' # several formats, tried in order for each value
 #' parse_lat(c("4530", "45 30", "N4530"), format = c("DDMM", "DD MM", "HDDMM"))
+#' # no leading zero: a second format with one D
+#' parse_lat(c("45 03 02N", "5 03 02N"), format = c("DD MM SSH", "D MM SSH"))
 #' # NA and one warning: sign and letter disagree, wrong letter, 75 minutes
 #' parse_lat(c("-45N", "45E", "4575"), format = c("DDH", "DDMM"))
 #' # without format, packed digits give NA and a warning that points to format

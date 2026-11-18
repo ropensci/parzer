@@ -14,7 +14,8 @@ that say how the values are written, for example \code{"DDMMSSH"}. With
 \code{NULL}, parzer finds the degrees, minutes and seconds by itself. Give a
 pattern when it cannot, for example when the digits are packed together
 with no separator, as in \code{"512839N"}. With several patterns, each value
-is read with the first pattern that matches it. See the Format section.}
+is read with the first pattern that matches it. See the Format and
+Format examples sections.}
 }
 \value{
 numeric vector
@@ -29,10 +30,13 @@ other characters. The idea comes from \code{AngleFormat} in Apache SIS and from
 \code{CLongLatString}.
 \itemize{
 \item \code{D}, \code{M} and \code{S} stand for the digits of the whole degrees, minutes and
-seconds. The number of letters is the exact number of digits: \code{DD} reads
-\code{"05"} but not \code{"5"}, and longitudes often need \code{DDD}. \code{D} is required.
-\code{M} and \code{S} are optional, but \code{S} needs \code{M}, and they come in the order
-\code{D}, \code{M}, \code{S}.
+seconds. The number of letters is the exact number of digits: \code{DD} means
+exactly 2 digits, so it reads \code{"05"} but not \code{"5"}, and \code{DDD} means
+exactly 3 digits, as longitudes often need. Values written without
+leading zeros need a second pattern, for example
+\code{c("DD MM SSH", "D MM SSH")} reads both \code{"45 03 02N"} and \code{"5 03 02N"}.
+\code{D} is required. \code{M} and \code{S} are optional, but \code{S} needs \code{M}, and they
+come in the order \code{D}, \code{M}, \code{S}.
 \item \code{d}, \code{m} and \code{s} stand for the decimal digits of the degrees, minutes or
 seconds. Only the last unit can have them. They come right after it, as
 in \code{"DDMMmmm"}, or after a dot that follows it, as in \code{"DDMM.m"}.
@@ -74,10 +78,15 @@ cannot work, for example \code{"MMDD"}, \code{"DDmmSS"} or \code{"DDX"}, is an e
 
 Numbers are turned into text first, so they lose their leading zeros:
 \code{parse_lon(0002741, format = "DDDMMSS")} sees \code{"2741"} and gives \code{NA}.
-Give such values as text: \code{parse_lon("0002741", format = "DDDMMSS")}.\tabular{llll}{
+Give such values as text: \code{parse_lon("0002741", format = "DDDMMSS")}.
+
+See the Format examples section for many examples.
+}
+
+\section{Format examples}{
+\tabular{llll}{
    Value \tab \code{format} \tab Result \tab Why \cr
    \code{"512839N"} \tab \code{"DDMMSSH"} \tab 51.4775 \tab ICAO latitude \cr
-   \code{"0002741W"} \tab \code{"DDDMMSSH"} \tab -0.46139 \tab ICAO longitude, with \code{parse_lon()} \cr
    \code{"4556.98735"} \tab \code{"DDMM.mmmmm"} \tab 45.94979 \tab NMEA \cr
    \code{"4556.98735"} \tab \code{"DDMM.m"} \tab 45.94979 \tab after a dot, any number of decimals \cr
    \code{"4556.9"} \tab \code{"DDMM.m"} \tab 45.94833 \tab after a dot, any number of decimals \cr
@@ -101,10 +110,12 @@ Give such values as text: \code{parse_lon("0002741", format = "DDDMMSS")}.\tabul
    \code{"4530"} \tab \code{c("DDMM", "DD MM")} \tab 45.5 \tab the first pattern matches \cr
    \code{"45 30"} \tab \code{c("DDMM", "DD MM")} \tab 45.5 \tab the second pattern matches \cr
    \code{"453"} \tab \code{"DDMM"} \tab \code{NA} \tab 3 digits do not match 4 letters \cr
+   \code{"45 03 02N"} \tab \code{c("DD MM SSH", "D MM SSH")} \tab 45.05056 \tab the first pattern matches \cr
+   \code{"5 03 02N"} \tab \code{c("DD MM SSH", "D MM SSH")} \tab 5.05056 \tab no leading zero: the second pattern matches \cr
    \verb{"5°3'2\\"N"} \tab \verb{"DD°MM'SS\\"H"} \tab \code{NA} \tab \code{DD} needs exactly 2 digits \cr
    \code{"4575"} \tab \code{"DDMM"} \tab \code{NA} \tab 75 minutes \cr
+   \code{"9000S"} \tab \code{"DDMMH"} \tab -90 \tab lowest latitude \cr
    \code{"9130"} \tab \code{"DDMM"} \tab \code{NA} \tab latitude above 90 \cr
-   \code{"18030W"} \tab \code{"DDDMMH"} \tab \code{NA} \tab longitude below -180, with \code{parse_lon()} \cr
 }
 }
 
@@ -147,6 +158,8 @@ parse_lat(c("-45S", "+45S"), format = "DDH") # => -45 -45
 parse_lat(4530, format = "DDMM") # numbers work too => 45.5
 # several formats, tried in order for each value
 parse_lat(c("4530", "45 30", "N4530"), format = c("DDMM", "DD MM", "HDDMM"))
+# no leading zero: a second format with one D
+parse_lat(c("45 03 02N", "5 03 02N"), format = c("DD MM SSH", "D MM SSH"))
 # NA and one warning: sign and letter disagree, wrong letter, 75 minutes
 parse_lat(c("-45N", "45E", "4575"), format = c("DDH", "DDMM"))
 # without format, packed digits give NA and a warning that points to format

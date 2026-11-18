@@ -1,7 +1,7 @@
 # The format argument of parse_lat() and parse_lon().
 #
-# ONE table of cases. It holds every example of the Format section and of
-# @examples in ?parse_lat and ?parse_lon, then edge cases, so the docs and
+# ONE table of cases. It holds every example of the Format and Format
+# examples sections and of @examples in ?parse_lat and ?parse_lon, then edge cases, so the docs and
 # the code cannot drift. Each row: input, format (NULL is the default path),
 # what ("lat" or "lon"), expected value, and `warning`: a regular expression
 # that the one expected warning must match, or NA for no warning.
@@ -19,9 +19,8 @@ disagree <- "minus sign and direction letter disagree"
 min_sec <- "minutes or seconds not within 0/60 range"
 
 format_cases <- list(
-  # the table of the Format section, in the same order
+  # the Format examples table of ?parse_lat, in the same order
   fc("512839N", "DDMMSSH", "lat", 51 + 28 / 60 + 39 / 3600),
-  fc("0002741W", "DDDMMSSH", "lon", -(27 / 60 + 41 / 3600)),
   fc("4556.98735", "DDMM.mmmmm", "lat", 45 + 56.98735 / 60),
   fc("4556.98735", "DDMM.m", "lat", 45 + 56.98735 / 60),
   fc("4556.9", "DDMM.m", "lat", 45 + 56.9 / 60),
@@ -45,10 +44,65 @@ format_cases <- list(
   fc("4530", c("DDMM", "DD MM"), "lat", 45.5),
   fc("45 30", c("DDMM", "DD MM"), "lat", 45.5),
   fc("453", "DDMM", "lat", NA_real_, no_match),
+  fc("45 03 02N", c("DD MM SSH", "D MM SSH"), "lat", 45 + 3 / 60 + 2 / 3600),
+  fc("5 03 02N", c("DD MM SSH", "D MM SSH"), "lat", 5 + 3 / 60 + 2 / 3600),
   fc("5°3'2\"N", "DD°MM'SS\"H", "lat", NA_real_, no_match),
   fc("4575", "DDMM", "lat", NA_real_, min_sec),
+  fc("9000S", "DDMMH", "lat", -90),
   fc("9130", "DDMM", "lat", NA_real_, "not within -90/90 range"),
+
+  # the Format examples table of ?parse_lon, in the same order
+  fc("0002741W", "DDDMMSSH", "lon", -(27 / 60 + 41 / 3600)),
+  fc("1452741E", "DDDMMSSH", "lon", 145 + 27 / 60 + 41 / 3600),
+  fc("01045.5W", "DDDMM.mH", "lon", -(10 + 45.5 / 60)),
+  fc("01045.12345W", "DDDMM.mH", "lon", -(10 + 45.12345 / 60)),
+  fc("W0104512345", "HDDDMMmmmmm", "lon", -(10 + 45.12345 / 60)),
+  fc("E0451530", "HDDDMMSS", "lon", 45 + 15 / 60 + 30 / 3600),
+  fc("0451530e", "DDDMMSSH", "lon", 45 + 15 / 60 + 30 / 3600),
+  fc("045E15.5", "DDDHMM.m", "lon", 45 + 15.5 / 60),
+  fc("07443 56W", "DDDMM SSH", "lon", -(74 + 43 / 60 + 56 / 3600)),
+  fc("074 3056W", "DDD MMSSH", "lon", -(74 + 30 / 60 + 56 / 3600)),
+  fc("074   3056W", "DDD MMSSH", "lon", -(74 + 30 / 60 + 56 / 3600)),
+  fc("074°30'56\"W", "DDD°MM'SS\"H", "lon", -(74 + 30 / 60 + 56 / 3600)),
+  fc("074:30:56", "DDD:MM:SS", "lon", 74 + 30 / 60 + 56 / 3600),
+  fc("120.5", "DDD.d", "lon", 120.5),
+  fc("-0743056", "DDDMMSS", "lon", -(74 + 30 / 60 + 56 / 3600)),
+  fc("−0743056", "DDDMMSS", "lon", -(74 + 30 / 60 + 56 / 3600)),
+  fc("-074W", "DDDH", "lon", -74),
+  fc("+074W", "DDDH", "lon", -74),
+  fc("-074E", "DDDH", "lon", NA_real_, disagree),
+  fc("074N", "DDDH", "lon", NA_real_, "direction letter must be E or W"),
+  fc(
+    "0743056W",
+    c("DDDMMSSH", "DDD MM SSH"),
+    "lon",
+    -(74 + 30 / 60 + 56 / 3600)
+  ),
+  fc(
+    "074 30 56W",
+    c("DDDMMSSH", "DDD MM SSH"),
+    "lon",
+    -(74 + 30 / 60 + 56 / 3600)
+  ),
+  fc(
+    "74 30 56W",
+    c("DDD MM SSH", "DD MM SSH", "D MM SSH"),
+    "lon",
+    -(74 + 30 / 60 + 56 / 3600)
+  ),
+  fc(
+    "7 30 56W",
+    c("DDD MM SSH", "DD MM SSH", "D MM SSH"),
+    "lon",
+    -(7 + 30 / 60 + 56 / 3600)
+  ),
+  fc("74 30 56W", "DDD MM SSH", "lon", NA_real_, no_match),
+  fc("0747530W", "DDDMMSSH", "lon", NA_real_, min_sec),
+  fc("1800000W", "DDDMMSSH", "lon", -180),
+  fc("1800001W", "DDDMMSSH", "lon", NA_real_, "not within -180/360 range"),
   fc("18030W", "DDDMMH", "lon", NA_real_, "not within -180/360 range"),
+  fc("3600000E", "DDDMMSSH", "lon", 360),
+  fc("3600001E", "DDDMMSSH", "lon", NA_real_, "not within -180/360 range"),
 
   # the text of the Format section
   fc("05", "DD", "lat", 5),
@@ -73,6 +127,12 @@ format_cases <- list(
     c(45.5, 45.5, 45.5)
   ),
   fc(
+    c("45 03 02N", "5 03 02N"),
+    c("DD MM SSH", "D MM SSH"),
+    "lat",
+    c(45 + 3 / 60 + 2 / 3600, 5 + 3 / 60 + 2 / 3600)
+  ),
+  fc(
     c("-45N", "45E", "4575"),
     c("DDH", "DDMM"),
     "lat",
@@ -89,6 +149,16 @@ format_cases <- list(
     c("DDDMMSSH", "DDD MM SSH"),
     "lon",
     rep(-(27 / 60 + 41 / 3600), times = 2)
+  ),
+  fc(
+    c("074 30 56W", "74 30 56W", "7 30 56W"),
+    c("DDD MM SSH", "DD MM SSH", "D MM SSH"),
+    "lon",
+    c(
+      -(74 + 30 / 60 + 56 / 3600),
+      -(74 + 30 / 60 + 56 / 3600),
+      -(7 + 30 / 60 + 56 / 3600)
+    )
   ),
   fc(
     c("045N", "18030W"),
