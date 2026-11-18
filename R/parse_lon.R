@@ -65,7 +65,8 @@
 parse_lon <- function(lon, format = NULL) {
   assert(lon, c("numeric", "integer", "character"))
   assert(format, "character")
-
-  lon <- scrub(lon)
-  if (is.null(format)) pz_parse_lon(lon) else stop_form()
+  if (is.null(format)) {
+    return(pz_parse_lon(scrub(lon)))
+  }
+  parse_with_format(x = lon, format = format, what = "lon")
 }

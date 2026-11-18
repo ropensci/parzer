@@ -1,6 +1,10 @@
 parzer 0.5.0.9000
 ============
 
+### NEW FEATURES
+
+* `parse_lat()` and `parse_lon()` have a working `format` argument (#7, #11). A pattern such as `"DDMMSSH"` says how the values are written, so packed digits can be read: ICAO `"512839N"`, NMEA `"4556.98735"` with `"DDMM.mmmmm"`, or `"N455698735"` with `"HDDMMmmmmm"` (decimal point not written). Several patterns can be given; each value is read with the first one that matches. Values that do not match, or are out of range, give `NA` and are listed in one warning. See the new Format section of `?parse_lat`.
+
 ### BUG FIX
 
 * A Unicode minus sign (U+2212), an en dash or an em dash in front of a number is now read as a minus sign. Before, "−45.5" gave 45.5 without a warning.
