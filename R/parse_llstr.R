@@ -2,6 +2,10 @@
 #'
 #' @export
 #' @param str (character) string with latitude and longitude, one or more in a vector.
+#' @param order (character) which coordinate comes first in `str`:
+#'   `"auto"` (the default), `"lat_lon"` or `"lon_lat"`. With `"auto"`,
+#'   latitude comes first, unless the direction letters only fit longitude
+#'   first. See Details.
 #' @return A data.frame with parsed latitude and longitude in decimal degrees.
 #' A string that cannot be cut into two coordinates gives `NA` in both columns
 #' and a warning.
@@ -61,21 +65,66 @@
 #' # not supported: no separator between latitude and longitude
 #' parse_llstr("N4.9196E101.347")
 #' }
-parse_llstr <- function(str) {
+parse_llstr <- function(str, order = c("auto", "lat_lon", "lon_lat")) {
   assert(str, "character")
-  tmp <- pz_split_llstr(scrub(str))
+  order <- match.arg(arg = order)
+  halves <- pz_split_llstr(scrub(str))
+  first <- halves[["lat"]]
+  second <- halves[["lon"]]
+  # scrub() keeps letters as typed: only N, S, E and W are direction letters
+  has <- function(x, pattern) grepl(pattern = pattern, x = x)
+  picked <- pick_order(
+    ns1 = has(x = first, pattern = "[NSns]"),
+    ew1 = has(x = first, pattern = "[EWew]"),
+    ns2 = has(x = second, pattern = "[NSns]"),
+    ew2 = has(x = second, pattern = "[EWew]"),
+    order = order
+  )
+  why <- picked[["why"]]
   # "NA_STRING" marks strings that could not be split (see pz_split_llstr())
-  unsplit <- tmp$lat == "NA_STRING"
-  for (bad in str[unsplit & !is.na(str)]) {
-    warning(
-      "could not split into latitude and longitude, got: ",
-      bad,
-      call. = FALSE
-    )
-  }
+  unsplit <- first == "NA_STRING"
+  why[unsplit] <- NA_character_
+  why[unsplit & !is.na(str)] <- "could not split into latitude and longitude"
+  ok <- !unsplit & is.na(why)
+  lat_first <- picked[["lat_first"]]
+  lat_half <- first
+  lat_half[!lat_first] <- second[!lat_first]
+  lon_half <- second
+  lon_half[!lat_first] <- first[!lat_first]
   lat <- rep(NA_real_, times = length(str))
   lon <- rep(NA_real_, times = length(str))
-  lat[!unsplit] <- parse_lat(tmp$lat[!unsplit])
-  lon[!unsplit] <- parse_lon(tmp$lon[!unsplit])
+  lat[ok] <- parse_lat(lat_half[ok])
+  lon[ok] <- parse_lon(lon_half[ok])
+  for (i in which(!is.na(why))) {
+    warning(why[[i]], ", got: ", str[[i]], call. = FALSE)
+  }
   data.frame(lat = lat, lon = lon)
+}
+
+# Which half of each string is the latitude. `ns1` and `ew1` say whether
+# the first half has the direction letter N or S, E or W; `ns2` and `ew2`
+# say the same of the second half. Returns `lat_first`, `why` (the reason
+# for an NA row, or NA) and `can_swap` (both orders fit the letters, which
+# means that the string has no direction letter).
+pick_order <- function(ns1, ew1, ns2, ew2, order) {
+  fits_lat_lon <- !ew1 & !ns2
+  fits_lon_lat <- !ns1 & !ew2
+  lat_first <- switch(
+    EXPR = order,
+    auto = fits_lat_lon | !fits_lon_lat,
+    lat_lon = rep(TRUE, times = length(ns1)),
+    lon_lat = rep(FALSE, times = length(ns1))
+  )
+  fits <- ifelse(test = lat_first, yes = fits_lat_lon, no = fits_lon_lat)
+  why <- rep(NA_character_, times = length(ns1))
+  why[!fits] <- if (identical(order, "auto")) {
+    "direction letters contradict each other"
+  } else {
+    paste0("direction letters do not fit order = \"", order, "\"")
+  }
+  list(
+    lat_first = lat_first,
+    why = why,
+    can_swap = fits_lat_lon & fits_lon_lat
+  )
 }

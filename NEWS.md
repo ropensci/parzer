@@ -4,6 +4,7 @@ parzer 0.5.0.9000
 ### NEW FEATURES
 
 * `parse_lat()` and `parse_lon()` have a working `format` argument (#7, #11). A pattern such as `"DDMMSSH"` says how the values are written, so packed digits can be read: ICAO `"512839N"`, NMEA `"4556.98735"` with `"DDMM.mmmmm"`, or `"N455698735"` with `"HDDMMmmmmm"` (decimal point not written). Several patterns can be given; each value is read with the first one that matches. Values that do not match, or are out of range, give `NA` and are listed in one warning. See the new Format section of `?parse_lat`.
+* `parse_llstr()` has an `order` argument: `"auto"` (the default), `"lat_lon"` or `"lon_lat"`. With `"auto"`, latitude comes first, unless the direction letters only fit longitude first: "W74.5, N45.5" and "74.5W, 45.5" now give lat 45.5 and lon -74.5. Letters that contradict each other ("E45, E30"), or that do not fit a forced order, give `NA` for both values with a warning. Only rows that gave at least one `NA` before can change.
 
 ### BUG FIX
 
