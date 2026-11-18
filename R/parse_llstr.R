@@ -51,6 +51,12 @@
 #' parse_llstr("N4 51'36\", E101 34'7\"")
 #' parse_llstr(c("4 51'36\"S, 101 34'7\"W", "N4 51'36\", E101 34'7\""))
 #' parse_llstr("4:51:36S 101:34:7W")
+#'
+#' # add both columns with one call, picking them by name
+#' df <- data.frame(x = c("N4.9196, E101.347", "4.9196 -101.347"))
+#' cbind(df, parse_llstr(str = df[["x"]])[c("lat", "lon")])
+#' # dplyr:      df |> dplyr::mutate(parse_llstr(str = x)[c("lat", "lon")])
+#' # data.table: dt[, c("lat", "lon") := parse_llstr(str = x)[c("lat", "lon")]]
 #' \dontrun{
 #' # not supported: no separator between latitude and longitude
 #' parse_llstr("N4.9196E101.347")
