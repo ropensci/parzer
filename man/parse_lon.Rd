@@ -9,7 +9,12 @@ parse_lon(lon, format = NULL)
 \arguments{
 \item{lon}{(numeric/integer/character) one or more longitude values.}
 
-\item{format}{(character) format, not implemented yet.}
+\item{format}{(character) \code{NULL} (the default) or one or more patterns
+that say how the values are written, for example \code{"DDMMSSH"}. With
+\code{NULL}, parzer finds the degrees, minutes and seconds by itself. Give a
+pattern when it cannot, for example when the digits are packed together
+with no separator, as in \code{"512839N"}. With several patterns, each value
+is read with the first pattern that matches it. See the Format section.}
 }
 \value{
 numeric vector
@@ -37,8 +42,103 @@ A comma or space is always a separator between degrees, minutes and seconds,
 never a decimal mark.
 }
 
+\section{Format}{
+
+A pattern describes how the values are written. It is made of letters and
+other characters. The idea comes from \code{AngleFormat} in Apache SIS and from
+\code{CLongLatString}.
+\itemize{
+\item \code{D}, \code{M} and \code{S} stand for the digits of the whole degrees, minutes and
+seconds. The number of letters is the exact number of digits: \code{DD} reads
+\code{"05"} but not \code{"5"}, and longitudes often need \code{DDD}. \code{D} is required.
+\code{M} and \code{S} are optional, but \code{S} needs \code{M}, and they come in the order
+\code{D}, \code{M}, \code{S}.
+\item \code{d}, \code{m} and \code{s} stand for the decimal digits of the degrees, minutes or
+seconds. Only the last unit can have them. They come right after it, as
+in \code{"DDMMmmm"}, or after a dot that follows it, as in \code{"DDMM.m"}.
+\itemize{
+\item Without a dot, the decimal point is not written in the value. The
+number of letters is then the exact number of decimal digits: it is the
+only way to know where the hidden decimal point is. \code{"HDDMMmmmmm"}
+reads \code{"N455698735"} as N 45 degrees 56.98735 minutes.
+\item After a dot, the value has a decimal point and one or more decimal
+digits, as many as you like: \code{"DDMM.m"} reads both \code{"4556.9"} and
+\code{"4556.98735"}.
+}
+\item \code{H} stands for the hemisphere letter: \code{N} or \code{S} in \code{parse_lat()}, \code{E}
+or \code{W} in \code{parse_lon()}, in upper or lower case. \code{S} and \code{W} give a
+negative value. \code{H} can be at the start, at the end or in the middle, but
+only once. A letter of the other pair, for example \code{E} in \code{parse_lat()},
+gives \code{NA}.
+\item A space matches one or more spaces (or other white space).
+\item Any other character, for example \verb{°}, \verb{'}, \verb{"}, \code{:}, or a dot that is not
+followed by \code{d}, \code{m} or \code{s}, must be in the value exactly as in the
+pattern.
+\item A sign can always be written right before the degrees: \code{+}, \code{-}, or a
+Unicode minus \verb{−}, en dash \verb{–} or em dash \verb{—}. With \code{H}, the rules are
+the same as with \code{format = NULL}: \code{"-45S"} and \code{"+45S"} give -45, but
+\code{"-45N"} gives \code{NA}, because the minus sign and the letter disagree.
+}
+
+Spaces at the start and at the end of a value are ignored. The pattern is
+matched against the value as it is given: the cleaning done with
+\code{format = NULL}, for example reading \code{d} or \code{º} as a degree mark, does not
+happen.
+
+A value gives \code{NA} when it does not match any pattern, when its minutes or
+seconds are 60 or more, or when the result is out of range (latitude
+outside -90/90, longitude outside -180/360). All these values are listed in
+one warning. They are not read again with \code{format = NULL}. A missing value
+(\code{NA}) or an empty string gives \code{NA} without a warning. A pattern that
+cannot work, for example \code{"MMDD"}, \code{"DDmmSS"} or \code{"DDX"}, is an error.
+
+Numbers are turned into text first, so they lose their leading zeros:
+\code{parse_lon(0002741, format = "DDDMMSS")} sees \code{"2741"} and gives \code{NA}.
+Give such values as text: \code{parse_lon("0002741", format = "DDDMMSS")}.\tabular{llll}{
+   Value \tab \code{format} \tab Result \tab Why \cr
+   \code{"512839N"} \tab \code{"DDMMSSH"} \tab 51.4775 \tab ICAO latitude \cr
+   \code{"0002741W"} \tab \code{"DDDMMSSH"} \tab -0.46139 \tab ICAO longitude, with \code{parse_lon()} \cr
+   \code{"4556.98735"} \tab \code{"DDMM.mmmmm"} \tab 45.94979 \tab NMEA \cr
+   \code{"4556.98735"} \tab \code{"DDMM.m"} \tab 45.94979 \tab after a dot, any number of decimals \cr
+   \code{"4556.9"} \tab \code{"DDMM.m"} \tab 45.94833 \tab after a dot, any number of decimals \cr
+   \code{"N455698735"} \tab \code{"HDDMMmmmmm"} \tab 45.94979 \tab decimal point not written: exactly 5 decimals \cr
+   \code{"2343 56N"} \tab \code{"DDMM SSH"} \tab 23.73222 \tab  \cr
+   \code{"23 4356N"} \tab \code{"DD MMSSH"} \tab 23.73222 \tab  \cr
+   \code{"23   4356N"} \tab \code{"DD MMSSH"} \tab 23.73222 \tab a space matches several spaces \cr
+   \code{"2343.5N"} \tab \code{"DDMM.mH"} \tab 23.725 \tab  \cr
+   \code{"45N54.2356"} \tab \code{"DDHMM.m"} \tab 45.90393 \tab \code{H} in the middle \cr
+   \code{"s4530"} \tab \code{"HDDMM"} \tab -45.5 \tab \code{H} in front, in lower case \cr
+   \verb{"40°25'06\\"N"} \tab \verb{"DD°MM'SS\\"H"} \tab 40.41833 \tab symbols must match exactly \cr
+   \code{"40:25:06"} \tab \code{"DD:MM:SS"} \tab 40.41833 \tab  \cr
+   \code{"40.25"} \tab \code{"DD.MM"} \tab 40.41667 \tab a dot before \code{M} is a plain dot \cr
+   \code{"45.5"} \tab \code{"DD.d"} \tab 45.5 \tab decimal degrees \cr
+   \code{"-4530"} \tab \code{"DDMM"} \tab -45.5 \tab minus sign \cr
+   \code{"−4530"} \tab \code{"DDMM"} \tab -45.5 \tab Unicode minus sign \cr
+   \code{"-45S"} \tab \code{"DDH"} \tab -45 \tab sign and letter agree \cr
+   \code{"+45S"} \tab \code{"DDH"} \tab -45 \tab the letter gives the sign \cr
+   \code{"-45N"} \tab \code{"DDH"} \tab \code{NA} \tab sign and letter disagree \cr
+   \code{"45E"} \tab \code{"DDH"} \tab \code{NA} \tab \code{E} is not a latitude letter \cr
+   \code{"4530"} \tab \code{c("DDMM", "DD MM")} \tab 45.5 \tab the first pattern matches \cr
+   \code{"45 30"} \tab \code{c("DDMM", "DD MM")} \tab 45.5 \tab the second pattern matches \cr
+   \code{"453"} \tab \code{"DDMM"} \tab \code{NA} \tab 3 digits do not match 4 letters \cr
+   \verb{"5°3'2\\"N"} \tab \verb{"DD°MM'SS\\"H"} \tab \code{NA} \tab \code{DD} needs exactly 2 digits \cr
+   \code{"4575"} \tab \code{"DDMM"} \tab \code{NA} \tab 75 minutes \cr
+   \code{"9130"} \tab \code{"DDMM"} \tab \code{NA} \tab latitude above 90 \cr
+   \code{"18030W"} \tab \code{"DDDMMH"} \tab \code{NA} \tab longitude below -180, with \code{parse_lon()} \cr
+}
+}
+
 \examples{
 parse_lon("")
+
+# with format: say how the values are written (see the Format section)
+parse_lon("0002741W", format = "DDDMMSSH") # ICAO => -0.46139
+parse_lon("E0451530", format = "HDDDMMSS") # => 45.25833
+parse_lon("01045.5W", format = "DDDMM.mH") # NMEA => -10.75833
+parse_lon(c("0002741W", "000 27 41W"), format = c("DDDMMSSH", "DDD MM SSH"))
+# NA and one warning: N is not a longitude letter, below -180
+parse_lon(c("045N", "18030W"), format = c("DDDH", "DDDMMH"))
+
 \dontrun{
 parse_lon("-181")
 parse_lon("-361")

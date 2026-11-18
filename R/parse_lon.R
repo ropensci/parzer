@@ -2,7 +2,8 @@
 #'
 #' @export
 #' @param lon (numeric/integer/character) one or more longitude values.
-#' @param format (character) format, not implemented yet.
+#' @inheritParams parse_lat
+#' @inheritSection parse_lat Format
 #' @return numeric vector
 #' @section Errors:
 #' Throws warnings on parsing errors, and returns `NA` in each case
@@ -23,6 +24,16 @@
 #'
 #' @examples
 #' parse_lon("")
+#'
+#' # with format: say how the values are written (see the Format section)
+# these examples are mirrored in the table of tests/testthat/test-format.R
+#' parse_lon("0002741W", format = "DDDMMSSH") # ICAO => -0.46139
+#' parse_lon("E0451530", format = "HDDDMMSS") # => 45.25833
+#' parse_lon("01045.5W", format = "DDDMM.mH") # NMEA => -10.75833
+#' parse_lon(c("0002741W", "000 27 41W"), format = c("DDDMMSSH", "DDD MM SSH"))
+#' # NA and one warning: N is not a longitude letter, below -180
+#' parse_lon(c("045N", "18030W"), format = c("DDDH", "DDDMMH"))
+#'
 #' \dontrun{
 #' parse_lon("-181")
 #' parse_lon("-361")
