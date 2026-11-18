@@ -2,6 +2,9 @@
 #'
 #' @export
 #' @param str (character) string with latitude and longitude, one or more in a vector.
+#' @param format (character) `NULL` (the default) or one or more patterns
+#'   that say how the whole string is written, for example
+#'   `"DDMMSSH DDDMMSSH"`. See the Format section.
 #' @param order (character) which coordinate comes first in `str`:
 #'   `"auto"` (the default), `"lat_lon"` or `"lon_lat"`. With `"auto"`,
 #'   latitude comes first, unless the direction letters only fit longitude
@@ -65,9 +68,17 @@
 #' # not supported: no separator between latitude and longitude
 #' parse_llstr("N4.9196E101.347")
 #' }
-parse_llstr <- function(str, order = c("auto", "lat_lon", "lon_lat")) {
+parse_llstr <- function(
+  str,
+  format = NULL,
+  order = c("auto", "lat_lon", "lon_lat")
+) {
   assert(str, "character")
+  assert(format, "character")
   order <- match.arg(arg = order)
+  if (!is.null(format)) {
+    return(parse_llstr_with_format(str = str, format = format, order = order))
+  }
   halves <- pz_split_llstr(scrub(str))
   first <- halves[["lat"]]
   second <- halves[["lon"]]
