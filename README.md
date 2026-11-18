@@ -104,7 +104,7 @@ pak::pkg_install("ropensci/parzer")
     R> src/latlong.cpp: 92.31%
     R> R/dms-fxns.R: 100.00%
     R> R/parse_hemisphere.R: 100.00%
-    R> R/parse_lat_lon.R: 100.00%
+    R> R/parse_lon_lat.R: 100.00%
     R> R/parse_lat.R: 100.00%
     R> R/parse_llstr.R: 100.00%
     R> R/parse_lon.R: 100.00%
