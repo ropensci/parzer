@@ -813,3 +813,254 @@ test_that("parse_lon_lat: every documented example with a format", {
     }
   }
 })
+
+# parse_llstr(format =, order =) --------------------------------------------
+
+# ONE table for the Format examples section and the @examples of
+# ?parse_llstr. Each row: str, format (NULL is the default path), order, the
+# expected lat and lon, and `warnings`: one regular expression per expected
+# warning, in order.
+lc <- function(str, format, order, lat, lon, warnings = character(0)) {
+  list(
+    str = str,
+    format = format,
+    order = order,
+    expected = data.frame(lat = lat, lon = lon),
+    warnings = warnings
+  )
+}
+swapped <- "may come first: try order"
+dms_lat <- 4 + 51 / 60 + 36 / 3600
+dms_lon <- 101 + 34 / 60 + 7 / 3600
+
+llstr_cases <- list(
+  # the Format examples table of ?parse_llstr, in the same order
+  lc("512839N 0002741W", "DDMMSSH DDDMMSSH", "auto", icao_lat, icao_lon),
+  lc("512839N0002741W", "DDMMSSHDDDMMSSH", "auto", icao_lat, icao_lon),
+  lc("512839N/0002741W", "DDMMSSH/DDDMMSSH", "auto", icao_lat, icao_lon),
+  lc(
+    "51°28'39\"N 000°27'41\"W",
+    "DD°MM'SS\"H DDD°MM'SS\"H",
+    "auto",
+    icao_lat,
+    icao_lon
+  ),
+  lc(
+    "4556.98735N 01045.12345W",
+    "DDMM.mH DDDMM.mH",
+    "auto",
+    nmea_lat,
+    nmea_lon
+  ),
+  lc(
+    "4916.45,N,12311.12,W",
+    "DDMM.m,H,DDDMM.m,H",
+    "auto",
+    49 + 16.45 / 60,
+    -(123 + 11.12 / 60)
+  ),
+  lc(
+    "N455698735W0104512345",
+    "HDDMMmmmmmHDDDMMmmmmm",
+    "auto",
+    nmea_lat,
+    nmea_lon
+  ),
+  lc("N4.9196E101.347", "HD.ddddHDDD.ddd", "auto", 4.9196, 101.347),
+  lc("4.9196N101.347E", "D.dHDDD.dH", "auto", 4.9196, 101.347),
+  lc("-45.5 -074.5", "DD.d DDD.d", "auto", -45.5, -74.5),
+  lc("0002741W 512839N", "DDDMMSSH DDMMSSH", "auto", icao_lat, icao_lon),
+  lc("E101.347N4.9196", "HDDD.dHD.d", "auto", 4.9196, 101.347),
+  lc("101.347 4.9196", "DDD.d D.d", "lon_lat", 4.9196, 101.347),
+  lc("101.347 4.9196", "DDD.d D.d", "auto", NA_real_, NA_real_, swapped),
+  lc(
+    "512839N 0002741W",
+    "DDMMSSH DDDMMSSH",
+    "lon_lat",
+    NA_real_,
+    NA_real_,
+    "do not fit order = \"lon_lat\""
+  ),
+  lc(
+    "512839N 0002741N",
+    "DDMMSSH DDDMMSSH",
+    "auto",
+    NA_real_,
+    NA_real_,
+    "contradict each other"
+  ),
+  lc(
+    "517539N 0002741W",
+    "DDMMSSH DDDMMSSH",
+    "auto",
+    NA_real_,
+    icao_lon,
+    "latitude: minutes or seconds not within 0/60 range"
+  ),
+  lc(
+    "512839N 1900000W",
+    "DDMMSSH DDDMMSSH",
+    "auto",
+    icao_lat,
+    NA_real_,
+    "longitude: not within -180/360 range"
+  ),
+  lc(
+    "51 28 39N 000 27 41W",
+    "DDMMSSH DDDMMSSH",
+    "auto",
+    NA_real_,
+    NA_real_,
+    "does not match format"
+  ),
+  lc(
+    "51 28 39N 000 27 41W",
+    c("DDMMSSH DDDMMSSH", "DD MM SSH DDD MM SSH"),
+    "auto",
+    icao_lat,
+    icao_lon
+  ),
+  lc(
+    "512839N0002741W",
+    c("DDMMSSH DDDMMSSH", "DDMMSSHDDDMMSSH"),
+    "auto",
+    icao_lat,
+    icao_lon
+  ),
+  lc("45.5, -74.5", NULL, "auto", 45.5, -74.5),
+  lc("W74.5, N45.5", NULL, "auto", 45.5, -74.5),
+  lc("74.5W, 45.5", NULL, "auto", 45.5, -74.5),
+  lc("-74.5, 45.5", NULL, "lon_lat", 45.5, -74.5),
+  lc(
+    "N45.5, W74.5",
+    NULL,
+    "lon_lat",
+    NA_real_,
+    NA_real_,
+    "do not fit order = \"lon_lat\""
+  ),
+  lc("E45, E30", NULL, "auto", NA_real_, NA_real_, "contradict each other"),
+  lc(
+    "101.347, 4.9196",
+    NULL,
+    "auto",
+    NA_real_,
+    NA_real_,
+    c("not within -90/90 range", swapped)
+  ),
+  lc("abc, -74.5", NULL, "auto", NA_real_, -74.5, "no digits detected"),
+  lc("N4.9196E101.347", NULL, "auto", NA_real_, NA_real_, "could not split"),
+
+  # @examples of parse_llstr(), in the same order
+  lc("N 04.1683, E 101.5823", NULL, "auto", 4.1683, 101.5823),
+  lc("N04.82344, E101.61320", NULL, "auto", 4.82344, 101.6132),
+  lc("N 04.25164, E 101.70695", NULL, "auto", 4.25164, 101.70695),
+  lc("N05.03062, E101.75172", NULL, "auto", 5.03062, 101.75172),
+  lc("N05.03062,E101.75172", NULL, "auto", 5.03062, 101.75172),
+  lc("N4.9196, E101.345", NULL, "auto", 4.9196, 101.345),
+  lc("N4.9196, E101.346", NULL, "auto", 4.9196, 101.346),
+  lc("N4.9196, E101.347", NULL, "auto", 4.9196, 101.347),
+  lc("N4.9196 E101.347", NULL, "auto", 4.9196, 101.347),
+  lc("4.9196 -101.347", NULL, "auto", 4.9196, -101.347),
+  lc("N4 51'36\", E101 34'7\"", NULL, "auto", dms_lat, dms_lon),
+  lc(
+    c("4 51'36\"S, 101 34'7\"W", "N4 51'36\", E101 34'7\""),
+    NULL,
+    "auto",
+    c(-dms_lat, dms_lat),
+    c(-dms_lon, dms_lon)
+  ),
+  lc("4:51:36S 101:34:7W", NULL, "auto", -dms_lat, -dms_lon),
+  lc("W101.347, N4.9196", NULL, "auto", 4.9196, -101.347),
+  lc("101.347E, 4.9196", NULL, "auto", 4.9196, 101.347),
+  lc("-101.347, 4.9196", NULL, "lon_lat", 4.9196, -101.347),
+  lc("E45, E30", NULL, "auto", NA_real_, NA_real_, "contradict each other"),
+  lc(
+    "101.347, 4.9196",
+    NULL,
+    "auto",
+    NA_real_,
+    NA_real_,
+    c("not within -90/90 range", swapped)
+  ),
+  lc("101.347, 4.9196", NULL, "lon_lat", 4.9196, 101.347),
+  lc("abc, -74.5", NULL, "auto", NA_real_, -74.5, "no digits detected"),
+  lc("512839N 0002741W", "DDMMSSH DDDMMSSH", "auto", icao_lat, icao_lon),
+  lc("512839N0002741W", "DDMMSSHDDDMMSSH", "auto", icao_lat, icao_lon),
+  lc(
+    "4916.45,N,12311.12,W",
+    "DDMM.m,H,DDDMM.m,H",
+    "auto",
+    49 + 16.45 / 60,
+    -(123 + 11.12 / 60)
+  ),
+  lc("N4.9196E101.347", "HD.ddddHDDD.ddd", "auto", 4.9196, 101.347),
+  lc("0002741W 512839N", "DDDMMSSH DDMMSSH", "auto", icao_lat, icao_lon),
+  lc("101.347 4.9196", "DDD.d D.d", "lon_lat", 4.9196, 101.347),
+  lc(
+    c("512839N 0002741W", "512839N0002741W", "51 28 39N 000 27 41W"),
+    c("DDMMSSH DDDMMSSH", "DDMMSSHDDDMMSSH", "DD MM SSH DDD MM SSH"),
+    "auto",
+    rep(icao_lat, times = 3),
+    rep(icao_lon, times = 3)
+  ),
+  lc(
+    c("517539N 0002741W", "512839N 0002741N"),
+    "DDMMSSH DDDMMSSH",
+    "auto",
+    c(NA_real_, NA_real_),
+    c(icao_lon, NA_real_),
+    paste0(
+      "NA for 2 value.*\n",
+      ".*\"517539N 0002741W\": latitude: minutes or seconds.*\n",
+      ".*\"512839N 0002741N\": direction letters contradict each other"
+    )
+  ),
+  lc("N4.9196E101.347", NULL, "auto", NA_real_, NA_real_, "could not split"),
+  lc(
+    c("N4.9196, E101.347", "4.9196 -101.347"),
+    NULL,
+    "auto",
+    c(4.9196, 4.9196),
+    c(101.347, -101.347)
+  )
+)
+
+test_that("parse_llstr: every documented example", {
+  for (case in llstr_cases) {
+    label <- paste0(
+      "parse_llstr(",
+      deparse(case[["str"]]),
+      ", format = ",
+      deparse(case[["format"]]),
+      ", order = ",
+      deparse(case[["order"]]),
+      ")"
+    )
+    res <- collect_warnings(
+      parse_llstr(
+        case[["str"]],
+        format = case[["format"]],
+        order = case[["order"]]
+      )
+    )
+    expect_equal(
+      res[["value"]],
+      case[["expected"]],
+      tolerance = 1e-9,
+      label = label
+    )
+    expect_identical(
+      length(res[["warnings"]]),
+      length(case[["warnings"]]),
+      label = label
+    )
+    for (i in seq_along(case[["warnings"]])) {
+      expect_match(
+        res[["warnings"]][[i]],
+        case[["warnings"]][[i]],
+        label = label
+      )
+    }
+  }
+})

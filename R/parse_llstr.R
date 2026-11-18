@@ -4,18 +4,33 @@
 #' @param str (character) string with latitude and longitude, one or more in a vector.
 #' @param format (character) `NULL` (the default) or one or more patterns
 #'   that say how the whole string is written, for example
-#'   `"DDMMSSH DDDMMSSH"`. See the Format section.
+#'   `"DDMMSSH DDDMMSSH"` for `"512839N 0002741W"`. With several patterns,
+#'   each string is read with the first pattern that matches it. See the
+#'   Format and Format examples sections.
 #' @param order (character) which coordinate comes first in `str`:
 #'   `"auto"` (the default), `"lat_lon"` or `"lon_lat"`. With `"auto"`,
 #'   latitude comes first, unless the direction letters only fit longitude
-#'   first. See Details.
-#' @return A data.frame with parsed latitude and longitude in decimal degrees.
-#' A string that cannot be cut into two coordinates gives `NA` in both columns
-#' and a warning.
+#'   first. See the Order section.
+#' @return A data.frame with the columns `lat` and `lon`, in decimal degrees,
+#'   always in this order, whatever the order in `str`.
+#'
+#'   Each part of a string is read on its own: when one part cannot be read,
+#'   it gives `NA` with a warning, and the other part is kept. So
+#'   `"abc, -74.5"` gives lat `NA` and lon -74.5. There is one exception:
+#'   when the latitude is out of range (-90/90) but would be a valid
+#'   longitude (-180/360), and the string has no direction letter, as in
+#'   `"101.347, 4.9196"`, the two values are probably swapped. Then both are
+#'   `NA`, with a warning that suggests the other `order`.
+#'
+#'   Both values are also `NA`, with a warning, when a string cannot be cut
+#'   into two coordinates, does not match any `format`, or has direction
+#'   letters that do not fit the order. `NA` input gives `NA` without a
+#'   warning.
 #' @details
-#' Each string is cut into a latitude part and a longitude part, in that
-#' order, then the parts go through [parse_lat()] and [parse_lon()]. The cut
-#' is made at:
+#' With `format = NULL`, each string is cut into two parts, then the latitude
+#' part goes through [parse_lat()] and the longitude part through
+#' [parse_lon()]. The Order section says which part is which. The cut is made
+#' at:
 #'
 #' - the comma, when the string has exactly one comma. Spaces around the comma
 #'   and inside each part are fine: `"45.5, -74.5"`, `"45 30 15 S , 74 30 15 W"`
@@ -26,8 +41,8 @@
 #'
 #' Strings with no separator (`"N45.5W74.5"`), with two or more commas, or
 #' with two or more spaces and no comma (`"45 30 74 30"`) give `NA` with a
-#' warning. A dot is never a separator: `"45.74"` is one number, not two
-#' coordinates.
+#' warning: use `format` for them. A dot is never a separator: `"45.74"` is
+#' one number, not two coordinates.
 #'
 #' Each part accepts the formats of [parse_lat()] and [parse_lon()]:
 #'
@@ -39,6 +54,91 @@
 #'   `"45°30'15\", -74°30'15\""`, `"45:30:15N, 74:30:15W"`, `"45-30-15, 74-30-15"`
 #' - a Unicode minus sign or a dash (`−`, `–`) in front of a number is read as a
 #'   minus sign
+#'
+#' @section Order:
+#' With `order = "auto"` (the default), the direction letters N, S, E and W
+#' (in upper or lower case) say which coordinate comes first:
+#'
+#' - latitude first, when there is no letter (`"45.5, -74.5"`), or when the
+#'   letters fit that (`"N45.5, W74.5"`, `"45.5, 74.5W"`)
+#' - longitude first, when the letters only fit that: the first part has E or
+#'   W, or the second part has N or S (`"W74.5, N45.5"`, `"74.5W, 45.5"`,
+#'   `"-74.5, 45.5N"`). When only one part has a letter, that part decides.
+#' - `NA` for both values, with a warning, when the letters contradict each
+#'   other: `"E45, E30"`, `"N45, N30"`
+#'
+#' With `order = "lat_lon"` or `order = "lon_lat"`, the order is forced. Use
+#' it for strings with longitude first and no letters:
+#' `parse_llstr("-74.5, 45.5", order = "lon_lat")`. A string with letters
+#' that do not fit the forced order gives `NA` for both values, with a
+#' warning: `"N45.5, W74.5"` with `order = "lon_lat"`.
+#'
+#' @section Format:
+#' With `format`, one pattern describes the whole string: both coordinates and
+#' what is between them. For example, `"DDMMSSH DDDMMSSH"` reads
+#' `"512839N 0002741W"`. Each coordinate follows the rules of the Format
+#' section of [parse_lat()]. In addition:
+#'
+#' - The pattern needs exactly two `D` blocks, one for each coordinate. It is
+#'   cut in two at the start of the second `D` block: `"DDMMSSH DDDMMSSH"`
+#'   gives `"DDMMSSH "` and `"DDDMMSSH"`.
+#' - The two coordinates need no separator: `"DDMMSSHDDDMMSSH"` reads
+#'   `"512839N0002741W"`.
+#' - Each coordinate can have at most one `H`. An `H` right between the two
+#'   coordinates goes with the first one, as in `"DDMMSSHDDDMMSSH"`, unless
+#'   the first one already has an `H`. Then it goes with the second one, as
+#'   in `"HD.ddddHDDD.ddd"`, which reads `"N4.9196E101.347"`.
+#' - The coordinates follow `order`. With `"lon_lat"`, the first one is the
+#'   longitude, as in `"DDDMMSSH DDMMSSH"`. With `"auto"`, the `H` letters say
+#'   which one is the latitude, and a pattern without `H` means latitude
+#'   first. The number of `D` letters does not decide.
+#' - The string is matched as it is: it is not cleaned, and not cut at a
+#'   comma or a space, as with `format = NULL`. Spaces at the start and at
+#'   the end are ignored.
+#' - Strings that do not match any pattern, or that give `NA` for one value
+#'   or both, are listed in one warning. They are not read again with
+#'   `format = NULL`.
+#' - A pattern that cannot work is an error, for example `"DDMMSS"` (only
+#'   one `D` block) or `"DDMMSSHH DDDMMSSH"` (two `H` for one coordinate).
+#'
+#' @section Format examples:
+#' The rules for `format` are in the Format section above and in the Format
+#' section of [parse_lat()]. `order` is `"auto"` when not given.
+#'
+# Every row of this table and every example of @examples is mirrored in the
+# llstr_cases table of tests/testthat/test-format.R: keep the two in sync.
+#' | `str` | `format` | `order` | lat | lon | Why |
+#' |---|---|---|---|---|---|
+#' | `"512839N 0002741W"` | `"DDMMSSH DDDMMSSH"` | | 51.4775 | -0.46139 | ICAO pair |
+#' | `"512839N0002741W"` | `"DDMMSSHDDDMMSSH"` | | 51.4775 | -0.46139 | ICAO pair without a separator |
+#' | `"512839N/0002741W"` | `"DDMMSSH/DDDMMSSH"` | | 51.4775 | -0.46139 | any separator, written as in the string |
+#' | `"51°28'39\"N 000°27'41\"W"` | `"DD°MM'SS\"H DDD°MM'SS\"H"` | | 51.4775 | -0.46139 | symbols must match exactly |
+#' | `"4556.98735N 01045.12345W"` | `"DDMM.mH DDDMM.mH"` | | 45.94979 | -10.75206 | NMEA pair |
+#' | `"4916.45,N,12311.12,W"` | `"DDMM.m,H,DDDMM.m,H"` | | 49.27417 | -123.18533 | NMEA sentence, letters in their own fields |
+#' | `"N455698735W0104512345"` | `"HDDMMmmmmmHDDDMMmmmmm"` | | 45.94979 | -10.75206 | decimal point not written: exactly 5 decimals |
+#' | `"N4.9196E101.347"` | `"HD.ddddHDDD.ddd"` | | 4.9196 | 101.347 | `H` in front of each coordinate, no separator |
+#' | `"4.9196N101.347E"` | `"D.dHDDD.dH"` | | 4.9196 | 101.347 | `H` after each coordinate, no separator |
+#' | `"-45.5 -074.5"` | `"DD.d DDD.d"` | | -45.5 | -74.5 | minus signs |
+#' | `"0002741W 512839N"` | `"DDDMMSSH DDMMSSH"` | | 51.4775 | -0.46139 | longitude first: the letters decide |
+#' | `"E101.347N4.9196"` | `"HDDD.dHD.d"` | | 4.9196 | 101.347 | longitude first, no separator |
+#' | `"101.347 4.9196"` | `"DDD.d D.d"` | `"lon_lat"` | 4.9196 | 101.347 | longitude first, no letters: say so with `order` |
+#' | `"101.347 4.9196"` | `"DDD.d D.d"` | | `NA` | `NA` | no letters, so latitude first, but 101.347 is not a latitude: probably swapped |
+#' | `"512839N 0002741W"` | `"DDMMSSH DDDMMSSH"` | `"lon_lat"` | `NA` | `NA` | the letters do not fit the forced order |
+#' | `"512839N 0002741N"` | `"DDMMSSH DDDMMSSH"` | | `NA` | `NA` | two latitude letters |
+#' | `"517539N 0002741W"` | `"DDMMSSH DDDMMSSH"` | | `NA` | -0.46139 | 75 minutes: the longitude is kept |
+#' | `"512839N 1900000W"` | `"DDMMSSH DDDMMSSH"` | | 51.4775 | `NA` | longitude below -180: the latitude is kept |
+#' | `"51 28 39N 000 27 41W"` | `"DDMMSSH DDDMMSSH"` | | `NA` | `NA` | does not match the pattern |
+#' | `"51 28 39N 000 27 41W"` | `c("DDMMSSH DDDMMSSH", "DD MM SSH DDD MM SSH")` | | 51.4775 | -0.46139 | the second pattern matches |
+#' | `"512839N0002741W"` | `c("DDMMSSH DDDMMSSH", "DDMMSSHDDDMMSSH")` | | 51.4775 | -0.46139 | the second pattern matches |
+#' | `"45.5, -74.5"` | `NULL` | | 45.5 | -74.5 | no letters: latitude first |
+#' | `"W74.5, N45.5"` | `NULL` | | 45.5 | -74.5 | longitude first: the letters decide |
+#' | `"74.5W, 45.5"` | `NULL` | | 45.5 | -74.5 | only one part has a letter: it decides |
+#' | `"-74.5, 45.5"` | `NULL` | `"lon_lat"` | 45.5 | -74.5 | longitude first, no letters: say so with `order` |
+#' | `"N45.5, W74.5"` | `NULL` | `"lon_lat"` | `NA` | `NA` | the letters do not fit the forced order |
+#' | `"E45, E30"` | `NULL` | | `NA` | `NA` | two longitude letters |
+#' | `"101.347, 4.9196"` | `NULL` | | `NA` | `NA` | no letters, so latitude first, but 101.347 is not a latitude: probably swapped |
+#' | `"abc, -74.5"` | `NULL` | | `NA` | -74.5 | the latitude cannot be read: the longitude is kept |
+#' | `"N4.9196E101.347"` | `NULL` | | `NA` | `NA` | no separator: use `format` |
 #'
 #' @examples
 #' parse_llstr("N 04.1683, E 101.5823")
@@ -59,15 +159,47 @@
 #' parse_llstr(c("4 51'36\"S, 101 34'7\"W", "N4 51'36\", E101 34'7\""))
 #' parse_llstr("4:51:36S 101:34:7W")
 #'
+#' # which coordinate comes first (see the Order section)
+#' parse_llstr("W101.347, N4.9196") # the letters say longitude first
+#' parse_llstr("101.347E, 4.9196") # one letter is enough
+#' parse_llstr("-101.347, 4.9196", order = "lon_lat") # no letters: say it
+#' # NA and a warning: the letters contradict each other
+#' parse_llstr("E45, E30")
+#' # NA for both, and a warning: 101.347 is not a latitude, so the values
+#' # are probably swapped
+#' parse_llstr("101.347, 4.9196")
+#' parse_llstr("101.347, 4.9196", order = "lon_lat")
+#' # one part cannot be read: the other one is kept
+#' parse_llstr("abc, -74.5")
+#'
+#' # with format: one pattern for the whole string (see the Format section)
+#' parse_llstr("512839N 0002741W", format = "DDMMSSH DDDMMSSH") # ICAO
+#' parse_llstr("512839N0002741W", format = "DDMMSSHDDDMMSSH") # no separator
+#' parse_llstr("4916.45,N,12311.12,W", format = "DDMM.m,H,DDDMM.m,H") # NMEA
+#' parse_llstr("N4.9196E101.347", format = "HD.ddddHDDD.ddd")
+#' # longitude first: the letters decide
+#' parse_llstr("0002741W 512839N", format = "DDDMMSSH DDMMSSH")
+#' # longitude first, without letters
+#' parse_llstr("101.347 4.9196", format = "DDD.d D.d", order = "lon_lat")
+#' # several formats, tried in order for each string
+#' parse_llstr(
+#'   c("512839N 0002741W", "512839N0002741W", "51 28 39N 000 27 41W"),
+#'   format = c("DDMMSSH DDDMMSSH", "DDMMSSHDDDMMSSH", "DD MM SSH DDD MM SSH")
+#' )
+#' # NA and one warning: 75 minutes (the longitude is kept), and two
+#' # latitude letters
+#' parse_llstr(
+#'   c("517539N 0002741W", "512839N 0002741N"),
+#'   format = "DDMMSSH DDDMMSSH"
+#' )
+#' # without format, a string with no separator gives NA and a warning
+#' parse_llstr("N4.9196E101.347")
+#'
 #' # add both columns with one call, picking them by name
 #' df <- data.frame(x = c("N4.9196, E101.347", "4.9196 -101.347"))
 #' cbind(df, parse_llstr(str = df[["x"]])[c("lat", "lon")])
 #' # dplyr:      df |> dplyr::mutate(parse_llstr(str = x)[c("lat", "lon")])
 #' # data.table: dt[, c("lat", "lon") := parse_llstr(str = x)[c("lat", "lon")]]
-#' \dontrun{
-#' # not supported: no separator between latitude and longitude
-#' parse_llstr("N4.9196E101.347")
-#' }
 parse_llstr <- function(
   str,
   format = NULL,
