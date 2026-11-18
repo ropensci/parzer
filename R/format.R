@@ -6,27 +6,32 @@
 # - fields_to_degrees(): the matched fields of one coordinate to a value
 # - warn_unread(): one warning for all the values that gave NA
 
-# Check every format before any parsing.
-check_format <- function(format) {
+# Check every format before any parsing. `compile` is compile_format() for
+# parse_lat() and parse_lon(), compile_pair_format() for parse_llstr().
+check_format <- function(format, compile = compile_format) {
   if (length(format) == 0L || anyNA(format)) {
     stop("format must be one or more strings, without NA", call. = FALSE)
   }
-  lapply(X = format, FUN = compile_format)
+  lapply(X = format, FUN = compile)
+}
+
+# runs of the same letter ("DD", "mmm", "H") and single other characters
+format_tokens <- function(format) {
+  regmatches(
+    x = format,
+    m = gregexpr(pattern = "([A-Za-z])\\1*|.", text = format, perl = TRUE)
+  )[[1]]
 }
 
 # Returns a list: `regex` (not anchored, so it can be combined with another
 # one), `groups` (the field of each capture group, in order: "sign", "D",
 # "M", "S", "dec" or "H") and `dec_unit` (the unit that the decimal digits
-# belong to, or "").
-compile_format <- function(format) {
+# belong to, or ""). `label` names the format in error messages.
+compile_format <- function(format, label = paste0("\"", format, "\"")) {
   fail <- function(why) {
-    stop("invalid format \"", format, "\": ", why, call. = FALSE)
+    stop("invalid format ", label, ": ", why, call. = FALSE)
   }
-  # runs of the same letter ("DD", "mmm", "H") and single other characters
-  tokens <- regmatches(
-    x = format,
-    m = gregexpr(pattern = "([A-Za-z])\\1*|.", text = format, perl = TRUE)
-  )[[1]]
+  tokens <- format_tokens(format)
   first <- substr(x = tokens, start = 1L, stop = 1L)
   is_letter <- grepl(pattern = "^[A-Za-z]$", x = first)
 
@@ -130,9 +135,28 @@ compile_format <- function(format) {
 # Parse `x` with the formats in `format`, tried in order for each value.
 # `what` is "lat" or "lon".
 parse_with_format <- function(x, format, what) {
-  formats <- check_format(format)
-  x <- trimws(num_to_chr(x))
-  out <- rep(NA_real_, times = length(x))
+  out <- read_formats(
+    x = trimws(num_to_chr(x)),
+    formats = check_format(format = format),
+    convert = function(fields, f) {
+      fields_to_degrees(
+        fields = fields,
+        dec_unit = f[["dec_unit"]],
+        what = what
+      )
+    },
+    ncol = 1L
+  )
+  out[, 1L]
+}
+
+# Read each value of `x` with the first of the compiled `formats` that
+# matches it. `convert(fields, f)` turns the fields that format `f` matched
+# (a character matrix, one row per value) into a list: `value`, one row of
+# `ncol` numbers per value, and `why`, the reason for each NA. Gives one
+# warning for all the values that gave NA.
+read_formats <- function(x, formats, convert, ncol) {
+  out <- matrix(data = NA_real_, nrow = length(x), ncol = ncol)
   why <- rep(NA_character_, times = length(x))
   # like format = NULL, NA and "" give NA without a warning
   todo <- which(!is.na(x) & nzchar(x))
@@ -154,12 +178,8 @@ parse_with_format <- function(x, format, what) {
     }
     fields <- do.call(what = rbind, args = found[matched])[, -1L, drop = FALSE]
     colnames(fields) <- f[["groups"]]
-    res <- fields_to_degrees(
-      fields = fields,
-      dec_unit = f[["dec_unit"]],
-      what = what
-    )
-    out[todo[matched]] <- res[["value"]]
+    res <- convert(fields, f)
+    out[todo[matched], ] <- res[["value"]]
     why[todo[matched]] <- res[["why"]]
     todo <- todo[!matched]
   }
