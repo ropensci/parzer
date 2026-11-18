@@ -1,6 +1,10 @@
 parzer 0.5.0.9000
 ============
 
+### NEW FEATURES
+
+* `parse_lat()` and `parse_lon()` have a working `format` argument (#7, #11). A pattern such as `"DDMMSSH"` says how the values are written, so packed digits can be read: ICAO `"512839N"`, NMEA `"4556.98735"` with `"DDMM.mmmmm"`, or `"N455698735"` with `"HDDMMmmmmm"` (decimal point not written). Several patterns can be given; each value is read with the first one that matches. Values that do not match, or are out of range, give `NA` and are listed in one warning. See the new Format section of `?parse_lat`.
+
 ### BUG FIX
 
 * A Unicode minus sign (U+2212), an en dash or an em dash in front of a number is now read as a minus sign. Before, "−45.5" gave 45.5 without a warning.
@@ -16,6 +20,7 @@ parzer 0.5.0.9000
 
 ### MINOR IMPROVEMENTS
 
+* When a value with 4 or more digits in a row (not after a decimal point), such as "2343 56N", gives `NA` because its degrees, minutes or seconds are out of range, the warning now says that the digits may be packed together and points to the `format` argument. Before, a latitude warning said to check that lon and lat were not inverted.
 * Faster input cleaning: `parse_lat()` and `parse_lon()` are about 7 times faster on numeric input and about 25% faster on character input.
 * Removed a check in the C++ code that could never fire, and the Japanese-locale test for the old `std::regex` bug. callr, pkgbuild, pkgload and withr are no longer suggested.
 

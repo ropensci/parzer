@@ -48,5 +48,3 @@ scrub <- function(x) {
     perl = TRUE
   ))
 }
-
-stop_form <- function() stop("format handling not ready yet")

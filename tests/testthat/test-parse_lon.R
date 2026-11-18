@@ -118,16 +118,25 @@ test_that("parse_lon correctly processes NA values", {
   )
 })
 
-test_that("parse_lon errors with 'format handling not ready yet' when format is supplied", {
-  # Covers the stop_form() else-branch at parse_lon.R:64 and zzz.R:22
-  expect_error(
-    parse_lon("74E", format = "dms"),
-    "format handling not ready yet"
-  )
-  expect_error(
-    parse_lon("-74.64111", format = "decimal"),
-    "format handling not ready yet"
-  )
+test_that("parse_lon reads with format when it is given", {
+  # the full set of cases is in test-format.R
+  expect_equal(parse_lon("074W", format = "DDDH"), -74)
+  expect_error(parse_lon("74E", format = "dms"), "invalid format \"dms\"")
+})
+
+test_that("parse_lon: packed digits get a hint to format", {
+  for (x in c("2343 56E", "0002741W", "174 3075")) {
+    res <- collect_warnings(parse_lon(x))
+    expect_identical(res[["value"]], NA_real_, label = x)
+    expect_length(res[["warnings"]], 1L)
+    expect_match(res[["warnings"]], "may be packed together", label = x)
+  }
+  # fewer than 4 digits, or digits after the decimal point: no hint
+  for (x in c("400", "400.12345", "45 75")) {
+    res <- collect_warnings(parse_lon(x))
+    expect_length(res[["warnings"]], 1L)
+    expect_no_match(res[["warnings"]], "packed", label = x)
+  }
 })
 
 test_that("parse_lon accepts numeric and integer inputs", {
