@@ -676,3 +676,140 @@ test_that("fields_to_degrees() takes zero rows without a warning", {
   )
   expect_identical(res, list(value = numeric(0), why = character(0)))
 })
+
+# parse_lon_lat(lon_format =, lat_format =) ----------------------------------
+
+# ONE table for the Format examples section and the @examples with a format
+# of ?parse_lon_lat. Each row: lon, lat, lon_format, lat_format, the expected
+# lon and lat, and `warnings`: one regular expression per expected warning.
+llc <- function(
+  lon,
+  lat,
+  lon_format,
+  lat_format,
+  exp_lon,
+  exp_lat,
+  warnings = character(0)
+) {
+  list(
+    lon = lon,
+    lat = lat,
+    lon_format = lon_format,
+    lat_format = lat_format,
+    expected = data.frame(lon = exp_lon, lat = exp_lat),
+    warnings = warnings
+  )
+}
+icao_lat <- 51 + 28 / 60 + 39 / 3600
+icao_lon <- -(27 / 60 + 41 / 3600)
+nmea_lat <- 45 + 56.98735 / 60
+nmea_lon <- -(10 + 45.12345 / 60)
+
+lon_lat_cases <- list(
+  # the Format examples table of ?parse_lon_lat, in the same order
+  llc("0002741W", "512839N", "DDDMMSSH", "DDMMSSH", icao_lon, icao_lat),
+  llc("01045.12345W", "4556.98735N", "DDDMM.mH", "DDMM.mH", nmea_lon, nmea_lat),
+  llc(
+    "W0104512345",
+    "N455698735",
+    "HDDDMMmmmmm",
+    "HDDMMmmmmm",
+    nmea_lon,
+    nmea_lat
+  ),
+  llc("-120.43", "4907.2", NULL, "DDMM.m", -120.43, 49.12),
+  llc("12043W", "49.12", "DDDMMH", NULL, -(120 + 43 / 60), 49.12),
+  llc(
+    "0743056W",
+    "453015N",
+    c("DDDMMSSH", "DDD MM SSH"),
+    c("DDMMSSH", "DD MM SSH"),
+    -(74 + 30 / 60 + 56 / 3600),
+    45 + 30 / 60 + 15 / 3600
+  ),
+  llc(
+    "074 30 56W",
+    "45 30 15N",
+    c("DDDMMSSH", "DDD MM SSH"),
+    c("DDMMSSH", "DD MM SSH"),
+    -(74 + 30 / 60 + 56 / 3600),
+    45 + 30 / 60 + 15 / 3600
+  ),
+  llc(
+    "1800001W",
+    "512839N",
+    "DDDMMSSH",
+    "DDMMSSH",
+    NA_real_,
+    icao_lat,
+    "\"1800001W\": not within -180/360 range"
+  ),
+  llc(
+    "0002741W",
+    "517539N",
+    "DDDMMSSH",
+    "DDMMSSH",
+    icao_lon,
+    NA_real_,
+    "\"517539N\": minutes or seconds not within 0/60 range"
+  ),
+  llc(
+    "512839N",
+    "0002741W",
+    "DDDMMSSH",
+    "DDMMSSH",
+    NA_real_,
+    NA_real_,
+    c(
+      "\"512839N\": does not match format",
+      "\"0002741W\": does not match format"
+    )
+  ),
+  # @examples of parse_lon_lat() with a format
+  llc(
+    c("0743056W", "074 30 56W"),
+    c("453015N", "45 30 15N"),
+    c("DDDMMSSH", "DDD MM SSH"),
+    c("DDMMSSH", "DD MM SSH"),
+    rep(-(74 + 30 / 60 + 56 / 3600), times = 2),
+    rep(45 + 30 / 60 + 15 / 3600, times = 2)
+  )
+)
+
+test_that("parse_lon_lat: every documented example with a format", {
+  for (case in lon_lat_cases) {
+    label <- paste0(
+      "parse_lon_lat(",
+      deparse(case[["lon"]]),
+      ", ",
+      deparse(case[["lat"]]),
+      ")"
+    )
+    res <- collect_warnings(
+      parse_lon_lat(
+        lon = case[["lon"]],
+        lat = case[["lat"]],
+        lon_format = case[["lon_format"]],
+        lat_format = case[["lat_format"]]
+      )
+    )
+    expect_equal(
+      res[["value"]],
+      case[["expected"]],
+      tolerance = 1e-9,
+      label = label
+    )
+    expect_identical(
+      length(res[["warnings"]]),
+      length(case[["warnings"]]),
+      label = label
+    )
+    for (i in seq_along(case[["warnings"]])) {
+      expect_match(
+        res[["warnings"]][[i]],
+        case[["warnings"]][[i]],
+        label = label
+      )
+    }
+  }
+})
