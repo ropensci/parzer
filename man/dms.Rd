@@ -60,7 +60,9 @@ extract degree, minutes, and seconds
 Mathematics operators are exported for \code{+}, \code{-}, \code{/}, and \code{*},
 but \code{/} and \code{*} are only exported with a stop message to say it's not
 supported; otherwise you'd be allow to divide degrees by minutes, leading
-to nonsense.
+to nonsense. Both sides of \code{+} and \code{-} must be pz objects: \code{pz_d(1) + 5}
+is an error, because a plain number has no unit. Unary minus keeps the
+unit: \code{-pz_m(30)} is minus 30 minutes.
 }
 \examples{
 # extract parts of a coordinate value

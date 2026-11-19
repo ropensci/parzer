@@ -13,7 +13,7 @@
 #' gives deg -45, min 30, but `-0.5` gives deg 0, min -30. Minutes are always
 #' below 60 and seconds below 60, in absolute value.
 #'
-#' NA/NaN given upon error
+#' `NA` given upon error, with a warning
 #'
 #' @examples
 #' parse_parts_lon("140.4183318")
@@ -28,9 +28,6 @@
 #' parse_parts_lat("-45.98739874")
 #' parse_parts_lat("40.123N")
 #' parse_parts_lat("N40°25’5.994")
-#'
-#' # not working, needs format input
-#' parse_parts_lat("N455698735")
 #'
 #' # multiple
 #' x <- c("40.123°", "40.123N74.123W", "191.89", 12, "N45 04.25764")

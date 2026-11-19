@@ -33,11 +33,6 @@ test_lons <- c(
 )
 
 test_that("parse_lon works: run through test_lons", {
-  out <- data.frame(
-    input = test_lons,
-    res = NA_real_,
-    stringsAsFactors = FALSE
-  )
   for (i in seq_along(test_lons)) {
     expect_equal(round(parse_lon(test_lons[i]), 5), -74.64111)
   }
@@ -90,20 +85,12 @@ invalid_formats <- c(
 
 # res column should all give NaN
 test_that("parse_lon works: invalid formats fail as expected", {
-  out <- data.frame(
-    input = invalid_formats,
-    res = NA_real_,
-    stringsAsFactors = FALSE
-  )
   for (i in seq_along(invalid_formats)) {
-    out[i, "res"] <- suppressWarnings({
-      parse_lon(invalid_formats[i])
-    })
     expect_warning({
       aa <- parse_lon(invalid_formats[i])
     })
     expect_type(aa, "double")
-    expect_equal(aa, NaN)
+    expect_identical(aa, NA_real_)
   }
 })
 
@@ -131,16 +118,25 @@ test_that("parse_lon correctly processes NA values", {
   )
 })
 
-test_that("parse_lon errors with 'format handling not ready yet' when format is supplied", {
-  # Covers the stop_form() else-branch at parse_lon.R:64 and zzz.R:22
-  expect_error(
-    parse_lon("74E", format = "dms"),
-    "format handling not ready yet"
-  )
-  expect_error(
-    parse_lon("-74.64111", format = "decimal"),
-    "format handling not ready yet"
-  )
+test_that("parse_lon reads with format when it is given", {
+  # the full set of cases is in test-format.R
+  expect_equal(parse_lon("074W", format = "DDDH"), -74)
+  expect_error(parse_lon("74E", format = "dms"), "invalid format \"dms\"")
+})
+
+test_that("parse_lon: packed digits get a hint to format", {
+  for (x in c("2343 56E", "0002741W", "174 3075")) {
+    res <- collect_warnings(parse_lon(x))
+    expect_identical(res[["value"]], NA_real_, label = x)
+    expect_length(res[["warnings"]], 1L)
+    expect_match(res[["warnings"]], "may be packed together", label = x)
+  }
+  # fewer than 4 digits, or digits after the decimal point: no hint
+  for (x in c("400", "400.12345", "45 75")) {
+    res <- collect_warnings(parse_lon(x))
+    expect_length(res[["warnings"]], 1L)
+    expect_no_match(res[["warnings"]], "packed", label = x)
+  }
 })
 
 test_that("parse_lon accepts numeric and integer inputs", {
@@ -208,4 +204,71 @@ test_that("parse_lon/parse_lat: exponents, repeated directions and signs", {
   expect_equal(parse_lon("74 W"), -74)
   expect_equal(parse_lat("40 s"), -40)
   expect_equal(parse_lat("-40.5"), -40.5)
+})
+
+test_that("parse_lon gives NA without a warning for NA input", {
+  expect_no_warning(res <- parse_lon(NA_character_))
+  expect_identical(res, NA_real_)
+  expect_no_warning(res <- parse_lon(c("74", NA_character_, "-74")))
+  expect_equal(res, c(74, NA, -74))
+  expect_no_warning(res <- parse_lon(c(74.5, NA_real_, NaN)))
+  expect_equal(res, c(74.5, NA, NA))
+  expect_no_warning(res <- parse_lon(NA_integer_))
+  expect_identical(res, NA_real_)
+})
+
+test_that("parse_lon reads a Unicode minus sign and dashes as a minus sign", {
+  expect_equal(parse_lon("−120.5"), -120.5)
+  expect_equal(parse_lon("–120.5"), -120.5)
+  expect_equal(parse_lon("—120.5"), -120.5)
+  expect_equal(parse_lon("−74°38'28\""), -(74 + 38 / 60 + 28 / 3600))
+  expect_equal(parse_lon("74−38−28W"), -(74 + 38 / 60 + 28 / 3600))
+})
+
+test_that("parse_lon rejects a number with two decimal points", {
+  expect_warning(res <- parse_lon("74.6.4W"), "invalid number, got: 74.6.4")
+  expect_identical(res, NA_real_)
+  expect_warning(res <- parse_lon("1.2.3"), "invalid number")
+  expect_identical(res, NA_real_)
+  expect_warning(res <- parse_lon("74 38.5.5"), "invalid number")
+  expect_identical(res, NA_real_)
+  expect_equal(parse_lon("74."), 74)
+  expect_equal(parse_lon("-.5"), -0.5)
+})
+
+test_that("parse_lon keeps accepting d after degrees and rejects other letters", {
+  expect_equal(parse_lon("74d 38' 28\" W"), -(74 + 38 / 60 + 28 / 3600))
+  expect_equal(parse_lon("74D 38' 28\" W"), -(74 + 38 / 60 + 28 / 3600))
+  expect_equal(parse_lon("74W"), -74)
+  expect_warning(res <- parse_lon("74X 38"), "invalid direction letter")
+  expect_identical(res, NA_real_)
+  expect_warning(res <- parse_lon("74 N"), "invalid direction letter")
+  expect_identical(res, NA_real_)
+})
+
+test_that("parse_lon: a minus sign that disagrees with the letter gives NA", {
+  expect_warning(
+    res <- parse_lon("E -120"),
+    "minus sign and direction letter disagree, got: e -120"
+  )
+  expect_identical(res, NA_real_)
+  expect_warning(res <- parse_lon("-120E"), "disagree")
+  expect_identical(res, NA_real_)
+  expect_warning(res <- parse_lon("E-120"), "disagree")
+  expect_identical(res, NA_real_)
+  expect_equal(parse_lon("W -120"), -120)
+  expect_equal(parse_lon("-120W"), -120)
+  expect_equal(parse_lon("W-120-30"), -120.5)
+  expect_equal(parse_lon("-120"), -120)
+  expect_equal(parse_lon("E 120"), 120)
+  # the disagreement check runs before the range check
+  expect_warning(res <- parse_lon("E -400"), "disagree")
+  expect_identical(res, NA_real_)
+})
+
+test_that("parse_lon: d and g degree marks are accepted in either case", {
+  expect_equal(parse_lon("74D 38' 28\" W"), -(74 + 38 / 60 + 28 / 3600))
+  expect_equal(parse_lon("74G 38' 28\" W"), -(74 + 38 / 60 + 28 / 3600))
+  expect_warning(res <- pz_parse_lon("74d 38"), "invalid direction letter")
+  expect_identical(res, NA_real_)
 })

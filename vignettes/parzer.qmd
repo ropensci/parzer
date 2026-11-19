@@ -70,7 +70,7 @@ parse_lat("40.123°")
 parse_lat("40.123N")
 parse_lat("N45 04.25764")
 
-# Invalid values -> NaN
+# Invalid values -> NA, with a warning
 parse_lat("191.89")
 
 # Many inputs

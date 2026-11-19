@@ -70,10 +70,7 @@ test_that("parse_lon_lat and parse_lat handle tiny and large numeric input", {
   expect_equal(parse_lat(-3e-5), -3e-5)
   expect_equal(parse_lon(1e-10), 1e-10)
   expect_equal(parse_lon_lat(1e-5, 2e-5), data.frame(lon = 1e-5, lat = 2e-5))
-  expect_warning(
-    res <- parse_lat(c(1e-5, 45.5, NA, 0)),
-    "no digits detected"
-  )
+  expect_no_warning(res <- parse_lat(c(1e-5, 45.5, NA, 0)))
   expect_equal(res, c(1e-5, 45.5, NA, 0))
   expect_equal(parse_lat(45.234234), 45.234234)
   expect_equal(parse_lat(0.1 + 0.2), 0.3)
@@ -135,4 +132,112 @@ test_that("parse_lon_lat and parse_lat agree on every string form", {
   )
   expect_equal(parse_lon_lat(forms, forms)$lon, parse_lon(forms))
   expect_equal(parse_lon_lat(forms, forms)$lat, parse_lat(forms))
+})
+
+test_that("parse_lon_lat gives NA without a warning for NA input", {
+  expect_no_warning(res <- parse_lon_lat(c("-120", NA), c(NA, "45")))
+  expect_equal(res, data.frame(lon = c(-120, NA), lat = c(NA, 45)))
+  expect_no_warning(res <- parse_lon_lat(NA_real_, NA_real_))
+  expect_equal(res, data.frame(lon = NA_real_, lat = NA_real_))
+})
+
+test_that("parse_lon_lat reads a Unicode minus sign as a minus sign", {
+  expect_equal(
+    parse_lon_lat("−120.5", "−45.5"),
+    data.frame(lon = -120.5, lat = -45.5)
+  )
+})
+
+test_that("numeric input of mixed magnitude is formatted as one vector without loss", {
+  x <- c(1e-15, 45.123456789012, 89.999999999999, -1e-9, 0)
+  expect_equal(parse_lat(x), x, tolerance = 1e-14)
+  expect_equal(
+    parse_lon(c(x, 180, -180, 359.999999)),
+    c(x, 180, -180, 359.999999),
+    tolerance = 1e-14
+  )
+})
+
+test_that("parse_lon_lat and parse_hemisphere name the length mismatch", {
+  expect_error(parse_lon_lat(1:2, 1:3), "lon and lat must have the same length")
+  expect_error(
+    parse_hemisphere("45", c("45", "46")),
+    "lon and lat must have the same length"
+  )
+  expect_error(parse_lon_lat(character(0), "45"), "same length")
+  expect_equal(nrow(parse_lon_lat(character(0), character(0))), 0L)
+})
+
+test_that("lint_inputs checks class and length", {
+  expect_error(lint_inputs(mtcars, "45"), "lon must be of class")
+  expect_error(lint_inputs("45", TRUE), "lat must be of class")
+  expect_error(lint_inputs("45", c("45", "46")), "same length")
+  expect_null(lint_inputs("45", 45))
+})
+
+test_that("parse_lon_lat passes lon_format and lat_format on", {
+  expect_equal(
+    parse_lon_lat(
+      "0002741W",
+      "512839N",
+      lon_format = "DDDMMSSH",
+      lat_format = "DDMMSSH"
+    ),
+    data.frame(lon = -(27 / 60 + 41 / 3600), lat = 51 + 28 / 60 + 39 / 3600)
+  )
+  # one format only: the other value is read as with format = NULL
+  expect_equal(
+    parse_lon_lat("-120.43", "4907.2", lat_format = "DDMM.m"),
+    data.frame(lon = -120.43, lat = 49.12)
+  )
+  expect_equal(
+    parse_lon_lat("12043W", "49.12", lon_format = "DDDMMH"),
+    data.frame(lon = -(120 + 43 / 60), lat = 49.12)
+  )
+  # the same as parse_lon() and parse_lat() with format
+  lons <- c("0743056W", "074 30 56W", "1800001W", NA)
+  lats <- c("453015N", "45 30 15N", "512839N", "4530")
+  lon_format <- c("DDDMMSSH", "DDD MM SSH")
+  lat_format <- c("DDMMSSH", "DD MM SSH", "DDMM")
+  res <- collect_warnings(
+    parse_lon_lat(lons, lats, lon_format = lon_format, lat_format = lat_format)
+  )
+  expect_equal(
+    res[["value"]],
+    data.frame(
+      lon = suppressWarnings(parse_lon(lons, format = lon_format)),
+      lat = parse_lat(lats, format = lat_format)
+    )
+  )
+  # the out of range longitude gives NA and the latitude is kept
+  expect_equal(
+    res[["value"]][3, ],
+    data.frame(lon = NA_real_, lat = 51 + 28 / 60 + 39 / 3600),
+    ignore_attr = TRUE
+  )
+  expect_length(res[["warnings"]], 1L)
+  expect_match(
+    res[["warnings"]],
+    "\"1800001W\": not within -180/360 range",
+    fixed = TRUE
+  )
+})
+
+test_that("parse_lon_lat checks lon_format and lat_format", {
+  expect_error(
+    parse_lon_lat("1", "2", lon_format = 5),
+    "lon_format must be of class character"
+  )
+  expect_error(
+    parse_lon_lat("1", "2", lat_format = TRUE),
+    "lat_format must be of class character"
+  )
+  expect_error(
+    parse_lon_lat("1", "2", lat_format = "MMDD"),
+    "invalid format \"MMDD\""
+  )
+  expect_error(
+    parse_lon_lat("1", "2", lon_format = NA_character_),
+    "without NA"
+  )
 })
