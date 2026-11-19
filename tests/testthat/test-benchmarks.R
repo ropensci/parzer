@@ -1,19 +1,19 @@
 # Performance regression guards
 #
 # These tests use the `bench` package (listed in Suggests) and are skipped
-# on CRAN.  They verify four properties:
+# on CRAN. They verify four properties:
 #
-#   1. Absolute floor  – a given input size must complete within a generous
+#   1. Absolute floor  - a given input size must complete within a generous
 #                        wall-clock budget (catches catastrophic regressions).
-#   2. Linear scaling  – per-item time must not grow more than 3× when input
+#   2. Linear scaling  - per-item time must not grow more than 3× when input
 #                        size increases 10× (catches O(n²) regressions).
-#   3. Bounded memory  – R heap bytes allocated per item must stay below a
+#   3. Bounded memory  - R heap bytes allocated per item must stay below a
 #                        ceiling (catches extra R copies; blind to C++
 #                        allocations and leaks).
-#   4. Relative speed  – time of parzer divided by the time of a base R
+#   4. Relative speed  - time of parzer divided by the time of a base R
 #                        baseline, measured in the same run, must stay below
 #                        a ceiling (catches moderate slowdowns, e.g.
-#                        std::regex coming back).  Installed builds only.
+#                        std::regex coming back). Installed builds only.
 #
 # Thresholds of 1-3 are intentionally loose: the 2 s floor is about 10 000
 # times the measured time for 96 strings (about 0.1 ms with -O2), so slow CI
@@ -188,12 +188,12 @@ test_that("parse_parts_lat scales near-linearly (n=96 to n=960)", {
 # 3. Bounded memory allocation per item
 #
 # bench::mark() mem_alloc reports total R heap bytes allocated in one
-# expression evaluation (via Rprofmem).  Threshold of 10 kB/item is ~10–100×
+# expression evaluation (via Rprofmem). Threshold of 10 kB/item is ~10-100×
 # typical; it catches any regression that introduces per-item R heap growth
 # (e.g. temporary lists or unnecessary copies).
 #
 # It does not see C++ allocations (std::string, std::regex, std::vector) and
-# cannot detect leaks.  The C++ code currently uses only RAII containers, so
+# cannot detect leaks. The C++ code currently uses only RAII containers, so
 # leaks are unlikely; run the tests under ASan or valgrind to check for them.
 # ---------------------------------------------------------------------------
 
@@ -248,7 +248,7 @@ test_that("parse_parts_lat allocates < 10 kB per item (960 items)", {
 # ---------------------------------------------------------------------------
 # 4. Relative speed against a base R baseline
 #
-# The tests above only catch large slowdowns.  These ones divide the median
+# The tests above only catch large slowdowns. These ones divide the median
 # time of parzer on 10 000 strings by the median time of
 # gsub("[^0-9A-Za-z.]", "'", x) on the same strings, measured in the same run,
 # so the ratio does not depend on the speed of the machine.
@@ -261,14 +261,11 @@ test_that("parse_parts_lat allocates < 10 kB per item (960 items)", {
 # still fails when std::regex comes back.
 #
 # A package loaded with devtools::test() (pkgload::load_all()) is compiled at
-# -O0 and runs about 7x slower, so these tests only run on an installed one.
+# -O0 and runs about 7x slower, so these tests only run inside R CMD check
+# (testthat::is_checking()), on the installed package.
 # ---------------------------------------------------------------------------
 
 bench_ratio_max <- 5
-
-.is_dev_package <- function() {
-  exists(".__DEVTOOLS__", envir = asNamespace("parzer"), inherits = FALSE)
-}
 
 .relative_time <- function(f, baseline) {
   bm <- bench::mark(f(), baseline(), iterations = 20L, check = FALSE)
@@ -286,7 +283,10 @@ llstrs_10k <- paste(lats_10k, lons_10k, sep = ", ")
 test_that("parse_lat stays within 5x the time of gsub (10k strings)", {
   skip_on_cran()
   skip_if_not_installed("bench")
-  skip_if(.is_dev_package(), "unoptimised load_all() build")
+  skip_if_not(
+    testthat::is_checking(),
+    "only inside R CMD check (installed, optimised build)"
+  )
 
   ratio <- .relative_time(
     f = function() parse_lat(lats_10k),
@@ -302,7 +302,10 @@ test_that("parse_lat stays within 5x the time of gsub (10k strings)", {
 test_that("parse_lon stays within 5x the time of gsub (10k strings)", {
   skip_on_cran()
   skip_if_not_installed("bench")
-  skip_if(.is_dev_package(), "unoptimised load_all() build")
+  skip_if_not(
+    testthat::is_checking(),
+    "only inside R CMD check (installed, optimised build)"
+  )
 
   ratio <- .relative_time(
     f = function() parse_lon(lons_10k),
@@ -318,7 +321,10 @@ test_that("parse_lon stays within 5x the time of gsub (10k strings)", {
 test_that("parse_llstr stays within 5x the time of gsub (10k strings)", {
   skip_on_cran()
   skip_if_not_installed("bench")
-  skip_if(.is_dev_package(), "unoptimised load_all() build")
+  skip_if_not(
+    testthat::is_checking(),
+    "only inside R CMD check (installed, optimised build)"
+  )
 
   ratio <- .relative_time(
     f = function() parse_llstr(llstrs_10k),
