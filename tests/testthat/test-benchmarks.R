@@ -292,7 +292,6 @@ test_that("parse_lat stays within 5x the time of gsub (10k strings)", {
     f = function() parse_lat(lats_10k),
     baseline = .base_r_baseline(lats_10k)
   )
-  cat(sprintf("PARZER_RATIO parse_lat %.3f\n", ratio), file = stderr())
   expect_lt(
     ratio,
     bench_ratio_max,
@@ -312,7 +311,6 @@ test_that("parse_lon stays within 5x the time of gsub (10k strings)", {
     f = function() parse_lon(lons_10k),
     baseline = .base_r_baseline(lons_10k)
   )
-  cat(sprintf("PARZER_RATIO parse_lon %.3f\n", ratio), file = stderr())
   expect_lt(
     ratio,
     bench_ratio_max,
@@ -332,7 +330,6 @@ test_that("parse_llstr stays within 5x the time of gsub (10k strings)", {
     f = function() parse_llstr(llstrs_10k),
     baseline = .base_r_baseline(llstrs_10k)
   )
-  cat(sprintf("PARZER_RATIO parse_llstr %.3f\n", ratio), file = stderr())
   expect_lt(
     ratio,
     bench_ratio_max,
