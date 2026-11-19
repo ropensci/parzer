@@ -250,22 +250,28 @@ test_that("parse_parts_lat allocates < 10 kB per item (960 items)", {
 #
 # The tests above only catch large slowdowns. These ones divide the median
 # time of parzer on 10 000 strings by the median time of
-# gsub("[^0-9A-Za-z.]", "'", x) on the same strings, measured in the same run,
-# so the ratio does not depend on the speed of the machine.
+# gsub("[^0-9A-Za-z.]", "'", x) on the same strings, measured in the same run.
+# The ratio depends much less on the machine than a time does, but it still
+# varies between platforms.
 #
-# Measured on 2026-11-18 (R 4.6.1, macOS arm64, -O2), 8 repeats each:
+# Ratios measured on 2026-11-19 (CI on draft PR #63, R CMD check, -O2):
 #                          parse_lat  parse_lon  parse_llstr
-#   current code              1.5-1.6    1.6        2.1-2.2
-#   std::regex (aacd37b)      20         25-26      33-34
-# A maximum of 5 leaves a margin of 2-3x against noise on other platforms and
-# still fails when std::regex comes back.
+#   local macOS arm64         1.53       1.58       2.37
+#   CI macOS                  1.59       2.06       3.03
+#   CI Ubuntu (3 R versions)  2.7-3.0    2.8-3.1    4.2-4.6
+#   CI Windows                3.86       3.85       5.03
+#   std::regex (aacd37b, local macOS)
+#                             20         25-26      33-34
+# Each limit is 1.5 times the worst platform (Windows), rounded: it catches a
+# slowdown of about 1.6x on Windows and 3.4x or more on macOS, and the return
+# of std::regex everywhere.
 #
 # A package loaded with devtools::test() (pkgload::load_all()) is compiled at
 # -O0 and runs about 7x slower, so these tests only run inside R CMD check
 # (testthat::is_checking()), on the installed package.
 # ---------------------------------------------------------------------------
 
-bench_ratio_max <- 5
+bench_ratio_max <- c(parse_lat = 6, parse_lon = 6, parse_llstr = 8)
 
 .relative_time <- function(f, baseline) {
   bm <- bench::mark(f(), baseline(), iterations = 20L, check = FALSE)
@@ -280,7 +286,7 @@ lats_10k <- rep(bench_lats, length.out = 10000L)
 lons_10k <- rep(bench_lons, length.out = 10000L)
 llstrs_10k <- paste(lats_10k, lons_10k, sep = ", ")
 
-test_that("parse_lat stays within 5x the time of gsub (10k strings)", {
+test_that("parse_lat stays within 6x the time of gsub (10k strings)", {
   skip_on_cran()
   skip_if_not_installed("bench")
   skip_if_not(
@@ -294,12 +300,12 @@ test_that("parse_lat stays within 5x the time of gsub (10k strings)", {
   )
   expect_lt(
     ratio,
-    bench_ratio_max,
+    bench_ratio_max[["parse_lat"]],
     label = sprintf("parse_lat / gsub time ratio = %.2f", ratio)
   )
 })
 
-test_that("parse_lon stays within 5x the time of gsub (10k strings)", {
+test_that("parse_lon stays within 6x the time of gsub (10k strings)", {
   skip_on_cran()
   skip_if_not_installed("bench")
   skip_if_not(
@@ -313,12 +319,12 @@ test_that("parse_lon stays within 5x the time of gsub (10k strings)", {
   )
   expect_lt(
     ratio,
-    bench_ratio_max,
+    bench_ratio_max[["parse_lon"]],
     label = sprintf("parse_lon / gsub time ratio = %.2f", ratio)
   )
 })
 
-test_that("parse_llstr stays within 5x the time of gsub (10k strings)", {
+test_that("parse_llstr stays within 8x the time of gsub (10k strings)", {
   skip_on_cran()
   skip_if_not_installed("bench")
   skip_if_not(
@@ -332,7 +338,7 @@ test_that("parse_llstr stays within 5x the time of gsub (10k strings)", {
   )
   expect_lt(
     ratio,
-    bench_ratio_max,
+    bench_ratio_max[["parse_llstr"]],
     label = sprintf("parse_llstr / gsub time ratio = %.2f", ratio)
   )
 })
