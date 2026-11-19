@@ -29,22 +29,6 @@ num_to_chr <- function(x) {
   out
 }
 
-scrub <- function(x) {
-  x <- num_to_chr(x)
-  # NA in, NA out: "" is the one input the C++ parser turns into NA silently
-  x[is.na(x)] <- ""
-  # Unicode minus sign, en dash and em dash are a minus sign
-  x <- gsub(
-    pattern = "[\u2212\u2013\u2014]",
-    replacement = "-",
-    x = x,
-    perl = TRUE
-  )
-  # d and g are degree marks ("40d 25' 6\"") and are replaced in either case
-  trimws(gsub(
-    pattern = "[^A-Za-z0-9. ,'-]|[dgDG]",
-    replacement = "'",
-    x = x,
-    perl = TRUE
-  ))
-}
+# Cleans every input before the C++ parser reads it. The rules (NA, dashes,
+# degree marks and other symbols, trimming) are in src/scrub.cpp.
+scrub <- function(x) pz_scrub(enc2utf8(num_to_chr(x)))
