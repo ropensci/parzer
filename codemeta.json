@@ -162,7 +162,7 @@
   "applicationCategory": "Geospatial",
   "isPartOf": "https://ropensci.org",
   "keywords": ["geospatial", "data", "latitude", "longitude", "parser", "coordinates", "r", "rstats", "geo", "r-package"],
-  "fileSize": "3023.578KB",
+  "fileSize": "253.928KB",
   "releaseNotes": "https://github.com/ropensci/parzer/blob/main/NEWS.md",
   "readme": "https://github.com/ropensci/parzer/blob/main/README.md",
   "contIntegration": "https://github.com/ropensci/parzer/actions/",
