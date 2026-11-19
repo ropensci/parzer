@@ -99,3 +99,27 @@ test_that("scrub() is unchanged on numeric input", {
   )
   expect_identical(object = scrub(0), expected = "0")
 })
+
+test_that("scrub() stops on invalid UTF-8, as the R version did", {
+  expect_error(
+    object = scrub(c("40", "40\xb0")),
+    regexp = "input string 2 is invalid UTF-8"
+  )
+  # overlong form of "/" and a surrogate: validUTF8() rejects them too
+  expect_error(object = scrub("40\xc0\xaf"), regexp = "invalid UTF-8")
+  expect_error(object = scrub("40\xed\xa0\x80"), regexp = "invalid UTF-8")
+  # a cut UTF-8 sequence: the first two bytes of a minus sign
+  expect_error(object = scrub("40\xe2\x88"), regexp = "invalid UTF-8")
+  expect_error(object = parse_lat("40\xb0"), regexp = "invalid UTF-8")
+})
+
+test_that("scrub() stops on strings marked \"bytes\"", {
+  x <- "40\xb0"
+  Encoding(x) <- "bytes"
+  expect_error(
+    object = scrub(c("40", x)),
+    regexp = "input string 2 is marked as \"bytes\"",
+    fixed = TRUE
+  )
+  expect_error(object = parse_lon(x), regexp = "bytes", fixed = TRUE)
+})
