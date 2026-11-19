@@ -15,11 +15,12 @@
 #                        a ceiling (catches moderate slowdowns, e.g.
 #                        std::regex coming back). Installed builds only.
 #
-# Thresholds of 1-3 are intentionally loose: the 2 s floor is about 10 000
-# times the measured time for 96 strings (about 0.1 ms with -O2), so slow CI
+# Tests 1 to 3 are intentionally loose: the 2 s floor is about 10 000 times
+# the measured time for 96 strings (about 0.1 ms with -O2), so slow CI
 # runners and -O0 debug builds never trigger false positives. They only catch
 # catastrophic regressions; compare timings with benchmarks/compare_with_ref.R.
-# Test 4 does not depend on machine speed, so its limit is much tighter.
+# Test 4 compares with a base R baseline measured in the same run, so its
+# limits (6 to 8) can be much tighter.
 
 # ---------------------------------------------------------------------------
 # Shared fixtures
@@ -254,7 +255,7 @@ test_that("parse_parts_lat allocates < 10 kB per item (960 items)", {
 # The ratio depends much less on the machine than a time does, but it still
 # varies between platforms.
 #
-# Ratios measured on 2026-11-19 (CI on draft PR #63, R CMD check, -O2):
+# Ratios measured on 2026-11-19 (CI run on PR #63, R CMD check, -O2):
 #                          parse_lat  parse_lon  parse_llstr
 #   local macOS arm64         1.53       1.58       2.37
 #   CI macOS                  1.59       2.06       3.03
@@ -271,8 +272,6 @@ test_that("parse_parts_lat allocates < 10 kB per item (960 items)", {
 # (testthat::is_checking()), on the installed package.
 # ---------------------------------------------------------------------------
 
-bench_ratio_max <- c(parse_lat = 6, parse_lon = 6, parse_llstr = 8)
-
 .relative_time <- function(f, baseline) {
   bm <- bench::mark(f(), baseline(), iterations = 20L, check = FALSE)
   as.numeric(median(bm$time[[1L]])) / as.numeric(median(bm$time[[2L]]))
@@ -286,59 +285,42 @@ lats_10k <- rep(bench_lats, length.out = 10000L)
 lons_10k <- rep(bench_lons, length.out = 10000L)
 llstrs_10k <- paste(lats_10k, lons_10k, sep = ", ")
 
-test_that("parse_lat stays within 6x the time of gsub (10k strings)", {
-  skip_on_cran()
-  skip_if_not_installed("bench")
-  skip_if_not(
-    testthat::is_checking(),
-    "only inside R CMD check (installed, optimised build)"
-  )
-
-  ratio <- .relative_time(
-    f = function() parse_lat(lats_10k),
-    baseline = .base_r_baseline(lats_10k)
-  )
-  expect_lt(
-    ratio,
-    bench_ratio_max[["parse_lat"]],
-    label = sprintf("parse_lat / gsub time ratio = %.2f", ratio)
-  )
-})
-
-test_that("parse_lon stays within 6x the time of gsub (10k strings)", {
-  skip_on_cran()
-  skip_if_not_installed("bench")
-  skip_if_not(
-    testthat::is_checking(),
-    "only inside R CMD check (installed, optimised build)"
-  )
-
-  ratio <- .relative_time(
-    f = function() parse_lon(lons_10k),
-    baseline = .base_r_baseline(lons_10k)
-  )
-  expect_lt(
-    ratio,
-    bench_ratio_max[["parse_lon"]],
-    label = sprintf("parse_lon / gsub time ratio = %.2f", ratio)
-  )
-})
-
-test_that("parse_llstr stays within 8x the time of gsub (10k strings)", {
-  skip_on_cran()
-  skip_if_not_installed("bench")
-  skip_if_not(
-    testthat::is_checking(),
-    "only inside R CMD check (installed, optimised build)"
-  )
-
-  ratio <- .relative_time(
+# the function to time, its input (for the baseline) and its limit
+relative_cases <- list(
+  parse_lat = list(f = function() parse_lat(lats_10k), x = lats_10k, max = 6),
+  parse_lon = list(f = function() parse_lon(lons_10k), x = lons_10k, max = 6),
+  parse_llstr = list(
     f = function() parse_llstr(llstrs_10k),
-    baseline = .base_r_baseline(llstrs_10k)
+    x = llstrs_10k,
+    max = 8
   )
-  expect_lt(
-    ratio,
-    bench_ratio_max[["parse_llstr"]],
-    label = sprintf("parse_llstr / gsub time ratio = %.2f", ratio)
+)
+
+for (fn in names(relative_cases)) {
+  case <- relative_cases[[fn]]
+  test_that(
+    sprintf(
+      fmt = "%s stays within %gx the time of gsub (10k strings)",
+      fn,
+      case[["max"]]
+    ),
+    {
+      skip_on_cran()
+      skip_if_not_installed(pkg = "bench")
+      skip_if_not(
+        condition = testthat::is_checking(),
+        message = "only inside R CMD check (installed, optimised build)"
+      )
+
+      ratio <- .relative_time(
+        f = case[["f"]],
+        baseline = .base_r_baseline(case[["x"]])
+      )
+      expect_lt(
+        object = ratio,
+        expected = case[["max"]],
+        label = sprintf(fmt = "%s / gsub time ratio = %.2f", fn, ratio)
+      )
+    }
   )
-})
+}
