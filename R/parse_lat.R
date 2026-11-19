@@ -118,6 +118,7 @@
 #' A comma or space is always a separator between degrees, minutes and seconds,
 #' never a decimal mark.
 #'
+# examples without format are mirrored in tests/testthat/test-doc-examples.R
 #' @examples
 #' parse_lat("")
 #'
