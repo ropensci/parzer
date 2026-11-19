@@ -237,16 +237,21 @@ parse_llstr <- function(
   lat_half[!lat_first] <- second[!lat_first]
   lon_half <- second
   lon_half[!lat_first] <- first[!lat_first]
+  # the halves come from scrub(str): scrub() again would only trim the spaces
+  # left by the split, so trim them and skip the scrub() of parse_lat() and
+  # parse_lon()
+  lat_half <- trimws(lat_half)
+  lon_half <- trimws(lon_half)
   lat <- rep(NA_real_, times = length(str))
   lon <- rep(NA_real_, times = length(str))
-  lat[ok] <- parse_lat(lat_half[ok])
-  lon[ok] <- parse_lon(lon_half[ok])
+  lat[ok] <- pz_parse_lat(lat_half[ok])
+  lon[ok] <- pz_parse_lon(lon_half[ok])
   # a latitude out of range that is a valid longitude (see swap_why()). Only
   # rows with an NA latitude are parsed again, so valid input does not pay.
   maybe <- which(ok & is.na(lat) & picked[["can_swap"]])
   as_lon <- withCallingHandlers(
-    parse_lon(lat_half[maybe]),
-    # parse_lat() already gave a warning for each of them
+    pz_parse_lon(lat_half[maybe]),
+    # pz_parse_lat() already gave a warning for each of them
     warning = function(w) invokeRestart("muffleWarning")
   )
   swapped <- maybe[!is.na(as_lon)]
