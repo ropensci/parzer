@@ -31,6 +31,7 @@
 #' | `"0002741W"` | `"517539N"` | `"DDDMMSSH"` | `"DDMMSSH"` | -0.46139 | `NA` | 75 minutes: the longitude is kept |
 #' | `"512839N"` | `"0002741W"` | `"DDDMMSSH"` | `"DDMMSSH"` | `NA` | `NA` | swapped: longitude comes first |
 #'
+# examples without format are mirrored in tests/testthat/test-doc-examples.R
 #' @examples
 #' parse_lon_lat("-120.43", "49.12")
 #'
