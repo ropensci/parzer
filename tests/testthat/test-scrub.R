@@ -123,3 +123,41 @@ test_that("scrub() stops on strings marked \"bytes\"", {
   )
   expect_error(object = parse_lon(x), regexp = "bytes", fixed = TRUE)
 })
+
+test_that("scrub() stops on latin1 bytes that Windows-1252 leaves undefined", {
+  # enc2utf8() would turn them into "<81>" and so on, read as 81
+  x <- c("\x81", "\x8d", "\x8f", "\x90", "\x9045", "\x9d")
+  Encoding(x) <- "latin1"
+  for (s in x) {
+    expect_error(
+      object = scrub(c("40", s)),
+      regexp = "input string 2 is marked as \"latin1\" but has a byte",
+      fixed = TRUE
+    )
+  }
+  expect_error(object = parse_lat(x[[1]]), regexp = "latin1", fixed = TRUE)
+  expect_error(object = parse_lon(x[[5]]), regexp = "latin1", fixed = TRUE)
+  pair <- "\x81, \x90"
+  Encoding(pair) <- "latin1"
+  expect_error(object = parse_llstr(pair), regexp = "latin1", fixed = TRUE)
+  expect_error(
+    object = parse_parts_lat(x[[1]]),
+    regexp = "latin1",
+    fixed = TRUE
+  )
+  # the format path does not use scrub(): R's regular expressions stop on
+  # these bytes too, with R's own warning and error
+  expect_warning(
+    object = expect_error(
+      object = parse_lat(x[[1]], format = "DD"),
+      regexp = "invalid UTF-8",
+      fixed = TRUE
+    ),
+    regexp = "unable to translate",
+    fixed = TRUE
+  )
+  # other latin1 bytes are characters and are cleaned as usual
+  y <- c("45\xb0", "\x80 5", "\xff")
+  Encoding(y) <- "latin1"
+  expect_identical(object = scrub(y), expected = c("45'", "' 5", "'"))
+})
