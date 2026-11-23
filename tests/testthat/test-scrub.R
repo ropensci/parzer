@@ -101,16 +101,24 @@ test_that("scrub() is unchanged on numeric input", {
 })
 
 test_that("scrub() stops on invalid UTF-8, as the R version did", {
+  # marked as UTF-8: in a latin1 locale, unmarked bytes are valid text
+  bad <- c(
+    "40\xb0",
+    # overlong form of "/" and a surrogate: validUTF8() rejects them too
+    "40\xc0\xaf",
+    "40\xed\xa0\x80",
+    # a cut UTF-8 sequence: the first two bytes of a minus sign
+    "40\xe2\x88"
+  )
+  Encoding(bad) <- "UTF-8"
   expect_error(
-    object = scrub(c("40", "40\xb0")),
+    object = scrub(c("40", bad[[1]])),
     regexp = "input string 2 is invalid UTF-8"
   )
-  # overlong form of "/" and a surrogate: validUTF8() rejects them too
-  expect_error(object = scrub("40\xc0\xaf"), regexp = "invalid UTF-8")
-  expect_error(object = scrub("40\xed\xa0\x80"), regexp = "invalid UTF-8")
-  # a cut UTF-8 sequence: the first two bytes of a minus sign
-  expect_error(object = scrub("40\xe2\x88"), regexp = "invalid UTF-8")
-  expect_error(object = parse_lat("40\xb0"), regexp = "invalid UTF-8")
+  for (s in bad[-1]) {
+    expect_error(object = scrub(s), regexp = "invalid UTF-8")
+  }
+  expect_error(object = parse_lat(bad[[1]]), regexp = "invalid UTF-8")
 })
 
 test_that("scrub() stops on strings marked \"bytes\"", {
