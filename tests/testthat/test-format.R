@@ -350,6 +350,17 @@ test_that("format: a number is read the same way whatever the other numbers", {
   )
 })
 
+test_that("format: a string marked \"bytes\" does not shift the fields of the others", {
+  # one "bytes" string makes the regular expression work on bytes for all
+  bytes <- "45\xb030"
+  Encoding(bytes) <- "bytes"
+  expect_warning(
+    res <- parse_lat(c("45°30", bytes), format = "DD°MM"),
+    "does not match format"
+  )
+  expect_equal(res, c(45.5, NA))
+})
+
 test_that("format: NA input gives NA without a warning", {
   expect_no_warning(res <- parse_lat(c(NA_character_, NA), format = "DDMM"))
   expect_equal(res, c(NA_real_, NA_real_))

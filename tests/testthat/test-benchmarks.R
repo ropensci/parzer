@@ -267,6 +267,11 @@ test_that("parse_parts_lat allocates < 10 kB per item (960 items)", {
 # slowdown of about 1.6x on Windows and 3.4x or more on macOS, and the return
 # of std::regex everywhere.
 #
+# parse_lat(format = "DDMMSSH") on packed ICAO strings, measured on
+# 2026-11-23 on local macOS arm64 only: 3.1 with regexpr(), 31 to 40 with
+# regmatches(regexec()). Its limit, 12, is 4 times the local ratio, to leave
+# room for the other platforms until CI gives their ratios.
+#
 # A package loaded with devtools::test() (pkgload::load_all()) is compiled at
 # -O0 and runs about 7x slower, so these tests only run inside R CMD check
 # (testthat::is_checking()), on the installed package.
@@ -284,6 +289,10 @@ test_that("parse_parts_lat allocates < 10 kB per item (960 items)", {
 lats_10k <- rep(bench_lats, length.out = 10000L)
 lons_10k <- rep(bench_lons, length.out = 10000L)
 llstrs_10k <- paste(lats_10k, lons_10k, sep = ", ")
+icao_10k <- rep(
+  c("512839N", "002741S", "453015N", "123456S"),
+  length.out = 10000L
+)
 
 # the function to time, its input (for the baseline) and its limit
 relative_cases <- list(
@@ -293,6 +302,11 @@ relative_cases <- list(
     f = function() parse_llstr(llstrs_10k),
     x = llstrs_10k,
     max = 8
+  ),
+  parse_lat_format = list(
+    f = function() parse_lat(icao_10k, format = "DDMMSSH"),
+    x = icao_10k,
+    max = 12
   )
 )
 
