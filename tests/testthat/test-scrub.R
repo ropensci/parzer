@@ -84,10 +84,10 @@ test_that("scrub() is unchanged on edge cases, one by one and together", {
 })
 
 test_that("scrub() is unchanged on numeric input", {
-  # num_to_chr() gives all elements of a vector the same number of decimals
+  # num_to_chr() writes each number on its own
   expect_identical(
     object = scrub(c(1e5, -0.5, 1e-10)),
-    expected = c("100000.0000000000", "-0.5000000000", "0.0000000001")
+    expected = c("100000", "-0.5", "0.0000000001")
   )
   expect_identical(
     object = scrub(c(40.4183318, NA, NaN, Inf, -Inf)),

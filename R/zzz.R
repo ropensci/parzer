@@ -19,12 +19,26 @@ lint_inputs <- function(lon, lat) {
   )
 }
 
-# as.character() gives "1e-05" for small numbers, which the parser misreads
+# Each number is written on its own, so that its text does not depend on the
+# other numbers of the vector: format() on the whole vector gives them all
+# the same number of decimals ("4530.0"), which `format` does not match.
+# as.character() is fast and gives the same 15 significant digits as
+# format(), but writes "1e-05" for small numbers, which the parser misreads:
+# those few go through format() one by one.
 num_to_chr <- function(x) {
+  out <- as.character(x)
   if (!is.numeric(x)) {
-    return(as.character(x))
+    return(out)
   }
-  out <- format(x, scientific = FALSE, digits = 15, trim = TRUE)
+  sci <- which(grepl(pattern = "e", x = out, fixed = TRUE))
+  out[sci] <- vapply(
+    X = x[sci],
+    FUN = format,
+    FUN.VALUE = character(1L),
+    scientific = FALSE,
+    digits = 15,
+    trim = TRUE
+  )
   out[is.na(x)] <- NA_character_
   out
 }

@@ -44,10 +44,15 @@ test_that("scrub keeps the symbols it replaced before the perl switch", {
   expect_equal(scrub("  40  "), "40")
 })
 
-test_that("num_to_chr formats whole vectors without scientific notation", {
+test_that("num_to_chr formats each number on its own, without scientific notation", {
   expect_equal(num_to_chr(1e-5), "0.00001")
-  # one vector gets one common number of decimals; the parser does not mind
-  expect_equal(num_to_chr(c(1e-5, 45.5)), c("0.00001", "45.50000"))
+  # each number keeps its own decimals: `format` matches this text
+  expect_equal(num_to_chr(c(1e-5, 45.5)), c("0.00001", "45.5"))
+  expect_equal(num_to_chr(c(4530, 45.5)), c("4530", "45.5"))
+  expect_equal(
+    num_to_chr(c(1e5, 0.5, -1e-10)),
+    c("100000", "0.5", "-0.0000000001")
+  )
   expect_equal(num_to_chr(c(1, NA, NaN)), c("1", NA_character_, NA_character_))
   expect_equal(num_to_chr(c(-120L, 45L)), c("-120", "45"))
   expect_equal(num_to_chr(c("a", NA)), c("a", NA_character_))
