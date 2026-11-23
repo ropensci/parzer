@@ -169,3 +169,33 @@ test_that("scrub() stops on latin1 bytes that Windows-1252 leaves undefined", {
   Encoding(y) <- "latin1"
   expect_identical(object = scrub(y), expected = c("45'", "' 5", "'"))
 })
+
+test_that("\"bytes\" and latin1 junk give the same error in every parser", {
+  # each case: one value, one "lat lon" string, the start of the error
+  bytes <- c("45\xb0", "45\xb0 30")
+  Encoding(bytes) <- "bytes"
+  junk <- c("\x9045", "\x81 \x90")
+  Encoding(junk) <- "latin1"
+  cases <- list(
+    bytes = list(
+      x = bytes,
+      msg = "input string 2 is marked as \"bytes\", convert it to UTF-8 first"
+    ),
+    latin1 = list(
+      x = junk,
+      msg = "input string 2 is marked as \"latin1\" but has a byte"
+    )
+  )
+  for (case in cases) {
+    x <- c("45", case[["x"]][[1]])
+    pair <- c("45 45", case[["x"]][[2]])
+    calls <- list(
+      function() parse_lat(x),
+      function() parse_lon(x),
+      function() parse_llstr(pair)
+    )
+    for (f in calls) {
+      expect_error(object = f(), regexp = case[["msg"]], fixed = TRUE)
+    }
+  }
+})

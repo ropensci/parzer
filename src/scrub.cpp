@@ -2,8 +2,8 @@
 
 // scrub() in R/zzz.R: cleans every input string before the parser reads it,
 // one code point at a time and without regular expressions. The strings come
-// from enc2utf8(), so they are UTF-8 (or ASCII) unless marked "bytes". The
-// output is always ASCII.
+// from enc2utf8(), after check_encoding() has stopped on strings marked
+// "bytes", so they are UTF-8 (or ASCII). The output is always ASCII.
 
 // Reads the UTF-8 code point that starts at p into cp and returns its length
 // in bytes, or 0 if it is not valid UTF-8. The rules are those of R's
@@ -55,10 +55,6 @@ Rcpp::CharacterVector pz_scrub(Rcpp::CharacterVector x) {
     // R: x[is.na(x)] <- ""
     // NA in, NA out: "" is the one input the C++ parser turns into NA silently
     if (s == NA_STRING) continue;
-    if (Rf_getCharCE(s) == CE_BYTES) {
-      Rcpp::stop("input string %d is marked as \"bytes\", convert it to "
-                 "UTF-8 first, for example with iconv()", i + 1);
-    }
     buf.clear();
     const unsigned char* p = reinterpret_cast<const unsigned char*>(CHAR(s));
     while (*p) {

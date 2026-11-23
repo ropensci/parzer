@@ -32,24 +32,49 @@ num_to_chr <- function(x) {
 # Cleans every input before the C++ parser reads it. The rules (NA, dashes,
 # degree marks and other symbols, trimming) are in src/scrub.cpp.
 scrub <- function(x) {
-  x <- num_to_chr(x)
-  # enc2utf8() reads latin1 as Windows-1252 and turns the 5 bytes it leaves
-  # undefined into text such as "<81>", whose digits would be read as a
-  # coordinate. Only strings marked "latin1" are checked.
-  latin1 <- which(Encoding(x) == "latin1")
-  bad <- latin1[grepl(
-    pattern = "[\x81\x8d\x8f\x90\x9d]",
-    x = x[latin1],
-    useBytes = TRUE
-  )]
-  if (length(bad) > 0L) {
+  check_encoding(x)
+  pz_scrub(enc2utf8(num_to_chr(x)))
+}
+
+# Stops on strings that are not text: strings marked "bytes", and strings
+# marked "latin1" with one of the 5 bytes that Windows-1252 leaves undefined.
+# enc2utf8() reads latin1 as Windows-1252 and turns these bytes into text
+# such as "<81>", whose digits would be read as a coordinate. Invalid UTF-8
+# is caught later, by pz_scrub().
+check_encoding <- function(x) {
+  # numbers have no encoding: they pay nothing
+  if (!is.character(x)) {
+    return(invisible(NULL))
+  }
+  enc <- Encoding(x)
+  marked <- which(enc == "bytes" | enc == "latin1")
+  bad <- marked[
+    enc[marked] == "bytes" |
+      grepl(
+        pattern = "[\\x81\\x8d\\x8f\\x90\\x9d]",
+        x = x[marked],
+        perl = TRUE,
+        useBytes = TRUE
+      )
+  ]
+  if (length(bad) == 0L) {
+    return(invisible(NULL))
+  }
+  i <- bad[[1]]
+  if (enc[[i]] == "bytes") {
     stop(
       "input string ",
-      bad[[1]],
-      " is marked as \"latin1\" but has a byte that is not a character ",
-      "(0x81, 0x8D, 0x8F, 0x90 or 0x9D)",
+      i,
+      " is marked as \"bytes\", convert it to UTF-8 first, ",
+      "for example with iconv()",
       call. = FALSE
     )
   }
-  pz_scrub(enc2utf8(x))
+  stop(
+    "input string ",
+    i,
+    " is marked as \"latin1\" but has a byte that is not a character ",
+    "(0x81, 0x8D, 0x8F, 0x90 or 0x9D)",
+    call. = FALSE
+  )
 }
