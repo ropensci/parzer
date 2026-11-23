@@ -111,6 +111,15 @@ test_that("parse_llstr gives NA without a split warning for NA input", {
   )
 })
 
+test_that("parse_llstr gives NA without a warning for NA, empty and blank strings", {
+  x <- c("", "   ", NA)
+  na <- data.frame(lat = rep(NA_real_, 3), lon = rep(NA_real_, 3))
+  # the same as parse_lat() and as with format
+  expect_no_warning(expect_equal(parse_llstr(x), na))
+  expect_no_warning(expect_equal(parse_llstr(x, format = "DD DDD"), na))
+  expect_no_warning(parse_lat(x))
+})
+
 test_that("parse_llstr handles empty and all-bad input", {
   expect_equal(
     parse_llstr(character(0)),

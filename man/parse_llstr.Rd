@@ -34,8 +34,8 @@ longitude (-180/360), and the string has no direction letter, as in
 
 Both values are also \code{NA}, with a warning, when a string cannot be cut
 into two coordinates, does not match any \code{format}, or has direction
-letters that do not fit the order. \code{NA} input gives \code{NA} without a
-warning.
+letters that do not fit the order. \code{NA}, \code{""} and blank strings give
+\code{NA} without a warning.
 }
 \description{
 parse string with lat and lon together

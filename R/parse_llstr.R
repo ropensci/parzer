@@ -24,8 +24,8 @@
 #'
 #'   Both values are also `NA`, with a warning, when a string cannot be cut
 #'   into two coordinates, does not match any `format`, or has direction
-#'   letters that do not fit the order. `NA` input gives `NA` without a
-#'   warning.
+#'   letters that do not fit the order. `NA`, `""` and blank strings give
+#'   `NA` without a warning.
 #' @details
 #' With `format = NULL`, each string is cut into two parts, then the latitude
 #' part goes through [parse_lat()] and the longitude part through
@@ -211,7 +211,8 @@ parse_llstr <- function(
   if (!is.null(format)) {
     return(parse_llstr_with_format(str = str, format = format, order = order))
   }
-  halves <- pz_split_llstr(scrub(str))
+  clean <- scrub(str)
+  halves <- pz_split_llstr(clean)
   first <- halves[["lat"]]
   second <- halves[["lon"]]
   # scrub() keeps letters as typed: only N, S, E and W are direction letters
@@ -230,7 +231,10 @@ parse_llstr <- function(
   # "NA_STRING" marks strings that could not be split (see pz_split_llstr())
   unsplit <- first == "NA_STRING"
   why[unsplit] <- NA_character_
-  why[unsplit & !is.na(str)] <- "could not split into latitude and longitude"
+  # as in parse_lat(), NA, "" and blank strings (scrub() trims them to "")
+  # give NA without a warning
+  why[unsplit & !is.na(str) & nzchar(clean)] <-
+    "could not split into latitude and longitude"
   ok <- !unsplit & is.na(why)
   lat_first <- picked[["lat_first"]]
   lat_half <- first
