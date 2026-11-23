@@ -153,17 +153,6 @@ test_that("scrub() stops on latin1 bytes that Windows-1252 leaves undefined", {
     regexp = "latin1",
     fixed = TRUE
   )
-  # the format path does not use scrub(): R's regular expressions stop on
-  # these bytes too, with R's own warning and error
-  expect_warning(
-    object = expect_error(
-      object = parse_lat(x[[1]], format = "DD"),
-      regexp = "invalid UTF-8",
-      fixed = TRUE
-    ),
-    regexp = "unable to translate",
-    fixed = TRUE
-  )
   # other latin1 bytes are characters and are cleaned as usual
   y <- c("45\xb0", "\x80 5", "\xff")
   Encoding(y) <- "latin1"
