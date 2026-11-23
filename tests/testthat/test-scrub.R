@@ -153,24 +153,13 @@ test_that("scrub() stops on latin1 bytes that Windows-1252 leaves undefined", {
     regexp = "latin1",
     fixed = TRUE
   )
-  # the format path does not use scrub(): R's regular expressions stop on
-  # these bytes too, with R's own warning and error
-  expect_warning(
-    object = expect_error(
-      object = parse_lat(x[[1]], format = "DD"),
-      regexp = "invalid UTF-8",
-      fixed = TRUE
-    ),
-    regexp = "unable to translate",
-    fixed = TRUE
-  )
   # other latin1 bytes are characters and are cleaned as usual
   y <- c("45\xb0", "\x80 5", "\xff")
   Encoding(y) <- "latin1"
   expect_identical(object = scrub(y), expected = c("45'", "' 5", "'"))
 })
 
-test_that("\"bytes\" and latin1 junk give the same error in every parser", {
+test_that("\"bytes\" and latin1 junk give the same error with or without format", {
   # each case: one value, one "lat lon" string, the start of the error
   bytes <- c("45\xb0", "45\xb0 30")
   Encoding(bytes) <- "bytes"
@@ -191,8 +180,11 @@ test_that("\"bytes\" and latin1 junk give the same error in every parser", {
     pair <- c("45 45", case[["x"]][[2]])
     calls <- list(
       function() parse_lat(x),
+      function() parse_lat(x, format = "DD"),
       function() parse_lon(x),
-      function() parse_llstr(pair)
+      function() parse_lon(x, format = "DD"),
+      function() parse_llstr(pair),
+      function() parse_llstr(pair, format = "DD DD")
     )
     for (f in calls) {
       expect_error(object = f(), regexp = case[["msg"]], fixed = TRUE)

@@ -350,15 +350,25 @@ test_that("format: a number is read the same way whatever the other numbers", {
   )
 })
 
-test_that("format: a string marked \"bytes\" does not shift the fields of the others", {
-  # one "bytes" string makes the regular expression work on bytes for all
-  bytes <- "45\xb030"
-  Encoding(bytes) <- "bytes"
-  expect_warning(
-    res <- parse_lat(c("45°30", bytes), format = "DD°MM"),
-    "does not match format"
+test_that("format: fields are cut by characters, not bytes", {
+  # the minus sign and the degree sign take several bytes in UTF-8
+  expect_equal(
+    parse_lat(c("45°30", "−45°30"), format = "DD°MM"),
+    c(45.5, -45.5)
   )
-  expect_equal(res, c(45.5, NA))
+  # a format marked "bytes" would make the regular expression count bytes
+  fmt <- "DD°MM"
+  Encoding(fmt) <- "bytes"
+  expect_error(
+    object = parse_lat("45°30", format = fmt),
+    regexp = "format is marked as \"bytes\"",
+    fixed = TRUE
+  )
+  expect_error(
+    object = parse_llstr("45°30 45", format = paste(fmt, "DD")),
+    regexp = "format is marked as \"bytes\"",
+    fixed = TRUE
+  )
 })
 
 test_that("format: NA input gives NA without a warning", {

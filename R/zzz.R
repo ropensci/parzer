@@ -50,11 +50,12 @@ scrub <- function(x) {
   pz_scrub(enc2utf8(num_to_chr(x)))
 }
 
-# Stops on strings that are not text: strings marked "bytes", and strings
-# marked "latin1" with one of the 5 bytes that Windows-1252 leaves undefined.
-# enc2utf8() reads latin1 as Windows-1252 and turns these bytes into text
-# such as "<81>", whose digits would be read as a coordinate. Invalid UTF-8
-# is caught later, by pz_scrub().
+# Stops on strings that are not text, with or without `format`: strings
+# marked "bytes", and strings marked "latin1" with one of the 5 bytes that
+# Windows-1252 leaves undefined. enc2utf8() reads latin1 as Windows-1252 and
+# turns these bytes into text such as "<81>", whose digits would be read as
+# a coordinate. Invalid UTF-8 is caught later: by pz_scrub(), or by the
+# regular expressions of the `format` path.
 check_encoding <- function(x) {
   # numbers have no encoding: they pay nothing
   if (!is.character(x)) {

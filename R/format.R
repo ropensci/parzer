@@ -14,6 +14,13 @@ check_format <- function(format, compile = compile_format) {
   if (length(format) == 0L || anyNA(format)) {
     stop("format must be one or more strings, without NA", call. = FALSE)
   }
+  if (any(Encoding(format) == "bytes")) {
+    stop(
+      "format is marked as \"bytes\", convert it to UTF-8 first, ",
+      "for example with iconv()",
+      call. = FALSE
+    )
+  }
   lapply(X = format, FUN = compile)
 }
 
@@ -137,6 +144,7 @@ compile_format <- function(format, label = paste0("\"", format, "\"")) {
 # Parse `x` with the formats in `format`, tried in order for each value.
 # `what` is "lat" or "lon".
 parse_with_format <- function(x, format, what) {
+  check_encoding(x)
   out <- read_formats(
     x = trimws(num_to_chr(x)),
     formats = check_format(format = format),
@@ -179,12 +187,9 @@ read_formats <- function(x, formats, convert, ncol) {
     }
     start <- attr(m, "capture.start")[matched, , drop = FALSE]
     len <- attr(m, "capture.length")[matched, , drop = FALSE]
+    # positions are in characters: no string or format is marked "bytes"
+    # (see check_encoding() and check_format())
     text <- x[todo][matched]
-    # positions are in bytes when one string is marked "bytes": cut every
-    # string by bytes then, as regmatches() does
-    if (isTRUE(attr(m, "useBytes"))) {
-      Encoding(text) <- "bytes"
-    }
     fields <- matrix(
       data = substring(
         text = rep(text, times = ncol(start)),
@@ -320,6 +325,7 @@ compile_pair_format <- function(format) {
 # parse_llstr() with `format`: the whole string is matched at once, without
 # scrub() or the C++ splitter.
 parse_llstr_with_format <- function(str, format, order) {
+  check_encoding(str)
   out <- read_formats(
     x = trimws(str),
     formats = check_format(format = format, compile = compile_pair_format),
