@@ -1,4 +1,4 @@
-parzer 0.5.0.9000
+parzer 0.6.0
 ============
 
 ### NEW FEATURES

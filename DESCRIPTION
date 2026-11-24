@@ -10,7 +10,7 @@ Description: Parse messy geographic coordinates from various character formats
     written by Jeffrey D. Bogan, but then completely re-written. A 'format'
     argument reads packed digits, such as coordinates from the International
     Civil Aviation Organization (ICAO) or from GPS receivers (NMEA).
-Version: 0.5.0.9000
+Version: 0.6.0
 Authors@R: c(
     person("Scott", "Chamberlain", role = "aut",
         email = "sckott@protonmail.com",
