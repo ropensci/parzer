@@ -114,6 +114,9 @@
 #' - minutes or seconds out of range (negative or 60 and above): not within 0/60 range, e.g. `"10 30,12345"`
 #' is read as 10 degrees, 30 minutes and 12345 seconds, so it gives a warning and `NA`
 #' - a decimal degree or minute followed by another slot: only the last slot can be decimal, e.g. `"45.5 30"`
+#' - a minus sign that disagrees with the direction letter: minus sign and direction letter disagree, e.g. `"N -45"` or `"-45N"`
+#' - a number with two decimal points: invalid number, e.g. `"40.25.30"`
+#' - with `format`, a value that does not match any pattern: does not match format, see the Format section
 #'
 #' A comma or space is always a separator between degrees, minutes and seconds,
 #' never a decimal mark.

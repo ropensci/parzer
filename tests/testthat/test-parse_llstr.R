@@ -111,6 +111,15 @@ test_that("parse_llstr gives NA without a split warning for NA input", {
   )
 })
 
+test_that("parse_llstr gives NA without a warning for NA, empty and blank strings", {
+  x <- c("", "   ", NA)
+  na <- data.frame(lat = rep(NA_real_, 3), lon = rep(NA_real_, 3))
+  # the same as parse_lat() and as with format
+  expect_no_warning(expect_equal(parse_llstr(x), na))
+  expect_no_warning(expect_equal(parse_llstr(x, format = "DD DDD"), na))
+  expect_no_warning(parse_lat(x))
+})
+
 test_that("parse_llstr handles empty and all-bad input", {
   expect_equal(
     parse_llstr(character(0)),
@@ -446,15 +455,35 @@ test_that("a latitude that looks like a longitude does not change the other rows
   expect_length(res[["warnings"]], 3L)
 })
 
-test_that("the exponent of a number is not the direction letter E", {
-  # parse_lat() cannot read "1.5e2", so the row keeps its longitude, as
-  # before order = "auto" existed: the halves must not be swapped
+test_that("every E is the direction letter E, even between two digits", {
+  # same layout as "45W54.2356": the E says that longitude comes first
+  expect_no_warning(res <- parse_llstr(c("45E30.5, 10", "10, 45E30.5")))
+  lon <- 45 + 30.5 / 60
+  expect_equal(res, data.frame(lat = c(10, 10), lon = c(lon, lon)))
+  # so the "e" of an exponent is a letter too; parse_lon() cannot read "1.5e2"
   res <- collect_warnings(parse_llstr(c("1.5e2, 4", "45N, 74E", "E74, N45")))
   expect_equal(
     res[["value"]],
-    data.frame(lat = c(NA, 45, 45), lon = c(4, 74, 74))
+    data.frame(lat = c(4, 45, 45), lon = c(NA, 74, 74))
   )
-  expect_match(res[["warnings"]], regexp = "got: 1.5e2", all = FALSE)
+  expect_identical(res[["warnings"]], "invalid characters, got: 1.5e2")
+})
+
+test_that("the swap hint needs a latitude out of range", {
+  # NA latitude for another reason: no hint, and the longitude is kept
+  for (x in c("40.25.30, 10", "45x, 10")) {
+    res <- collect_warnings(parse_llstr(x))
+    expect_equal(
+      res[["value"]],
+      data.frame(lat = NA_real_, lon = 10),
+      label = x
+    )
+    expect_length(res[["warnings"]], 1L)
+    expect_no_match(res[["warnings"]], "try order", fixed = TRUE, label = x)
+  }
+  res <- collect_warnings(parse_llstr("120, 45"))
+  expect_equal(res[["value"]], data.frame(lat = NA_real_, lon = NA_real_))
+  expect_match(res[["warnings"]][[2]], swap_hint("lon_lat"), fixed = TRUE)
 })
 
 test_that("format: a latitude that looks like a longitude gives NA for both", {

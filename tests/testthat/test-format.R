@@ -326,6 +326,51 @@ test_that("format: a long list of bad values is cut after 10", {
   expect_match(res[["warnings"]], "\\.\\.\\. and 2 more$")
 })
 
+test_that("format: a number is read the same way whatever the other numbers", {
+  expect_equal(parse_lat(4530, format = "DDMM"), 45.5)
+  expect_no_warning(
+    res <- parse_lat(c(4530, 45.5), format = c("DDMM", "DD.d"))
+  )
+  expect_equal(res, c(45.5, 45.5))
+  expect_no_warning(
+    res <- parse_lon(c(1452741, 0.5), format = c("DDDMMSS", "D.d"))
+  )
+  expect_equal(res, c(145 + 27 / 60 + 41 / 3600, 0.5))
+  expect_no_warning(
+    res <- parse_lon_lat(
+      lon = c(12043, 1.5),
+      lat = c(4530, 45.5),
+      lon_format = c("DDDMM", "D.d"),
+      lat_format = c("DDMM", "DD.d")
+    )
+  )
+  expect_equal(
+    res,
+    data.frame(lon = c(120 + 43 / 60, 1.5), lat = c(45.5, 45.5))
+  )
+})
+
+test_that("format: fields are cut by characters, not bytes", {
+  # the minus sign and the degree sign take several bytes in UTF-8
+  expect_equal(
+    parse_lat(c("45°30", "−45°30"), format = "DD°MM"),
+    c(45.5, -45.5)
+  )
+  # a format marked "bytes" would make the regular expression count bytes
+  fmt <- "DD°MM"
+  Encoding(fmt) <- "bytes"
+  expect_error(
+    object = parse_lat("45°30", format = fmt),
+    regexp = "format is marked as \"bytes\"",
+    fixed = TRUE
+  )
+  expect_error(
+    object = parse_llstr("45°30 45", format = paste(fmt, "DD")),
+    regexp = "format is marked as \"bytes\"",
+    fixed = TRUE
+  )
+})
+
 test_that("format: NA input gives NA without a warning", {
   expect_no_warning(res <- parse_lat(c(NA_character_, NA), format = "DDMM"))
   expect_equal(res, c(NA_real_, NA_real_))

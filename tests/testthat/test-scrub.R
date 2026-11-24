@@ -84,10 +84,10 @@ test_that("scrub() is unchanged on edge cases, one by one and together", {
 })
 
 test_that("scrub() is unchanged on numeric input", {
-  # num_to_chr() gives all elements of a vector the same number of decimals
+  # num_to_chr() writes each number on its own
   expect_identical(
     object = scrub(c(1e5, -0.5, 1e-10)),
-    expected = c("100000.0000000000", "-0.5000000000", "0.0000000001")
+    expected = c("100000", "-0.5", "0.0000000001")
   )
   expect_identical(
     object = scrub(c(40.4183318, NA, NaN, Inf, -Inf)),
@@ -159,7 +159,7 @@ test_that("scrub() stops on latin1 bytes that Windows-1252 leaves undefined", {
   expect_identical(object = scrub(y), expected = c("45'", "' 5", "'"))
 })
 
-test_that("\"bytes\" and latin1 junk give the same error in every parser", {
+test_that("\"bytes\" and latin1 junk give the same error with or without format", {
   # each case: one value, one "lat lon" string, the start of the error
   bytes <- c("45\xb0", "45\xb0 30")
   Encoding(bytes) <- "bytes"
@@ -180,8 +180,11 @@ test_that("\"bytes\" and latin1 junk give the same error in every parser", {
     pair <- c("45 45", case[["x"]][[2]])
     calls <- list(
       function() parse_lat(x),
+      function() parse_lat(x, format = "DD"),
       function() parse_lon(x),
-      function() parse_llstr(pair)
+      function() parse_lon(x, format = "DD"),
+      function() parse_llstr(pair),
+      function() parse_llstr(pair, format = "DD DD")
     )
     for (f in calls) {
       expect_error(object = f(), regexp = case[["msg"]], fixed = TRUE)

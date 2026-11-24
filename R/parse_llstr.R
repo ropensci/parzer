@@ -24,8 +24,8 @@
 #'
 #'   Both values are also `NA`, with a warning, when a string cannot be cut
 #'   into two coordinates, does not match any `format`, or has direction
-#'   letters that do not fit the order. `NA` input gives `NA` without a
-#'   warning.
+#'   letters that do not fit the order. `NA`, `""` and blank strings give
+#'   `NA` without a warning.
 #' @details
 #' With `format = NULL`, each string is cut into two parts, then the latitude
 #' part goes through [parse_lat()] and the longitude part through
@@ -211,26 +211,30 @@ parse_llstr <- function(
   if (!is.null(format)) {
     return(parse_llstr_with_format(str = str, format = format, order = order))
   }
-  halves <- pz_split_llstr(scrub(str))
+  clean <- scrub(str)
+  halves <- pz_split_llstr(clean)
   first <- halves[["lat"]]
   second <- halves[["lon"]]
   # scrub() keeps letters as typed: only N, S, E and W are direction letters
   # perl = TRUE: 3 times faster than the default engine here
   has <- function(x, pattern) grepl(pattern = pattern, x = x, perl = TRUE)
-  # the "e" of an exponent, as in "1.5e2", is not the letter E
-  ew <- "[Ww]|(?<![0-9.])[Ee]|[Ee](?![-+]?[0-9])"
+  # every E is the letter E, as in "45E30.5", even in "1.5e2": parse_lat()
+  # and parse_lon() never read an exponent
   picked <- pick_order(
     ns1 = has(x = first, pattern = "[NSns]"),
-    ew1 = has(x = first, pattern = ew),
+    ew1 = has(x = first, pattern = "[EWew]"),
     ns2 = has(x = second, pattern = "[NSns]"),
-    ew2 = has(x = second, pattern = ew),
+    ew2 = has(x = second, pattern = "[EWew]"),
     order = order
   )
   why <- picked[["why"]]
   # "NA_STRING" marks strings that could not be split (see pz_split_llstr())
   unsplit <- first == "NA_STRING"
   why[unsplit] <- NA_character_
-  why[unsplit & !is.na(str)] <- "could not split into latitude and longitude"
+  # as in parse_lat(), NA, "" and blank strings (scrub() trims them to "")
+  # give NA without a warning
+  why[unsplit & !is.na(str) & nzchar(clean)] <-
+    "could not split into latitude and longitude"
   ok <- !unsplit & is.na(why)
   lat_first <- picked[["lat_first"]]
   lat_half <- first
@@ -254,7 +258,8 @@ parse_llstr <- function(
     # pz_parse_lat() already gave a warning for each of them
     warning = function(w) invokeRestart("muffleWarning")
   )
-  swapped <- maybe[!is.na(as_lon)]
+  # above 90: the latitude failed for its range, not for another reason
+  swapped <- maybe[which(abs(as_lon) > 90)]
   lon[swapped] <- NA_real_
   why[swapped] <- swap_why(lat_first = lat_first[swapped])
   for (i in which(!is.na(why))) {
