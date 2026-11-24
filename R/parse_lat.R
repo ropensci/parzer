@@ -43,7 +43,7 @@
 #'   followed by `d`, `m` or `s`, must be in the value exactly as in the
 #'   pattern.
 #' - A sign can always be written right before the degrees: `+`, `-`, or a
-#'   Unicode minus `−`, en dash `–` or em dash `—`. With `H`, the rules are
+#'   Unicode minus (U+2212), en dash `–` or em dash `—`. With `H`, the rules are
 #'   the same as with `format = NULL`: `"-45S"` and `"+45S"` give -45, but
 #'   `"-45N"` gives `NA`, because the minus sign and the letter disagree.
 #'
@@ -86,7 +86,7 @@
 #' | `"40.25"` | `"DD.MM"` | 40.41667 | a dot before `M` is a plain dot |
 #' | `"45.5"` | `"DD.d"` | 45.5 | decimal degrees |
 #' | `"-4530"` | `"DDMM"` | -45.5 | minus sign |
-#' | `"−4530"` | `"DDMM"` | -45.5 | Unicode minus sign |
+#' | `"\u22124530"` | `"DDMM"` | -45.5 | Unicode minus sign |
 #' | `"-45S"` | `"DDH"` | -45 | sign and letter agree |
 #' | `"+45S"` | `"DDH"` | -45 | the letter gives the sign |
 #' | `"-45N"` | `"DDH"` | `NA` | sign and letter disagree |

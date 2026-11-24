@@ -59,7 +59,7 @@ gives \code{NA}.
 followed by \code{d}, \code{m} or \code{s}, must be in the value exactly as in the
 pattern.
 \item A sign can always be written right before the degrees: \code{+}, \code{-}, or a
-Unicode minus \verb{−}, en dash \verb{–} or em dash \verb{—}. With \code{H}, the rules are
+Unicode minus (U+2212), en dash \verb{–} or em dash \verb{—}. With \code{H}, the rules are
 the same as with \code{format = NULL}: \code{"-45S"} and \code{"+45S"} give -45, but
 \code{"-45N"} gives \code{NA}, because the minus sign and the letter disagree.
 }
@@ -102,7 +102,7 @@ See the Format examples section for many examples.
    \code{"40.25"} \tab \code{"DD.MM"} \tab 40.41667 \tab a dot before \code{M} is a plain dot \cr
    \code{"45.5"} \tab \code{"DD.d"} \tab 45.5 \tab decimal degrees \cr
    \code{"-4530"} \tab \code{"DDMM"} \tab -45.5 \tab minus sign \cr
-   \code{"−4530"} \tab \code{"DDMM"} \tab -45.5 \tab Unicode minus sign \cr
+   \code{"\\u22124530"} \tab \code{"DDMM"} \tab -45.5 \tab Unicode minus sign \cr
    \code{"-45S"} \tab \code{"DDH"} \tab -45 \tab sign and letter agree \cr
    \code{"+45S"} \tab \code{"DDH"} \tab -45 \tab the letter gives the sign \cr
    \code{"-45N"} \tab \code{"DDH"} \tab \code{NA} \tab sign and letter disagree \cr

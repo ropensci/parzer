@@ -27,7 +27,7 @@
 #' | `"074:30:56"` | `"DDD:MM:SS"` | 74.51556 | |
 #' | `"120.5"` | `"DDD.d"` | 120.5 | decimal degrees |
 #' | `"-0743056"` | `"DDDMMSS"` | -74.51556 | minus sign |
-#' | `"−0743056"` | `"DDDMMSS"` | -74.51556 | Unicode minus sign |
+#' | `"\u22120743056"` | `"DDDMMSS"` | -74.51556 | Unicode minus sign |
 #' | `"-074W"` | `"DDDH"` | -74 | sign and letter agree |
 #' | `"+074W"` | `"DDDH"` | -74 | the letter gives the sign |
 #' | `"-074E"` | `"DDDH"` | `NA` | sign and letter disagree |

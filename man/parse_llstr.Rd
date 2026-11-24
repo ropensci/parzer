@@ -67,7 +67,7 @@ Each part accepts the formats of \code{\link[=parse_lat]{parse_lat()}} and \code
 \item degrees and decimal minutes: \code{"45 30.5, -74 30.5"}, \code{"N45°30.5', W74°30.5'"}
 \item degrees, minutes and seconds with any symbols or a dash between them:
 \verb{"45°30'15\\", -74°30'15\\""}, \code{"45:30:15N, 74:30:15W"}, \code{"45-30-15, 74-30-15"}
-\item a Unicode minus sign or a dash (\verb{−}, \verb{–}) in front of a number is read as a
+\item a Unicode minus sign or a dash (U+2212, \verb{–}) in front of a number is read as a
 minus sign
 }
 }

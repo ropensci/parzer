@@ -42,7 +42,7 @@ The rules for \code{format} are in the Format section below.\tabular{llll}{
    \code{"074:30:56"} \tab \code{"DDD:MM:SS"} \tab 74.51556 \tab  \cr
    \code{"120.5"} \tab \code{"DDD.d"} \tab 120.5 \tab decimal degrees \cr
    \code{"-0743056"} \tab \code{"DDDMMSS"} \tab -74.51556 \tab minus sign \cr
-   \code{"−0743056"} \tab \code{"DDDMMSS"} \tab -74.51556 \tab Unicode minus sign \cr
+   \code{"\\u22120743056"} \tab \code{"DDDMMSS"} \tab -74.51556 \tab Unicode minus sign \cr
    \code{"-074W"} \tab \code{"DDDH"} \tab -74 \tab sign and letter agree \cr
    \code{"+074W"} \tab \code{"DDDH"} \tab -74 \tab the letter gives the sign \cr
    \code{"-074E"} \tab \code{"DDDH"} \tab \code{NA} \tab sign and letter disagree \cr
@@ -120,7 +120,7 @@ gives \code{NA}.
 followed by \code{d}, \code{m} or \code{s}, must be in the value exactly as in the
 pattern.
 \item A sign can always be written right before the degrees: \code{+}, \code{-}, or a
-Unicode minus \verb{−}, en dash \verb{–} or em dash \verb{—}. With \code{H}, the rules are
+Unicode minus (U+2212), en dash \verb{–} or em dash \verb{—}. With \code{H}, the rules are
 the same as with \code{format = NULL}: \code{"-45S"} and \code{"+45S"} give -45, but
 \code{"-45N"} gives \code{NA}, because the minus sign and the letter disagree.
 }

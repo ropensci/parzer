@@ -52,7 +52,7 @@
 #' - degrees and decimal minutes: `"45 30.5, -74 30.5"`, `"N45°30.5', W74°30.5'"`
 #' - degrees, minutes and seconds with any symbols or a dash between them:
 #'   `"45°30'15\", -74°30'15\""`, `"45:30:15N, 74:30:15W"`, `"45-30-15, 74-30-15"`
-#' - a Unicode minus sign or a dash (`−`, `–`) in front of a number is read as a
+#' - a Unicode minus sign or a dash (U+2212, `–`) in front of a number is read as a
 #'   minus sign
 #'
 #' @section Order:
