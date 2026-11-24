@@ -29,3 +29,7 @@ pz_split_llstr <- function(x) {
     .Call(`_parzer_pz_split_llstr`, x)
 }
 
+pz_scrub <- function(x) {
+    .Call(`_parzer_pz_scrub`, x)
+}
+
