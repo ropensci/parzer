@@ -25,7 +25,14 @@ faster. No function was removed or renamed, and no new dependency was added.
 0 errors | 0 warnings | 0 notes
 
 Checked locally on ARM64 Mac, on GHA Windows, Linux and MacOS and with
-win-builder. The Mac builder did not respond.
+win-builder (1 note because ror.org timed out). The Mac builder did not
+respond.
+
+## revdepcheck
+Two reverse dependencies. 0 new problems. ARUtools fails its tests with both
+the CRAN and the new version, so the problem is not caused by this release.
+The check of flightsbr timed out in its tests with both versions. We ran the
+parzer calls it makes by hand and got the same results.
 
 ## Changes in 0.6.0
 
