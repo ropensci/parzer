@@ -7,8 +7,10 @@ Description: Parse messy geographic coordinates from various character formats
     from coordinates; pull out individually degrees,
     minutes, or seconds; add and subtract degrees, minutes,
     and seconds. C++ code herein originally inspired from code
-    written by Jeffrey D. Bogan, but then completely re-written.
-Version: 0.5.0
+    written by Jeffrey D. Bogan, but then completely re-written. A 'format'
+    argument reads packed digits, such as coordinates from the International
+    Civil Aviation Organization ('ICAO') or from GPS receivers ('NMEA').
+Version: 0.6.0
 Authors@R: c(
     person("Scott", "Chamberlain", role = "aut",
         email = "sckott@protonmail.com",
@@ -47,14 +49,10 @@ Suggests:
     testthat (>= 3.0.0),
     quarto,
     sf,
-    leaflet,
-    callr,
-    pkgbuild,
-    pkgload,
-    withr
+    leaflet
 Config/testthat/edition: 3
 Config/testthat/parallel: false
-Config/testthat/start-first: *utils*, *parse_parts*, *parse*, *dms*, *benchmarks*
+Config/testthat/start-first: *utils*, *format*, *parse_parts*, *parse*, *dms*, *benchmarks*
 LinkingTo: Rcpp
 VignetteBuilder: quarto
 Roxygen: list(markdown = TRUE)

@@ -1,5 +1,5 @@
 dms_helper <- function(lon = NULL, lat = NULL) {
-  stopifnot(xor(is.null(lon), is.null(lat)))
+  stopifnot("give exactly one of lon or lat" = xor(is.null(lon), is.null(lat)))
   assert(lon, c("numeric", "integer", "character"))
   assert(lat, c("numeric", "integer", "character"))
   if (!is.null(lon)) {
@@ -23,7 +23,9 @@ dms_helper <- function(lon = NULL, lat = NULL) {
 #' @details Mathematics operators are exported for `+`, `-`, `/`, and `*`,
 #' but `/` and `*` are only exported with a stop message to say it's not
 #' supported; otherwise you'd be allow to divide degrees by minutes, leading
-#' to nonsense.
+#' to nonsense. Both sides of `+` and `-` must be pz objects: `pz_d(1) + 5`
+#' is an error, because a plain number has no unit. Unary minus keeps the
+#' unit: `-pz_m(30)` is minus 30 minutes.
 #' @examples
 #' # extract parts of a coordinate value
 #' pz_degree(-45.23323)
@@ -77,6 +79,17 @@ unclass_strip_atts <- function(x) {
   attributes(x) <- NULL
   return(x)
 }
+# value of a pz object in decimal degrees; a plain number has no unit
+pz_to_deg <- function(e) {
+  if (!inherits(e, "pz")) {
+    stop(
+      "both sides must be pz objects, see pz_d(), pz_m() and pz_s()",
+      call. = FALSE
+    )
+  }
+  eu <- unclass_strip_atts(e)
+  switch(attr(e, "type"), deg = eu, min = eu / 60, sec = eu / 3600)
+}
 #' @export
 #' @rdname dms
 print.pz <- function(x, ...) cat(x, sep = "\n")
@@ -101,20 +114,23 @@ pz_s <- function(x) {
 #' @export
 #' @rdname dms
 `+.pz` <- function(e1, e2) {
-  e1u <- unclass_strip_atts(e1)
-  e2u <- unclass_strip_atts(e2)
-  e1 <- switch(attr(e1, "type"), deg = e1u, min = e1u / 60, sec = e1u / 3600)
-  e2 <- switch(attr(e2, "type"), deg = e2u, min = e2u / 60, sec = e2u / 3600)
-  structure(e1 + e2, class = "pz", type = "deg")
+  if (missing(e2)) {
+    return(e1)
+  }
+  structure(pz_to_deg(e1) + pz_to_deg(e2), class = "pz", type = "deg")
 }
 #' @export
 #' @rdname dms
 `-.pz` <- function(e1, e2) {
-  e1u <- unclass_strip_atts(e1)
-  e2u <- unclass_strip_atts(e2)
-  e1 <- switch(attr(e1, "type"), deg = e1u, min = e1u / 60, sec = e1u / 3600)
-  e2 <- switch(attr(e2, "type"), deg = e2u, min = e2u / 60, sec = e2u / 3600)
-  structure(e1 - e2, class = "pz", type = "deg")
+  if (missing(e2)) {
+    # unary minus keeps the unit: -pz_m(30) is still minutes
+    return(structure(
+      -unclass_strip_atts(e1),
+      class = "pz",
+      type = attr(e1, "type")
+    ))
+  }
+  structure(pz_to_deg(e1) - pz_to_deg(e2), class = "pz", type = "deg")
 }
 #' @export
 #' @rdname dms

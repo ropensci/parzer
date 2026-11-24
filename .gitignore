@@ -17,3 +17,4 @@ src/desktop.ini
 vignettes/*.R
 .agents/
 .posit/
+.Rprofile

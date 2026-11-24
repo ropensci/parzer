@@ -4,17 +4,163 @@
 \alias{parse_llstr}
 \title{parse string with lat and lon together}
 \usage{
-parse_llstr(str)
+parse_llstr(str, format = NULL, order = c("auto", "lat_lon", "lon_lat"))
 }
 \arguments{
 \item{str}{(character) string with latitude and longitude, one or more in a vector.}
+
+\item{format}{(character) \code{NULL} (the default) or one or more patterns
+that say how the whole string is written, for example
+\code{"DDMMSSH DDDMMSSH"} for \code{"512839N 0002741W"}. With several patterns,
+each string is read with the first pattern that matches it. See the
+Format and Format examples sections.}
+
+\item{order}{(character) which coordinate comes first in \code{str}:
+\code{"auto"} (the default), \code{"lat_lon"} or \code{"lon_lat"}. With \code{"auto"},
+latitude comes first, unless the direction letters only fit longitude
+first. See the Order section.}
 }
 \value{
-A data.frame with parsed latitude and longitude in decimal degrees.
+A data.frame with the columns \code{lat} and \code{lon}, in decimal degrees,
+always in this order, whatever the order in \code{str}.
+
+Each part of a string is read on its own: when one part cannot be read,
+it gives \code{NA} with a warning, and the other part is kept. So
+\code{"abc, -74.5"} gives lat \code{NA} and lon -74.5. There is one exception:
+when the latitude is out of range (-90/90) but would be a valid
+longitude (-180/360), and the string has no direction letter, as in
+\code{"101.347, 4.9196"}, the two values are probably swapped. Then both are
+\code{NA}, with a warning that suggests the other \code{order}.
+
+Both values are also \code{NA}, with a warning, when a string cannot be cut
+into two coordinates, does not match any \code{format}, or has direction
+letters that do not fit the order. \code{NA}, \code{""} and blank strings give
+\code{NA} without a warning.
 }
 \description{
 parse string with lat and lon together
 }
+\details{
+With \code{format = NULL}, each string is cut into two parts, then the latitude
+part goes through \code{\link[=parse_lat]{parse_lat()}} and the longitude part through
+\code{\link[=parse_lon]{parse_lon()}}. The Order section says which part is which. The cut is made
+at:
+\itemize{
+\item the comma, when the string has exactly one comma. Spaces around the comma
+and inside each part are fine: \code{"45.5, -74.5"}, \code{"45 30 15 S , 74 30 15 W"}
+\item the only space, when the string has no comma and exactly one space:
+\code{"45.5 -74.5"}, \code{"N45.5 W74.5"}, \code{"45.5N 74.5W"}. Degrees, minutes and
+seconds then need a symbol between them, not a space:
+\verb{"45°30'15\\"S 74°30'15\\"W"}, \code{"45:30:15 -74:30:15"}
+}
+
+Strings with no separator (\code{"N45.5W74.5"}), with two or more commas, or
+with two or more spaces and no comma (\code{"45 30 74 30"}) give \code{NA} with a
+warning: use \code{format} for them. A dot is never a separator: \code{"45.74"} is
+one number, not two coordinates.
+
+Each part accepts the formats of \code{\link[=parse_lat]{parse_lat()}} and \code{\link[=parse_lon]{parse_lon()}}:
+\itemize{
+\item decimal degrees, signed: \code{"45.5, -74.5"}
+\item a hemisphere letter before or after the number: \code{"N45.5, W74.5"},
+\code{"45.5S, 74.5E"}
+\item degrees and decimal minutes: \code{"45 30.5, -74 30.5"}, \code{"N45°30.5', W74°30.5'"}
+\item degrees, minutes and seconds with any symbols or a dash between them:
+\verb{"45°30'15\\", -74°30'15\\""}, \code{"45:30:15N, 74:30:15W"}, \code{"45-30-15, 74-30-15"}
+\item a Unicode minus sign or a dash (U+2212, \verb{–}) in front of a number is read as a
+minus sign
+}
+}
+\section{Order}{
+
+With \code{order = "auto"} (the default), the direction letters N, S, E and W
+(in upper or lower case) say which coordinate comes first:
+\itemize{
+\item latitude first, when there is no letter (\code{"45.5, -74.5"}), or when the
+letters fit that (\code{"N45.5, W74.5"}, \code{"45.5, 74.5W"})
+\item longitude first, when the letters only fit that: the first part has E or
+W, or the second part has N or S (\code{"W74.5, N45.5"}, \code{"74.5W, 45.5"},
+\code{"-74.5, 45.5N"}). When only one part has a letter, that part decides.
+\item \code{NA} for both values, with a warning, when the letters contradict each
+other: \code{"E45, E30"}, \code{"N45, N30"}
+}
+
+With \code{order = "lat_lon"} or \code{order = "lon_lat"}, the order is forced. Use
+it for strings with longitude first and no letters:
+\code{parse_llstr("-74.5, 45.5", order = "lon_lat")}. A string with letters
+that do not fit the forced order gives \code{NA} for both values, with a
+warning: \code{"N45.5, W74.5"} with \code{order = "lon_lat"}.
+}
+
+\section{Format}{
+
+With \code{format}, one pattern describes the whole string: both coordinates and
+what is between them. For example, \code{"DDMMSSH DDDMMSSH"} reads
+\code{"512839N 0002741W"}. Each coordinate follows the rules of the Format
+section of \code{\link[=parse_lat]{parse_lat()}}. In addition:
+\itemize{
+\item The pattern needs exactly two \code{D} blocks, one for each coordinate. It is
+cut in two at the start of the second \code{D} block: \code{"DDMMSSH DDDMMSSH"}
+gives \code{"DDMMSSH "} and \code{"DDDMMSSH"}.
+\item The two coordinates need no separator: \code{"DDMMSSHDDDMMSSH"} reads
+\code{"512839N0002741W"}.
+\item Each coordinate can have at most one \code{H}. An \code{H} right between the two
+coordinates goes with the first one, as in \code{"DDMMSSHDDDMMSSH"}, unless
+the first one already has an \code{H}. Then it goes with the second one, as
+in \code{"HD.ddddHDDD.ddd"}, which reads \code{"N4.9196E101.347"}.
+\item The coordinates follow \code{order}. With \code{"lon_lat"}, the first one is the
+longitude, as in \code{"DDDMMSSH DDMMSSH"}. With \code{"auto"}, the \code{H} letters say
+which one is the latitude, and a pattern without \code{H} means latitude
+first. The number of \code{D} letters does not decide.
+\item The string is matched as it is: it is not cleaned, and not cut at a
+comma or a space, as with \code{format = NULL}. Spaces at the start and at
+the end are ignored.
+\item Strings that do not match any pattern, or that give \code{NA} for one value
+or both, are listed in one warning. They are not read again with
+\code{format = NULL}.
+\item A pattern that cannot work is an error, for example \code{"DDMMSS"} (only
+one \code{D} block) or \code{"DDMMSSHH DDDMMSSH"} (two \code{H} for one coordinate).
+}
+}
+
+\section{Format examples}{
+
+The rules for \code{format} are in the Format section above and in the Format
+section of \code{\link[=parse_lat]{parse_lat()}}. \code{order} is \code{"auto"} when not given.\tabular{llllll}{
+   \code{str} \tab \code{format} \tab \code{order} \tab lat \tab lon \tab Why \cr
+   \code{"512839N 0002741W"} \tab \code{"DDMMSSH DDDMMSSH"} \tab  \tab 51.4775 \tab -0.46139 \tab ICAO pair \cr
+   \code{"512839N0002741W"} \tab \code{"DDMMSSHDDDMMSSH"} \tab  \tab 51.4775 \tab -0.46139 \tab ICAO pair without a separator \cr
+   \code{"512839N/0002741W"} \tab \code{"DDMMSSH/DDDMMSSH"} \tab  \tab 51.4775 \tab -0.46139 \tab any separator, written as in the string \cr
+   \verb{"51°28'39\\"N 000°27'41\\"W"} \tab \verb{"DD°MM'SS\\"H DDD°MM'SS\\"H"} \tab  \tab 51.4775 \tab -0.46139 \tab symbols must match exactly \cr
+   \code{"4556.98735N 01045.12345W"} \tab \code{"DDMM.mH DDDMM.mH"} \tab  \tab 45.94979 \tab -10.75206 \tab NMEA pair \cr
+   \code{"4916.45,N,12311.12,W"} \tab \code{"DDMM.m,H,DDDMM.m,H"} \tab  \tab 49.27417 \tab -123.18533 \tab NMEA sentence, letters in their own fields \cr
+   \code{"N455698735W0104512345"} \tab \code{"HDDMMmmmmmHDDDMMmmmmm"} \tab  \tab 45.94979 \tab -10.75206 \tab decimal point not written: exactly 5 decimals \cr
+   \code{"N4.9196E101.347"} \tab \code{"HD.ddddHDDD.ddd"} \tab  \tab 4.9196 \tab 101.347 \tab \code{H} in front of each coordinate, no separator \cr
+   \code{"4.9196N101.347E"} \tab \code{"D.dHDDD.dH"} \tab  \tab 4.9196 \tab 101.347 \tab \code{H} after each coordinate, no separator \cr
+   \code{"-45.5 -074.5"} \tab \code{"DD.d DDD.d"} \tab  \tab -45.5 \tab -74.5 \tab minus signs \cr
+   \code{"0002741W 512839N"} \tab \code{"DDDMMSSH DDMMSSH"} \tab  \tab 51.4775 \tab -0.46139 \tab longitude first: the letters decide \cr
+   \code{"E101.347N4.9196"} \tab \code{"HDDD.dHD.d"} \tab  \tab 4.9196 \tab 101.347 \tab longitude first, no separator \cr
+   \code{"101.347 4.9196"} \tab \code{"DDD.d D.d"} \tab \code{"lon_lat"} \tab 4.9196 \tab 101.347 \tab longitude first, no letters: say so with \code{order} \cr
+   \code{"101.347 4.9196"} \tab \code{"DDD.d D.d"} \tab  \tab \code{NA} \tab \code{NA} \tab no letters, so latitude first, but 101.347 is not a latitude: probably swapped \cr
+   \code{"512839N 0002741W"} \tab \code{"DDMMSSH DDDMMSSH"} \tab \code{"lon_lat"} \tab \code{NA} \tab \code{NA} \tab the letters do not fit the forced order \cr
+   \code{"512839N 0002741N"} \tab \code{"DDMMSSH DDDMMSSH"} \tab  \tab \code{NA} \tab \code{NA} \tab two latitude letters \cr
+   \code{"517539N 0002741W"} \tab \code{"DDMMSSH DDDMMSSH"} \tab  \tab \code{NA} \tab -0.46139 \tab 75 minutes: the longitude is kept \cr
+   \code{"512839N 1900000W"} \tab \code{"DDMMSSH DDDMMSSH"} \tab  \tab 51.4775 \tab \code{NA} \tab longitude below -180: the latitude is kept \cr
+   \code{"51 28 39N 000 27 41W"} \tab \code{"DDMMSSH DDDMMSSH"} \tab  \tab \code{NA} \tab \code{NA} \tab does not match the pattern \cr
+   \code{"51 28 39N 000 27 41W"} \tab \code{c("DDMMSSH DDDMMSSH", "DD MM SSH DDD MM SSH")} \tab  \tab 51.4775 \tab -0.46139 \tab the second pattern matches \cr
+   \code{"512839N0002741W"} \tab \code{c("DDMMSSH DDDMMSSH", "DDMMSSHDDDMMSSH")} \tab  \tab 51.4775 \tab -0.46139 \tab the second pattern matches \cr
+   \code{"45.5, -74.5"} \tab \code{NULL} \tab  \tab 45.5 \tab -74.5 \tab no letters: latitude first \cr
+   \code{"W74.5, N45.5"} \tab \code{NULL} \tab  \tab 45.5 \tab -74.5 \tab longitude first: the letters decide \cr
+   \code{"74.5W, 45.5"} \tab \code{NULL} \tab  \tab 45.5 \tab -74.5 \tab only one part has a letter: it decides \cr
+   \code{"-74.5, 45.5"} \tab \code{NULL} \tab \code{"lon_lat"} \tab 45.5 \tab -74.5 \tab longitude first, no letters: say so with \code{order} \cr
+   \code{"N45.5, W74.5"} \tab \code{NULL} \tab \code{"lon_lat"} \tab \code{NA} \tab \code{NA} \tab the letters do not fit the forced order \cr
+   \code{"E45, E30"} \tab \code{NULL} \tab  \tab \code{NA} \tab \code{NA} \tab two longitude letters \cr
+   \code{"101.347, 4.9196"} \tab \code{NULL} \tab  \tab \code{NA} \tab \code{NA} \tab no letters, so latitude first, but 101.347 is not a latitude: probably swapped \cr
+   \code{"abc, -74.5"} \tab \code{NULL} \tab  \tab \code{NA} \tab -74.5 \tab the latitude cannot be read: the longitude is kept \cr
+   \code{"N4.9196E101.347"} \tab \code{NULL} \tab  \tab \code{NA} \tab \code{NA} \tab no separator: use \code{format} \cr
+}
+}
+
 \examples{
 parse_llstr("N 04.1683, E 101.5823")
 parse_llstr("N04.82344, E101.61320")
@@ -24,12 +170,55 @@ parse_llstr("N05.03062,E101.75172")
 parse_llstr("N4.9196, E101.345")
 parse_llstr("N4.9196, E101.346")
 parse_llstr("N4.9196, E101.347")
-# no comma
+# no comma: the only space is the separator
 parse_llstr("N4.9196 E101.347")
-# no space
-parse_llstr("N4.9196E101.347")
+# signed decimal degrees
+parse_llstr("4.9196 -101.347")
 
 # DMS
 parse_llstr("N4 51'36\", E101 34'7\"")
 parse_llstr(c("4 51'36\"S, 101 34'7\"W", "N4 51'36\", E101 34'7\""))
+parse_llstr("4:51:36S 101:34:7W")
+
+# which coordinate comes first (see the Order section)
+parse_llstr("W101.347, N4.9196") # the letters say longitude first
+parse_llstr("101.347E, 4.9196") # one letter is enough
+parse_llstr("-101.347, 4.9196", order = "lon_lat") # no letters: say it
+# NA and a warning: the letters contradict each other
+parse_llstr("E45, E30")
+# NA for both, and a warning: 101.347 is not a latitude, so the values
+# are probably swapped
+parse_llstr("101.347, 4.9196")
+parse_llstr("101.347, 4.9196", order = "lon_lat")
+# one part cannot be read: the other one is kept
+parse_llstr("abc, -74.5")
+
+# with format: one pattern for the whole string (see the Format section)
+parse_llstr("512839N 0002741W", format = "DDMMSSH DDDMMSSH") # ICAO
+parse_llstr("512839N0002741W", format = "DDMMSSHDDDMMSSH") # no separator
+parse_llstr("4916.45,N,12311.12,W", format = "DDMM.m,H,DDDMM.m,H") # NMEA
+parse_llstr("N4.9196E101.347", format = "HD.ddddHDDD.ddd")
+# longitude first: the letters decide
+parse_llstr("0002741W 512839N", format = "DDDMMSSH DDMMSSH")
+# longitude first, without letters
+parse_llstr("101.347 4.9196", format = "DDD.d D.d", order = "lon_lat")
+# several formats, tried in order for each string
+parse_llstr(
+  c("512839N 0002741W", "512839N0002741W", "51 28 39N 000 27 41W"),
+  format = c("DDMMSSH DDDMMSSH", "DDMMSSHDDDMMSSH", "DD MM SSH DDD MM SSH")
+)
+# NA and one warning: 75 minutes (the longitude is kept), and two
+# latitude letters
+parse_llstr(
+  c("517539N 0002741W", "512839N 0002741N"),
+  format = "DDMMSSH DDDMMSSH"
+)
+# without format, a string with no separator gives NA and a warning
+parse_llstr("N4.9196E101.347")
+
+# add both columns with one call, picking them by name
+df <- data.frame(x = c("N4.9196, E101.347", "4.9196 -101.347"))
+cbind(df, parse_llstr(str = df[["x"]])[c("lat", "lon")])
+# dplyr:      df |> dplyr::mutate(parse_llstr(str = x)[c("lat", "lon")])
+# data.table: dt[, c("lat", "lon") := parse_llstr(str = x)[c("lat", "lon")]]
 }

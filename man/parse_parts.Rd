@@ -25,7 +25,7 @@ For negative values the sign is carried by the first non-zero part: \code{-45.5}
 gives deg -45, min 30, but \code{-0.5} gives deg 0, min -30. Minutes are always
 below 60 and seconds below 60, in absolute value.
 
-NA/NaN given upon error
+\code{NA} given upon error, with a warning
 }
 \description{
 parse coordinates into degrees, minutes and seconds
@@ -43,9 +43,6 @@ parse_parts_lat("-74.6411133")
 parse_parts_lat("-45.98739874")
 parse_parts_lat("40.123N")
 parse_parts_lat("N40°25’5.994")
-
-# not working, needs format input
-parse_parts_lat("N455698735")
 
 # multiple
 x <- c("40.123°", "40.123N74.123W", "191.89", 12, "N45 04.25764")

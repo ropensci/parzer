@@ -75,6 +75,25 @@ parse_llstr(c("4 51'36\"S, 101 34'7\"W",
               "40.123°; 45W54.2356"))
 ```
 
+Some values pack degrees, minutes and seconds together with no separator,
+as in "4530N". Without help, parzer reads them as `NA`. Give a `format` that
+says how they are written. With several formats, each value is read with the
+first one that matches.
+
+```{r format}
+parse_lat(c("4530N", "512839N"), format = c("DDMMH", "DDMMSSH"))
+```
+
+When the longitude comes first and there is no direction letter, parzer
+cannot tell. Say so with `order`.
+
+```{r order}
+parse_llstr("-74.5, 45.5", order = "lon_lat")
+```
+
+See the Format section of `?parse_lat` and the Order section of
+`?parse_llstr` for details.
+
 See more in the [Introduction to the `parzer` package vignette](https://docs.ropensci.org/parzer/articles/parzer.html).
 
 ## Installation

@@ -70,7 +70,7 @@ parse_lat("40.123°")
 parse_lat("40.123N")
 parse_lat("N45 04.25764")
 
-# Invalid values -> NaN
+# Invalid values -> NA, with a warning
 parse_lat("191.89")
 
 # Many inputs
@@ -122,6 +122,34 @@ lat_lon_strings <- c(
 )
 
 parse_llstr(lat_lon_strings)
+```
+
+When the longitude comes first, parzer sees it from the direction letters.
+Without letters, it cannot tell: say so with `order`. See the Order section
+of `?parse_llstr`.
+
+```{r}
+#| label: "llstr-order"
+#| collapse: true
+parse_llstr("W74.5, N45.5")
+parse_llstr("-74.5, 45.5", order = "lon_lat")
+```
+
+### Values written in a fixed format:
+
+Some values pack degrees, minutes and seconds together with no separator, as
+in "4530N". Give a `format` that says how they are written: `D`, `M` and `S`
+for the digits of the degrees, minutes and seconds, and `H` for the direction
+letter. With several formats, each value is read with the first one that
+matches. `parse_lat()`, `parse_lon()` and `parse_llstr()` have a `format`
+argument, and `parse_lon_lat()` has `lon_format` and `lat_format`. See the
+Format section of `?parse_lat` for all the rules.
+
+```{r}
+#| label: "format"
+#| collapse: true
+parse_lat(c("4530N", "512839N"), format = c("DDMMH", "DDMMSSH"))
+parse_llstr("512839N 0002741W", format = "DDMMSSH DDDMMSSH")
 ```
 
 ### Parse into degree, min, sec parts:

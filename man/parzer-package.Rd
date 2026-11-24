@@ -6,7 +6,7 @@
 \alias{parzer-package}
 \title{parzer: Parse Messy Geographic Coordinates}
 \description{
-Parse messy geographic coordinates from various character formats to decimal degree numeric values. Parse coordinates into their parts (degree, minutes, seconds); calculate hemisphere from coordinates; pull out individually degrees, minutes, or seconds; add and subtract degrees, minutes, and seconds. C++ code herein originally inspired from code written by Jeffrey D. Bogan, but then completely re-written.
+Parse messy geographic coordinates from various character formats to decimal degree numeric values. Parse coordinates into their parts (degree, minutes, seconds); calculate hemisphere from coordinates; pull out individually degrees, minutes, or seconds; add and subtract degrees, minutes, and seconds. C++ code herein originally inspired from code written by Jeffrey D. Bogan, but then completely re-written. A 'format' argument reads packed digits, such as coordinates from the International Civil Aviation Organization ('ICAO') or from GPS receivers ('NMEA').
 }
 \details{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}

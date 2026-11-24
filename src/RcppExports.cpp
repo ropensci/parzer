@@ -10,28 +10,6 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
-// convert_lat
-double convert_lat(std::string& str);
-RcppExport SEXP _parzer_convert_lat(SEXP strSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< std::string& >::type str(strSEXP);
-    rcpp_result_gen = Rcpp::wrap(convert_lat(str));
-    return rcpp_result_gen;
-END_RCPP
-}
-// convert_lon
-double convert_lon(std::string& str);
-RcppExport SEXP _parzer_convert_lon(SEXP strSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< std::string& >::type str(strSEXP);
-    rcpp_result_gen = Rcpp::wrap(convert_lon(str));
-    return rcpp_result_gen;
-END_RCPP
-}
 // pz_parse_lat
 std::vector<double> pz_parse_lat(std::vector<std::string>& x);
 RcppExport SEXP _parzer_pz_parse_lat(SEXP xSEXP) {
@@ -110,10 +88,19 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// pz_scrub
+Rcpp::CharacterVector pz_scrub(Rcpp::CharacterVector x);
+RcppExport SEXP _parzer_pz_scrub(SEXP xSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::CharacterVector >::type x(xSEXP);
+    rcpp_result_gen = Rcpp::wrap(pz_scrub(x));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_parzer_convert_lat", (DL_FUNC) &_parzer_convert_lat, 1},
-    {"_parzer_convert_lon", (DL_FUNC) &_parzer_convert_lon, 1},
     {"_parzer_pz_parse_lat", (DL_FUNC) &_parzer_pz_parse_lat, 1},
     {"_parzer_pz_parse_lon", (DL_FUNC) &_parzer_pz_parse_lon, 1},
     {"_parzer_pz_hemisphere", (DL_FUNC) &_parzer_pz_hemisphere, 2},
@@ -121,6 +108,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_parzer_pz_parse_parts_lon", (DL_FUNC) &_parzer_pz_parse_parts_lon, 1},
     {"_parzer_pz_split_llstr_string", (DL_FUNC) &_parzer_pz_split_llstr_string, 1},
     {"_parzer_pz_split_llstr", (DL_FUNC) &_parzer_pz_split_llstr, 1},
+    {"_parzer_pz_scrub", (DL_FUNC) &_parzer_pz_scrub, 1},
     {NULL, NULL, 0}
 };
 

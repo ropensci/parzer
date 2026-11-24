@@ -13,7 +13,7 @@ downloads](https://cranlogs.r-pkg.org/badges/parzer)](https://github.com/r-hub/c
 version](https://www.r-pkg.org/badges/version/parzer)](https://cran.r-project.org/package=parzer)
 
 [![Code Coverage:
-96%](https://img.shields.io/badge/code_coverage-96%25-brightgreen)](#code-coverage)
+99%](https://img.shields.io/badge/code_coverage-99%25-brightgreen)](#code-coverage)
 
 [![Ropensci Peer
 Reviewed](https://badges.ropensci.org/341_status.svg)](https://github.com/ropensci/software-review/issues/341)
@@ -53,6 +53,28 @@ R>     lat    lon
 R> 1 -4.86 -101.6
 R> 2 40.12  -45.9
 ```
+
+Some values pack degrees, minutes and seconds together with no
+separator, as in “4530N”. Without help, parzer reads them as `NA`. Give
+a `format` that says how they are written. With several formats, each
+value is read with the first one that matches.
+
+``` r
+parse_lat(c("4530N", "512839N"), format = c("DDMMH", "DDMMSSH"))
+R> [1] 45.50 51.48
+```
+
+When the longitude comes first and there is no direction letter, parzer
+cannot tell. Say so with `order`.
+
+``` r
+parse_llstr("-74.5, 45.5", order = "lon_lat")
+R>    lat   lon
+R> 1 45.5 -74.5
+```
+
+See the Format section of `?parse_lat` and the Order section of
+`?parse_llstr` for details.
 
 See more in the [Introduction to the `parzer` package
 vignette](https://docs.ropensci.org/parzer/articles/parzer.html).
@@ -100,13 +122,14 @@ pak::pkg_install("ropensci/parzer")
 
 ## Code Coverage
 
-    R> parzer Coverage: 96.34%
-    R> src/latlong.cpp: 92.31%
+    R> parzer Coverage: 99.77%
+    R> src/latlong.cpp: 98.90%
     R> R/dms-fxns.R: 100.00%
+    R> R/format.R: 100.00%
     R> R/parse_hemisphere.R: 100.00%
-    R> R/parse_lat_lon.R: 100.00%
     R> R/parse_lat.R: 100.00%
     R> R/parse_llstr.R: 100.00%
+    R> R/parse_lon_lat.R: 100.00%
     R> R/parse_lon.R: 100.00%
     R> R/parse_parts.R: 100.00%
     R> R/zzz.R: 100.00%
@@ -114,6 +137,7 @@ pak::pkg_install("ropensci/parzer")
     R> src/pz_hemisphere.cpp: 100.00%
     R> src/pz_parse_parts.cpp: 100.00%
     R> src/pz_split_llstr.cpp: 100.00%
+    R> src/scrub.cpp: 100.00%
 
 ## Meta
 
