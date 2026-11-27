@@ -193,9 +193,13 @@ double nums_to_decimal(const std::vector<double>& nums, const std::string& orig,
   return ret * dir_val;
 }
 
-// same as the regex "^-.+"; "." does not match a line break
+// True when a minus sign sits before the first digit, e.g. "-45", "- 45",
+// "N - 45", or "\t- 45" (scrubbed to "'- 45").
 bool is_negative(const std::string& s) {
-  return s.size() >= 2 && s[0] == '-' && s[1] != '\n' && s[1] != '\r';
+  const std::size_t first_digit = s.find_first_of("0123456789");
+  if (first_digit == std::string::npos) return false;
+  const std::size_t minus_pos = s.find('-');
+  return minus_pos != std::string::npos && minus_pos < first_digit;
 }
 
 double convert_lat(std::string& str) {
